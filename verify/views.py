@@ -31,8 +31,9 @@ class FileUpdateView(APIView):
     if file_serializer.is_valid():
       file_serializer.save()
 
-
-      return Response(file_serializer.data, status=status.HTTP_201_CREATED)
+      document = Document.objects.first()
+      verified = Scanpicture(document.keyword)
+      return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # Create your views here.
@@ -49,8 +50,8 @@ def find_string(text, target_string):
     return False
 
 
-def Scanpicture(request):
-  athname = request.POST.get('athname')
+def Scanpicture(athname):
+  # athname = request.POST.get('athname')
   path = os.getcwd() + "/media/images/*"
 
   for path_to_document in glob.glob(path, recursive=True):
@@ -63,13 +64,13 @@ def Scanpicture(request):
 
   nameexist = find_string(filter_predicted_result, athname)
   if nameexist:
-    name = "Verified"
+    status = "Verified"
   else:
-    name = "No Go"
+    status = "No Go"
 
-  context = {'filter_predicted_result': filter_predicted_result, 'name': name}
+  # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
-  return JsonResponse({'message': 'it works', 'context': context})
+  return status
   # context = {'form': form}
   # return render(request, 'homepage.html', context)
 
