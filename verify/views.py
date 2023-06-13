@@ -13,7 +13,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FileSerializer
 from django.views.decorators.csrf import csrf_exempt
-
+from .models import Document
 
 class FileUpdateView(APIView):
   parser_classes = (MultiPartParser, FormParser)
@@ -22,7 +22,12 @@ class FileUpdateView(APIView):
   @csrf_exempt
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
-    delete()
+
+    document = Document.objects.first()
+    if document:
+      Document.objects.all().delete()
+      delete()
+
     if file_serializer.is_valid():
       file_serializer.save()
 
