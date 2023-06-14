@@ -63,6 +63,7 @@ def Scanpicture(athname):
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
 
   words = athname.split()
+  status = ""
   for wd in words:
     nameexist = find_string(filter_predicted_result, wd)
     if nameexist:
