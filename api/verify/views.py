@@ -66,7 +66,7 @@ def Scanpicture(athname):
   if nameexist:
     status = "Verified"
   else:
-    status = "No Go"
+    status = "Unverified"
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
