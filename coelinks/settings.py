@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api.verify.apps.VerifyConfig',
+    'api.chatbot.apps.ChatbotConfig',
     'corsheaders',
 ]
 

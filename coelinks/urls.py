@@ -22,4 +22,5 @@ from django.conf.urls.static import static
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     path('api/verify', include('api.verify.urls', namespace='verify')),
+    path('api/chat', include('api.chatbot.urls', namespace='chat')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
