@@ -40,7 +40,7 @@ class ChatGenerateView(APIView):
                 defaults={'question': newquestion, 'response': newresponse},
             )
 
-            return Response(updated, status=status.HTTP_201_CREATED)
+            return Response(newresponse, status=status.HTTP_201_CREATED)
         else:
             return Response(chat_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
