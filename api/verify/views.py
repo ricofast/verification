@@ -77,9 +77,9 @@ def Scanpicture(athname):
   for wd in words:
     nameexist = find_string(filter_predicted_result, wd)
     if nameexist:
-      status = status + " Verified - "
+      status = status + wd + " Verified - "
     else:
-      status = status + " Unverified - "
+      status = status + wd+ " Unverified - "
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
