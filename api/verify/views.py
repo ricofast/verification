@@ -63,14 +63,23 @@ def Scanpicture(athname):
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
 
   words = athname.split()
-  status = {}
+  # status = {}
+  #
+  # for wd in words:
+  #   nameexist = find_string(filter_predicted_result, wd)
+  #   if nameexist:
+  #     status[wd] = "Verified"
+  #   else:
+  #     status[wd] = "Unverified"
+
+  status = ""
 
   for wd in words:
     nameexist = find_string(filter_predicted_result, wd)
     if nameexist:
-      status[wd] = "Verified"
+      status = status + " Verified - "
     else:
-      status[wd] = "Unverified"
+      status = status + " Unverified - "
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
