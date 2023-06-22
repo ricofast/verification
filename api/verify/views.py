@@ -23,15 +23,24 @@ class FileUpdateView(APIView):
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
 
-    document = Document.objects.first()
-    if document:
-      Document.objects.all().delete()
-      delete()
+    # document = Document.objects.first()
+    # if document:
+    #   Document.objects.all().delete()
+    userid = FileSerializer.data['user']
+    delete(userid)
+
 
     if file_serializer.is_valid():
-      file_serializer.save()
 
-      document = Document.objects.first()
+      key_word = FileSerializer.data['keyword']
+      filename = FileSerializer.data['file']
+      obj, created = Document.objects.update_or_create(
+        user=userid,
+        defaults={'keyword': key_word, 'file': filename},
+      )
+      # file_serializer.save()
+
+      document = obj
       verified = Scanpicture(document.keyword)
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
@@ -50,9 +59,9 @@ def find_string(text, target_string):
     return False
 
 
-def Scanpicture(athname):
+def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
-  path = os.getcwd() + "/media/images/*"
+  path = os.getcwd() + "/media/images/" + userid + "/*"
 
   for path_to_document in glob.glob(path, recursive=True):
     # img = cv2.imread(path_to_document)
@@ -88,8 +97,8 @@ def Scanpicture(athname):
   # return render(request, 'homepage.html', context)
 
 
-def delete():
-  folder = os.getcwd() + '/media/images'
+def delete(userid):
+  folder = os.getcwd() + '/media/images/' + userid + '/'
   for filename in os.listdir(folder):
     file_path = os.path.join(folder, filename)
     try:
