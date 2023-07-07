@@ -51,8 +51,8 @@ class FileUpdateView(APIView):
       # file_serializer.save()
 
       document = obj
-      verified = "OK"
-      # verified = Scanpicture(document.keyword, document.pk)
+      # verified = "OK"
+      verified = Scanpicture(document.keyword, document.pk)
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -72,8 +72,8 @@ def find_string(text, target_string):
 
 def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
-  path = os.getcwd() + "/media/images/*"
-  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  # path = os.getcwd() + "/media/images/*"
+  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
   print(path)
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
