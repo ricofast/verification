@@ -34,7 +34,7 @@ class FileUpdateView(APIView):
 
 
     if file_serializer.is_valid():
-      userid = int(file_serializer.data['user'])
+      userid = file_serializer.data['user']
       # tempdoc = Document.objects.filter(user=userid).first()
 
       # if tempdoc:
@@ -71,6 +71,7 @@ def find_string(text, target_string):
 def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
   path = os.getcwd() + "/media/images/" + str(userid) + "/*"
+  print(path)
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
     # img = cv2.imread(path_to_document)
