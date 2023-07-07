@@ -35,7 +35,7 @@ class FileUpdateView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-      delete(userid)
+      # delete(userid)
       key_word = file_serializer.data['keyword']
       filename = file_serializer.data['file']
       obj, created = Document.objects.update_or_create(
@@ -102,7 +102,7 @@ def Scanpicture(athname, userid):
 
 
 def delete(userid):
-  folder = os.getcwd() + '/media/images/' + userid + '/'
+  folder = os.getcwd() + '/media/images/' + str(userid) + '/'
   for filename in os.listdir(folder):
     file_path = os.path.join(folder, filename)
     try:
