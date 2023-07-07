@@ -15,6 +15,10 @@ from .serializers import FileSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document
 
+
+
+
+
 class FileUpdateView(APIView):
   parser_classes = (MultiPartParser, FormParser)
   # parser_classes = (FileUploadParser,)
@@ -41,7 +45,7 @@ class FileUpdateView(APIView):
       # file_serializer.save()
 
       document = obj
-      verified = Scanpicture(document.keyword)
+      verified = Scanpicture(document.keyword, document.user)
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
