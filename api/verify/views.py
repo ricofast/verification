@@ -76,7 +76,7 @@ class FileUpdateView(APIView):
 
       verified = classify(ai_model, image_transforms, document.file, classes)
       if verified != "invalid":
-        verified = verified + "--" + Scanpicture(key_word, userid)
+        verified = verified + "--" + Scanpicture(document.keyword, document.user)
 
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
