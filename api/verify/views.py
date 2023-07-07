@@ -52,7 +52,7 @@ class FileUpdateView(APIView):
 
       document = obj
       # verified = "OK"
-      verified = Scanpicture(document.keyword, document.pk)
+      verified = Scanpicture(document.keyword, document.user)
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
