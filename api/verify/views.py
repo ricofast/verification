@@ -34,8 +34,8 @@ class FileUpdateView(APIView):
 
 
     if file_serializer.is_valid():
-      userid = file_serializer.data['user']
-      tempdoc = Document.objects.get(user=userid)
+      userid = int(file_serializer.data['user'])
+      tempdoc = Document.objects.filter(user=userid).first()
 
       if tempdoc:
         delete(userid)
