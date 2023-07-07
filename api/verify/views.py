@@ -11,7 +11,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import FileSerializer
+from .serializers import FileSerializer, FileScanSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel
 import torchvision
@@ -98,7 +98,7 @@ class DocumentScanView(APIView):
 
   @csrf_exempt
   def post(self, request, *args, **kwargs):
-    file_serializer = FileSerializer(data=request.data)
+    file_serializer = FileScanSerializer(data=request.data)
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
