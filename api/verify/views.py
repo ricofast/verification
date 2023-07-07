@@ -92,6 +92,27 @@ class FileUpdateView(APIView):
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # Create your views here.
 
+
+class DocumentScanView(APIView):
+  parser_classes = (MultiPartParser, FormParser)
+
+  @csrf_exempt
+  def post(self, request, *args, **kwargs):
+    file_serializer = FileSerializer(data=request.data)
+
+    if file_serializer.is_valid():
+      userid = file_serializer.data['user']
+
+      key_word = file_serializer.data['keyword']
+
+      verified = Scanpicture(key_word, userid)
+
+      return Response(verified, status=status.HTTP_201_CREATED)
+    else:
+      return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 def find_string(text, target_string):
   # Convert both the text and target string to lowercase for case-insensitive matching
   text_lower = text.lower()
