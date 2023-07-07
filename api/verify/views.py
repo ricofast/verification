@@ -35,7 +35,11 @@ class FileUpdateView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-      delete(userid)
+      tempdoc = Document.objects.get(user=userid)
+
+      if tempdoc:
+        delete(userid)
+
       key_word = file_serializer.data['keyword']
       filename = file_serializer.data['file']
       obj, created = Document.objects.update_or_create(
