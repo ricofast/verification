@@ -13,9 +13,40 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FileSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .models import Document
+from .models import Document, AIModel
+import torchvision
+import torch
+import torchvision.transforms as transforms
+import PIL.Image as Image
 
 
+classes = [
+          'Birth Certificate',
+          'ID/DL',
+          'Invalid']
+
+ai_model = torch.load('best_model.pth')
+
+mean = [0.7683, 0.7671, 0.7645]
+std = [0.2018, 0.1925, 0.1875]
+
+image_transforms = transforms.Compose([
+    transforms.Resize((512,512)),
+    transforms.ToTensor(),
+    transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
+])
+
+
+def classify(aimodel, image_transforms, image_path, classes):
+  aimodel = aimodel.eval()
+  image = Image.open(image_path)
+  image = image_transforms(image).float()
+  image = image.unsqueeze(0)
+
+  output = aimodel(image)
+  _, predicted = torch.max(output.data, 1)
+
+  return classes[predicted.item()]
 
 
 
@@ -51,8 +82,10 @@ class FileUpdateView(APIView):
       # file_serializer.save()
 
       document = obj
-      # verified = "OK"
-      verified = Scanpicture(document.keyword, document.user)
+      # verified = Scanpicture(document.keyword, document.user)
+
+      verified = classify(ai_model, image_transforms, document.file, classes)
+
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

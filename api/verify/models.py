@@ -12,4 +12,14 @@ class Document(models.Model):
     uploaded = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.pk)
+        return str(self.user)
+
+
+class AIModel(models.Model):
+    name = models.CharField(max_length=50, null=True, blank=True)
+    file = models.FileField(upload_to="aimodels")
+    description = models.CharField(max_length=250, null=True, blank=True)
+    uploaded = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.name)
