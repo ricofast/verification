@@ -2,7 +2,7 @@ from django.db import models
 
 def document_directory_path(instance, filename):
 
-    return 'images/{0}/{1}'.format(instance.user, filename)
+    return 'images/user_{0}/{1}'.format(instance.id, filename)
 
 # Create your models here.
 class Document(models.Model):
