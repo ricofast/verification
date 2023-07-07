@@ -62,6 +62,10 @@ class FileUpdateView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
 
+      doc = Document.objects.filter(user=userid).first()
+      if doc:
+        delete(userid)
+
       key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
       print("file: ",  filename)
