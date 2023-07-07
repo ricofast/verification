@@ -25,7 +25,8 @@ classes = [
           'ID/DL',
           'Invalid']
 
-
+filename = rf"media/aimodels/best_model.pth"
+ai_model = torch.load(filename)
 
 mean = [0.7683, 0.7671, 0.7645]
 std = [0.2018, 0.1925, 0.1875]
@@ -84,9 +85,6 @@ class FileUpdateView(APIView):
       document = obj
       # verified = Scanpicture(document.keyword, document.user)
 
-      modelai = AIModel.objects.first()
-
-      ai_model = torch.load(modelai.file)
       verified = classify(ai_model, image_transforms, document.file, classes)
 
       return Response(verified, status=status.HTTP_201_CREATED)
