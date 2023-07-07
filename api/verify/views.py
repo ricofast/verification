@@ -42,7 +42,7 @@ class FileUpdateView(APIView):
 
 
       key_word = file_serializer.data['keyword']
-      filename = file_serializer.data['file']
+      filename = file_serializer.validated_data['file']
       print("file: ",  filename)
       obj, created = Document.objects.update_or_create(
         user=userid,
