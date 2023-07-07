@@ -71,7 +71,7 @@ def find_string(text, target_string):
 def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
   path = os.getcwd() + "/media/images/" + str(userid) + "/*"
-
+  filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
     # img = cv2.imread(path_to_document)
     img = preprocess_image(path_to_document)
