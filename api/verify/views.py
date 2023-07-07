@@ -75,6 +75,7 @@ def Scanpicture(athname, userid):
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
     # img = cv2.imread(path_to_document)
+    print(path_to_document)
     img = preprocess_image(path_to_document)
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     predicted_result = pytesseract.image_to_string(img, lang='eng')
