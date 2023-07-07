@@ -43,6 +43,7 @@ class FileUpdateView(APIView):
 
       key_word = file_serializer.data['keyword']
       filename = file_serializer.data['file']
+      print(filename)
       obj, created = Document.objects.update_or_create(
         user=userid,
         defaults={'keyword': key_word, 'file': filename},
@@ -70,7 +71,8 @@ def find_string(text, target_string):
 
 def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
-  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  path = os.getcwd() + "/media/images/*"
+  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
   print(path)
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
