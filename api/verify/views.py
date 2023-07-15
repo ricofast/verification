@@ -18,7 +18,7 @@ import torchvision
 import torch
 import torchvision.transforms as transforms
 import PIL.Image as Image
-
+import easyocr
 
 classes = [
           'Birth Certificate',
@@ -79,7 +79,7 @@ class FileUpdateView(APIView):
       # verified = Scanpicture(document.keyword, document.user)
 
       verified = classify(ai_model, image_transforms, document.file, classes)
-      if verified != "invalid":
+      if verified != "Invalid":
         verified = verified + "--" + Scanpicture(document.keyword, document.user)
 
       return Response(verified, status=status.HTTP_201_CREATED)
@@ -125,16 +125,19 @@ def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/images/*"
   path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  print(path)
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
     # img = cv2.imread(path_to_document)
-    print(path_to_document)
     img = preprocess_image(path_to_document)
-    print('preprocess is done')
-    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    predicted_result = pytesseract.image_to_string(img, lang='eng')
-    print('pytesseract is done')
+
+    # pytesseract method
+    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    # predicted_result = pytesseract.image_to_string(img, lang='eng')
+
+    reader = easyocr.Reader(['en'])
+    predicted_result = reader.readtext(img)
+
+
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
 
@@ -155,7 +158,7 @@ def Scanpicture(athname, userid):
     if nameexist:
       status = status + wd + " Verified - "
     else:
-      status = status + wd+ " Unverified - "
+      status = status + wd + " Unverified - "
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
