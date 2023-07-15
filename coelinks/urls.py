@@ -24,8 +24,8 @@ from api.chatbot.views import ChatGenerateView
 
 router = DefaultRouter()
 
-router.register(r"verify", FileUpdateView)
-router.register(r"chat", ChatGenerateView)
+router.register(r"verify/", FileUpdateView, basename="verify")
+router.register(r"chat/", ChatGenerateView, basename="chat")
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
