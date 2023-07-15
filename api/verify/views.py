@@ -131,8 +131,10 @@ def Scanpicture(athname, userid):
     # img = cv2.imread(path_to_document)
     print(path_to_document)
     img = preprocess_image(path_to_document)
+    print('preprocess is done')
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     predicted_result = pytesseract.image_to_string(img, lang='eng')
+    print('pytesseract is done')
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
 
