@@ -72,16 +72,19 @@ def Enhancepicture(athname, userid):
     print(idx, base)
     # read images
     img = cv2.imread(path, cv2.IMREAD_COLOR)
+    print("step 1-1")
     img = img * 1.0 / 255
     img = torch.from_numpy(np.transpose(img[:, :, [2, 1, 0]], (2, 0, 1))).float()
     img_LR = img.unsqueeze(0)
     img_LR = img_LR.to(device)
-
+    print("step 1-2")
     with torch.no_grad():
       output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
+    print("step 1-3")
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
+    print("step 1-4")
 
 
 def classify(aimodel, image_transforms, image_path, classes):
