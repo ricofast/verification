@@ -155,7 +155,7 @@ class FileUpdateView(APIView):
       filename = file_serializer.validated_data['file']
 
       print("step 1")
-      enhancepictures(userid)
+      # enhancepictures(userid)
       print("step 2")
       verified = classify(ai_model, image_transforms, filename, classes)
       if verified != "Invalid":
