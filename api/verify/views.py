@@ -54,8 +54,8 @@ def set_device():
 
 
 def Enhancepicture(athname, userid):
-  # device = set_device()
-  device = torch.device('cpu')
+  device = set_device()
+  # device = torch.device('cpu')
   model = arch.RRDBNet(3, 3, 64, 23, gc=32)
   model.load_state_dict(torch.load(picture_enhance_model), strict=True)
   model.eval()
