@@ -54,7 +54,8 @@ def set_device():
 
 
 def Enhancepicture(athname, userid):
-  device = set_device()
+  # device = set_device()
+  device = torch.device('cpu')
   model = arch.RRDBNet(3, 3, 64, 23, gc=32)
   model.load_state_dict(torch.load(picture_enhance_model), strict=True)
   model.eval()
@@ -79,12 +80,14 @@ def Enhancepicture(athname, userid):
     img_LR = img_LR.to(device)
     print("step 1-2")
     with torch.no_grad():
+      print("step 1-3")
       output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
+      print("step 1-4")
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
-    print("step 1-3")
+    print("step 1-5")
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
-    print("step 1-4")
+    print("step 1-6")
 
 
 def classify(aimodel, image_transforms, image_path, classes):
