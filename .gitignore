@@ -161,3 +161,4 @@ cython_debug/
 
 /api/verify/migrations/
 /api/chatbot/migrations/
+/models/
