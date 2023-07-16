@@ -10,6 +10,7 @@ device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
 # device = torch.device('cpu')
 
 test_img_folder = '../../media/images/user_2/*'
+test_user_folder = '../../media/images/user_2/'
 
 model = arch.RRDBNet(3, 3, 64, 23, gc=32)
 model.load_state_dict(torch.load(model_path), strict=True)
@@ -34,4 +35,4 @@ for path in glob.glob(test_img_folder):
         output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
-    cv2.imwrite('../../media/images/user_2/{:s}_rlt.png'.format(base), output)
+    cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
