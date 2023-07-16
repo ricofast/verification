@@ -149,7 +149,7 @@ STATIC_URL = "/static/"
 # STATICFILES_DIRS = [str(BASE_DIR("predict/static"))]
 
 STATIC_ROOT = str(BASE_DIR("static"))
-STATICFILES_DIRS = [str(BASE_DIR("verify/static"))]
+STATICFILES_DIRS = [str(BASE_DIR("api/verify/static"))]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
