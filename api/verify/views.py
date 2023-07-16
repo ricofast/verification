@@ -30,8 +30,8 @@ classes = [
           'Invalid']
 
 static_folder = settings.STATIC_ROOT
-picture_id_model = "static/aimodels/best_model.pth"
-picture_enhance_model = os.getcwd() + "/models/RRDB_ESRGAN_x4.pth"
+picture_id_model = os.getcwd() + "static/aimodels/best_model.pth"
+picture_enhance_model = os.getcwd() + "/static/aimodels/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 
@@ -155,9 +155,7 @@ class FileUpdateView(APIView):
       key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
 
-      print("step 1")
-      enhancepictures(userid)
-      print("step 2")
+
       verified = classify(ai_model, image_transforms, filename, classes)
       if verified != "Invalid":
         doc = Document.objects.filter(user=userid).first()
@@ -168,7 +166,9 @@ class FileUpdateView(APIView):
           user=userid,
           defaults={'keyword': key_word, 'file': filename},
         )
-
+        print("step 1")
+        enhancepictures(userid)
+        print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
