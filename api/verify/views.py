@@ -31,7 +31,7 @@ classes = [
 
 static_folder = settings.STATIC_ROOT
 picture_id_model = "static/aimodels/best_model.pth"
-picture_enhance_model = os.getcwd() + "models/RRDB_ESRGAN_x4.pth"
+picture_enhance_model = os.getcwd() + "/models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 
