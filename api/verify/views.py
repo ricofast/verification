@@ -30,8 +30,8 @@ classes = [
           'Invalid']
 
 static_folder = settings.STATIC_ROOT
-picture_id_model = rf"static/aimodels/best_model.pth"
-picture_enhance_model = rf"static/aimodels/RRDB_ESRGAN_x4.pth"
+picture_id_model = "static/aimodels/best_model.pth"
+picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 
@@ -59,7 +59,7 @@ def enhancepictures(userid):
 
   test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
   test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
-
+  print(test_user_folder)
   model = arch.RRDBNet(3, 3, 64, 23, gc=32)
   model.load_state_dict(torch.load(model_path), strict=True)
   model.eval()
