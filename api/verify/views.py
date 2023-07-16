@@ -83,9 +83,6 @@ def Enhancepicture(athname, userid):
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
 
 
-
-
-
 def classify(aimodel, image_transforms, image_path, classes):
   aimodel = aimodel.eval()
   image = Image.open(image_path)
@@ -96,7 +93,6 @@ def classify(aimodel, image_transforms, image_path, classes):
   _, predicted = torch.max(output.data, 1)
 
   return classes[predicted.item()]
-
 
 
 class FileUpdateView(APIView):
@@ -124,7 +120,9 @@ class FileUpdateView(APIView):
 
       document = obj
       # verified = Scanpicture(document.keyword, document.user)
+      print("step 1")
       Enhancepicture(document.file, document.user)
+      print("step 2")
       verified = classify(ai_model, image_transforms, document.file, classes)
       if verified != "Invalid":
         verified = verified + "--" + Scanpicture(document.keyword, document.user)
