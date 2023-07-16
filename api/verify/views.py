@@ -31,7 +31,7 @@ classes = [
 
 static_folder = settings.STATIC_ROOT
 picture_id_model = "static/aimodels/best_model.pth"
-picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
+picture_enhance_model = os.getcwd() + "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 
@@ -81,6 +81,7 @@ def enhancepictures(userid):
 
     with torch.no_grad():
       output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
+      print("Finished")
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
