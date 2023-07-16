@@ -134,7 +134,7 @@ class FileUpdateView(APIView):
       document = obj
       # verified = Scanpicture(document.keyword, document.user)
       print("step 1")
-      Enhancepicture(document.file, document.user)
+      # Enhancepicture(document.file, document.user)
       print("step 2")
       verified = classify(ai_model, image_transforms, document.file, classes)
       if verified != "Invalid":
