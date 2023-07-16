@@ -1,9 +1,6 @@
 from django.shortcuts import render
 import os, shutil
-import glob
-import cv2
-import re
-import pytesseract
+
 from django.http import JsonResponse
 # Create your views here.
 from rest_framework import authentication, permissions
@@ -14,10 +11,17 @@ from rest_framework import status
 from .serializers import FileSerializer, FileScanSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel
+import glob
+import cv2
+import numpy as np
+import re
+import pytesseract
 import torchvision
 import torch
 import torchvision.transforms as transforms
 import PIL.Image as Image
+import RRDBNet_arch as arch
+
 import easyocr
 
 classes = [
@@ -25,8 +29,10 @@ classes = [
           'ID/DL',
           'Invalid']
 
-filename = rf"media/aimodels/best_model.pth"
-ai_model = torch.load(filename)
+picture_id_model = rf"api/verify/aimodels/best_model.pth"
+picture_enhance_model = rf"api/verify/static/aimodels/RRDB_ESRGAN_x4.pth"
+
+ai_model = torch.load(picture_id_model)
 
 mean = [0.7683, 0.7671, 0.7645]
 std = [0.2018, 0.1925, 0.1875]
@@ -36,6 +42,48 @@ image_transforms = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
 ])
+
+
+def set_device():
+  if torch.cuda.is_available():
+    dev = "cuda:0"
+  else:
+    dev = "cpu"
+  return torch.device(dev)
+
+
+def Enhancepicture(athname, userid):
+  device = set_device()
+  model = arch.RRDBNet(3, 3, 64, 23, gc=32)
+  model.load_state_dict(torch.load(picture_enhance_model), strict=True)
+  model.eval()
+  model = model.to(device)
+
+  idx = 0
+  # athname = request.POST.get('athname')
+  # path = os.getcwd() + "/media/images/*"
+  test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
+  filter_predicted_result = ""
+  for path in glob.glob(test_img_folder, recursive=True):
+    idx += 1
+    base = os.path.splitext(os.path.basename(path))[0]
+    print(idx, base)
+    # read images
+    img = cv2.imread(path, cv2.IMREAD_COLOR)
+    img = img * 1.0 / 255
+    img = torch.from_numpy(np.transpose(img[:, :, [2, 1, 0]], (2, 0, 1))).float()
+    img_LR = img.unsqueeze(0)
+    img_LR = img_LR.to(device)
+
+    with torch.no_grad():
+      output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
+    output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
+    output = (output * 255.0).round()
+    cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
+
+
+
 
 
 def classify(aimodel, image_transforms, image_path, classes):
@@ -68,7 +116,6 @@ class FileUpdateView(APIView):
 
       key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
-      print("file: ",  filename)
       obj, created = Document.objects.update_or_create(
         user=userid,
         defaults={'keyword': key_word, 'file': filename},
@@ -77,7 +124,7 @@ class FileUpdateView(APIView):
 
       document = obj
       # verified = Scanpicture(document.keyword, document.user)
-
+      Enhancepicture(document.file, document.user)
       verified = classify(ai_model, image_transforms, document.file, classes)
       if verified != "Invalid":
         verified = verified + "--" + Scanpicture(document.keyword, document.user)
