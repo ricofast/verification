@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import os, shutil
-
+from django.conf import settings
 from django.http import JsonResponse
 # Create your views here.
 from rest_framework import authentication, permissions
@@ -29,8 +29,9 @@ classes = [
           'ID/DL',
           'Invalid']
 
-picture_id_model = rf"api/verify/aimodels/best_model.pth"
-picture_enhance_model = rf"api/verify/static/aimodels/RRDB_ESRGAN_x4.pth"
+static_folder = settings.STATIC_ROOT
+picture_id_model = rf"static/aimodels/best_model.pth"
+picture_enhance_model = rf"static/aimodels/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 
