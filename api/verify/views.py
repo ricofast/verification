@@ -20,9 +20,9 @@ import torchvision
 import torch
 import torchvision.transforms as transforms
 import PIL.Image as Image
-import RRDBNet_arch as arch
+from . import RRDBNet_arch as arch
 
-import easyocr
+# import easyocr
 
 classes = [
           'Birth Certificate',
