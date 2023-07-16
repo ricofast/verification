@@ -118,27 +118,22 @@ class FileUpdateView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-
-      doc = Document.objects.filter(user=userid).first()
-      if doc:
-        delete(userid)
-
       key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
-      obj, created = Document.objects.update_or_create(
-        user=userid,
-        defaults={'keyword': key_word, 'file': filename},
-      )
-      # file_serializer.save()
 
-      document = obj
-      # verified = Scanpicture(document.keyword, document.user)
-      # print("step 1")
-      # Enhancepicture(document.file, document.user)
-      # print("step 2")
-      verified = classify(ai_model, image_transforms, document.file, classes)
-      # if verified != "Invalid":
-      #   verified = verified + "--" + Scanpicture(document.keyword, document.user)
+      print("step 1")
+      Enhancepicture(filename, userid)
+      print("step 2")
+      verified = classify(ai_model, image_transforms, filename, classes)
+      if verified != "Invalid":
+        doc = Document.objects.filter(user=userid).first()
+        if doc:
+          delete(userid)
+
+        obj, created = Document.objects.update_or_create(
+          user=userid,
+          defaults={'keyword': key_word, 'file': filename},
+        )
 
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
@@ -155,10 +150,8 @@ class DocumentScanView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-
       key_word = file_serializer.data['keyword']
-      print(key_word)
-      print(userid)
+
       verified = Scanpicture(key_word, userid)
 
       return Response(verified, status=status.HTTP_201_CREATED)
