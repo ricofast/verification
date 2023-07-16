@@ -133,12 +133,12 @@ class FileUpdateView(APIView):
 
       document = obj
       # verified = Scanpicture(document.keyword, document.user)
-      print("step 1")
+      # print("step 1")
       # Enhancepicture(document.file, document.user)
-      print("step 2")
+      # print("step 2")
       verified = classify(ai_model, image_transforms, document.file, classes)
-      if verified != "Invalid":
-        verified = verified + "--" + Scanpicture(document.keyword, document.user)
+      # if verified != "Invalid":
+      #   verified = verified + "--" + Scanpicture(document.keyword, document.user)
 
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
