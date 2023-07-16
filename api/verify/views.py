@@ -22,6 +22,7 @@ import torchvision.transforms as transforms
 import PIL.Image as Image
 from . import RRDBNet_arch as arch
 import os.path as osp
+from piq import niqe
 # import easyocr
 
 classes = [
@@ -52,6 +53,25 @@ def set_device():
     dev = "cpu"
   return torch.device(dev)
 
+def is_image_clear(image_path, threshold=3.5):
+  # Load the image using Pillow (PIL)
+  image = Image.open(image_path).convert('RGB')
+
+  # Convert the image to a PyTorch tensor
+  image_tensor = torch.tensor([transforms.ToTensor()(image)])
+
+  # Load the pre-trained NIQE model
+  niqe_model = niqe()
+
+  # Calculate the NIQE score for the image
+  niqe_score = niqe_model(image_tensor).item()
+
+  # Determine if the image is clear based on the threshold
+  is_clear = niqe_score < threshold
+
+  return is_clear
+
+
 def enhancepictures(userid):
   model_path = picture_enhance_model  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
   device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
@@ -81,53 +101,9 @@ def enhancepictures(userid):
 
     with torch.no_grad():
       output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
-      print("Finished")
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
-
-
-def Enhancepicture(athname, userid):
-  device = set_device()
-  # device = torch.device('cpu')
-  model = arch.RRDBNet(3, 3, 64, 23, gc=32)
-  model.load_state_dict(torch.load(picture_enhance_model), strict=True)
-  model.eval()
-  model = model.to(device)
-
-  idx = 0
-  # athname = request.POST.get('athname')
-  # path = os.getcwd() + "/media/images/*"
-  test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
-  filter_predicted_result = ""
-  for path in glob.glob(test_img_folder, recursive=True):
-    idx += 1
-    base = os.path.splitext(os.path.basename(path))[0]
-    print(idx, base)
-    # read images
-    img = cv2.imread(path, cv2.IMREAD_COLOR)
-    print("step 1-1")
-    img = img * 1.0 / 255
-    img = torch.from_numpy(np.transpose(img[:, :, [2, 1, 0]], (2, 0, 1))).float()
-    img_LR = img.unsqueeze(0)
-    img_LR = img_LR.to(device)
-    print("step 1-2")
-    with torch.no_grad():
-      print("step 1-3")
-      output = model(img_LR)
-      print("step 1-4")
-      output = output.data.squeeze()
-      print("step 1-5")
-      output = output.float()
-      print("step 1-6")
-      output = output.cpu().clamp_(0, 1).numpy()
-      print("step 1-7")
-    output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
-    output = (output * 255.0).round()
-    print("step 1-7")
-    cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
-    print("step 1-8")
 
 
 def classify(aimodel, image_transforms, image_path, classes):
@@ -191,6 +167,39 @@ class DocumentScanView(APIView):
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class PictureVerifyView(APIView):
+  parser_classes = (MultiPartParser, FormParser)
+  # parser_classes = (FileUploadParser,)
+
+  @csrf_exempt
+  def post(self, request, *args, **kwargs):
+    file_serializer = FileSerializer(data=request.data)
+
+    if file_serializer.is_valid():
+      userid = file_serializer.data['user']
+      filename = file_serializer.validated_data['file']
+      key_word = file_serializer.data['keyword']
+      doc = Document.objects.filter(user=userid).first()
+      if doc:
+        delete(userid)
+
+      obj, created = Document.objects.update_or_create(
+        user=userid,
+        defaults={'keyword': key_word, 'file': filename},
+      )
+
+      is_clear = is_image_clear(doc.file)
+      if is_clear:
+        verified = "clear"
+      else:
+        verified = "not clear"
+      return Response(verified, status=status.HTTP_201_CREATED)
+    else:
+      return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
