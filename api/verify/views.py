@@ -131,11 +131,11 @@ def Scanpicture(athname, userid):
     img = preprocess_image(path_to_document)
 
     # pytesseract method
-    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    # predicted_result = pytesseract.image_to_string(img, lang='eng')
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    predicted_result = pytesseract.image_to_string(img, lang='eng')
 
-    reader = easyocr.Reader(['en'])
-    predicted_result = reader.readtext(img)
+    # reader = easyocr.Reader(['en'])
+    # predicted_result = reader.readtext(img)
 
 
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
