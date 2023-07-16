@@ -81,13 +81,17 @@ def Enhancepicture(athname, userid):
     print("step 1-2")
     with torch.no_grad():
       print("step 1-3")
-      output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
+      output = model(img_LR).data.squeeze()
       print("step 1-4")
+      output = output.float()
+      print("step 1-5")
+      output = output.cpu().clamp_(0, 1).numpy()
+      print("step 1-6")
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
-    print("step 1-5")
+    print("step 1-7")
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
-    print("step 1-6")
+    print("step 1-8")
 
 
 def classify(aimodel, image_transforms, image_path, classes):
