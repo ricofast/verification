@@ -3,7 +3,7 @@ import glob
 import cv2
 import numpy as np
 import torch
-from . import RRDBNet_arch as arch
+import RRDBNet_arch as arch
 
 model_path = 'static/aimodels/RRDB_ESRGAN_x4.pth'  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
