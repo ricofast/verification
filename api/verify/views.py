@@ -161,8 +161,9 @@ class DocumentScanView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
-
+      print('Scan 1')
       verified = Scanpicture(key_word, userid)
+      print('Scan 2')
 
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
