@@ -53,6 +53,22 @@ def set_device():
     dev = "cpu"
   return torch.device(dev)
 
+def is_head_shot_clear(image_path, threshold=100):
+  # Load the image using OpenCV
+  image = cv2.imread(image_path)
+
+  # Convert the image to grayscale
+  gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+  # Calculate the Variance of Laplacian to measure image clarity
+  variance_of_laplacian = cv2.Laplacian(gray_image, cv2.CV_64F).var()
+
+  # Determine if the image is clear based on the threshold
+  is_clear = variance_of_laplacian > threshold
+
+  return is_clear
+
+
 def is_image_clear(image_path, threshold=3.5):
   # Load the image using Pillow (PIL)
   image = Image.open(image_path).convert('RGB')
@@ -191,7 +207,7 @@ class PictureVerifyView(APIView):
         defaults={'keyword': key_word, 'file': filename},
       )
 
-      is_clear = is_image_clear(doc.file)
+      is_clear = is_head_shot_clear(doc.file)
       if is_clear:
         verified = "clear"
       else:
