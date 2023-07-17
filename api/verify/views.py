@@ -143,7 +143,7 @@ class FileUpdateView(APIView):
           defaults={'keyword': key_word, 'file': filename},
         )
         print("step 1")
-        enhancepictures(userid)
+        # enhancepictures(userid)
         print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
