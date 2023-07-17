@@ -133,18 +133,18 @@ class FileUpdateView(APIView):
 
 
       verified = classify(ai_model, image_transforms, filename, classes)
-      if verified != "Invalid":
-        doc = Document.objects.filter(user=userid).first()
-        if doc:
-          delete(userid)
+      # if verified != "Invalid":
+      doc = Document.objects.filter(user=userid).first()
+      if doc:
+        delete(userid)
 
-        obj, created = Document.objects.update_or_create(
-          user=userid,
-          defaults={'keyword': key_word, 'file': filename},
-        )
-        print("step 1")
-        # enhancepictures(userid)
-        print("step 2")
+      obj, created = Document.objects.update_or_create(
+        user=userid,
+        defaults={'keyword': key_word, 'file': filename},
+      )
+      print("step 1")
+      # enhancepictures(userid)
+      print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
