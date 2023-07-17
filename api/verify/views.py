@@ -22,7 +22,7 @@ import torchvision.transforms as transforms
 import PIL.Image as Image
 from . import RRDBNet_arch as arch
 import os.path as osp
-from piq import niqe
+# from piq import niqe
 # import easyocr
 
 classes = [
