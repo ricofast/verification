@@ -355,8 +355,9 @@ class FileUpdatetestView(APIView):
           user=userid,
           defaults={'keyword': key_word, 'file': filename},
         )
-      # Step 3: Check if the document quality is good
-       is_clear = is_head_shot_clear(obj.file.path)
+        # Step 3: Check if the document quality is good
+
+        is_clear = is_head_shot_clear(obj.file.path)
 
       # Step 4: if it's not clear, Enhance itis
       if not is_clear:
