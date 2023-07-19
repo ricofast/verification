@@ -211,7 +211,7 @@ class PictureVerifyView(APIView):
         defaults={'keyword': key_word, 'file': filename},
       )
 
-      is_clear = is_head_shot_clear(filename)
+      is_clear = is_head_shot_clear(obj.file)
       if is_clear:
         verified = "clear"
       else:
