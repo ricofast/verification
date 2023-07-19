@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from api.verify.views import FileUpdateView, DocumentScanView, PictureVerifyView
+from api.verify.views import FileUpdateView, DocumentScanView, PictureVerifyView, FileUpdatetestView
 # from rest_framework.routers import DefaultRouter
 # from api.verify.views import FileUpdateView, DocumentScanView
 # from api.chatbot.views import ChatGenerateView
@@ -31,6 +31,7 @@ from api.verify.views import FileUpdateView, DocumentScanView, PictureVerifyView
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     path('api/verify/', FileUpdateView.as_view(), name='verify'),
+    path('api/testverify/', FileUpdatetestView.as_view(), name='testverify'),
     path('api/scan/', DocumentScanView.as_view(), name='scan'),
     path('api/checkimage/', PictureVerifyView.as_view(), name='checkimage'),
     path('api/chat', include('api.chatbot.urls', namespace='chat')),

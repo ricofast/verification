@@ -4,13 +4,14 @@ import cv2
 import numpy as np
 import torch
 import RRDBNet_arch as arch
+import os
 
-model_path = 'models/RRDB_ESRGAN_x4.pth'  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
+model_path = os.getcwd() + "/static/aimodels/RRDB_ESRGAN_x4.pth"  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
 # device = torch.device('cpu')
-
-test_img_folder = '../../media/images/user_2/*'
-test_user_folder = '../../media/images/user_2/'
+userid= 2
+test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
 
 model = arch.RRDBNet(3, 3, 64, 23, gc=32)
 model.load_state_dict(torch.load(model_path), strict=True)

@@ -162,7 +162,7 @@ class FileUpdateView(APIView):
         defaults={'keyword': key_word, 'file': filename},
       )
       print("step 1")
-      enhancepictures(userid)
+      # enhancepictures(userid)
       print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
@@ -312,4 +312,39 @@ def preprocess_image(image_path):
 
   return threshold_image
 
+
+# ********************************************************************************************
+# *************************   Testing Apis   *************************************************
+
+class FileUpdatetestView(APIView):
+  parser_classes = (MultiPartParser, FormParser)
+  # parser_classes = (FileUploadParser,)
+
+  @csrf_exempt
+  def post(self, request, *args, **kwargs):
+    file_serializer = FileSerializer(data=request.data)
+
+    if file_serializer.is_valid():
+      userid = file_serializer.data['user']
+      key_word = file_serializer.data['keyword']
+      filename = file_serializer.validated_data['file']
+
+
+      verified = classify(ai_model, image_transforms, filename, classes)
+      # if verified != "Invalid":
+      doc = Document.objects.filter(user=userid).first()
+      if doc:
+        delete(userid)
+
+      obj, created = Document.objects.update_or_create(
+        user=userid,
+        defaults={'keyword': key_word, 'file': filename},
+      )
+      print("step 1")
+      enhancepictures(userid)
+      print("step 2")
+      return Response(verified, status=status.HTTP_201_CREATED)
+    else:
+      return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# Create your views here.
 
