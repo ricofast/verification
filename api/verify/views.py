@@ -53,9 +53,12 @@ def set_device():
     dev = "cpu"
   return torch.device(dev)
 
-def is_head_shot_clear(image_path, threshold=100):
-  # Load the image using OpenCV
-  image = cv2.imread(image_path)
+def is_head_shot_clear(userid, threshold=100):
+  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  filter_predicted_result = ""
+  for image_path in glob.glob(path, recursive=True):
+    # Load the image using OpenCV
+    image = cv2.imread(image_path)
 
   # Convert the image to grayscale
   gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -159,7 +162,7 @@ class FileUpdateView(APIView):
         defaults={'keyword': key_word, 'file': filename},
       )
       print("step 1")
-      # enhancepictures(userid)
+      enhancepictures(userid)
       print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
@@ -215,9 +218,6 @@ class PictureVerifyView(APIView):
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
 
 
 def find_string(text, target_string):
