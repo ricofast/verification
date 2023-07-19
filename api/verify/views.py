@@ -55,7 +55,7 @@ def set_device():
 
 def is_head_shot_clear(userid, threshold=100):
   path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  filter_predicted_result = ""
+  image = ""
   for image_path in glob.glob(path, recursive=True):
     # Load the image using OpenCV
     image = cv2.imread(image_path)
@@ -201,6 +201,7 @@ class PictureVerifyView(APIView):
       userid = file_serializer.data['user']
       filename = file_serializer.validated_data['file']
       key_word = file_serializer.data['keyword']
+      print(filename)
       doc = Document.objects.filter(user=userid).first()
       if doc:
         delete(userid)
@@ -210,7 +211,7 @@ class PictureVerifyView(APIView):
         defaults={'keyword': key_word, 'file': filename},
       )
 
-      is_clear = is_head_shot_clear(doc.file)
+      is_clear = is_head_shot_clear(filename)
       if is_clear:
         verified = "clear"
       else:
