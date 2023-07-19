@@ -53,12 +53,12 @@ def set_device():
     dev = "cpu"
   return torch.device(dev)
 
-def is_head_shot_clear(userid, threshold=100):
-  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  image = ""
-  for image_path in glob.glob(path, recursive=True):
+def is_head_shot_clear(image_path, threshold=100):
+  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  # image = ""
+  # for image_path in glob.glob(path, recursive=True):
     # Load the image using OpenCV
-    image = cv2.imread(image_path)
+  image = cv2.imread(image_path)
 
   # Convert the image to grayscale
   gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
