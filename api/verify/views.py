@@ -107,6 +107,7 @@ def enhancepictures(userid):
   print('Model path {:s}. \nTesting...'.format(model_path))
 
   idx = 0
+  im_path = ""
   for path in glob.glob(test_img_folder):
     idx += 1
     base = osp.splitext(osp.basename(path))[0]
@@ -123,7 +124,8 @@ def enhancepictures(userid):
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
-
+    im_path = '{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base)
+  return im_path
 
 def classify(aimodel, image_transforms, image_path, classes):
   aimodel = aimodel.eval()
@@ -151,17 +153,18 @@ class FileUpdateView(APIView):
       filename = file_serializer.validated_data['file']
 
 
-      verified = classify(ai_model, image_transforms, filename, classes)
-      # if verified != "Invalid":
-      doc = Document.objects.filter(user=userid).first()
-      if doc:
-        delete(userid)
 
-      obj, created = Document.objects.update_or_create(
-        user=userid,
-        defaults={'keyword': key_word, 'file': filename},
-      )
-      print("step 1")
+      verified = classify(ai_model, image_transforms, filename, classes)
+      if verified != "Invalid":
+        doc = Document.objects.filter(user=userid).first()
+        if doc:
+          delete(userid)
+
+        obj, created = Document.objects.update_or_create(
+          user=userid,
+          defaults={'keyword': key_word, 'file': filename},
+        )
+        print("step 1")
       # enhancepictures(userid)
       print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
@@ -293,6 +296,16 @@ def delete(userid):
       print('Failed to delete %s. Reason: %s' % (file_path, e))
 
 
+def deletefile(file_path):
+  try:
+    if os.path.isfile(file_path) or os.path.islink(file_path):
+      os.unlink(file_path)
+    elif os.path.isdir(file_path):
+      shutil.rmtree(file_path)
+  except Exception as e:
+    print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
 def preprocess_image(image_path):
   # Load the image
   image = cv2.imread(image_path)
@@ -329,20 +342,31 @@ class FileUpdatetestView(APIView):
       key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
 
-
+      # Step 1: Check if document is valid
       verified = classify(ai_model, image_transforms, filename, classes)
-      # if verified != "Invalid":
-      doc = Document.objects.filter(user=userid).first()
-      if doc:
-        delete(userid)
 
-      obj, created = Document.objects.update_or_create(
-        user=userid,
-        defaults={'keyword': key_word, 'file': filename},
-      )
-      print("step 1")
-      enhancepictures(userid)
-      print("step 2")
+      # Step 2: Save the document to database if it's valid
+      if verified != "Invalid":
+        doc = Document.objects.filter(user=userid).first()
+        if doc:
+          delete(userid)
+
+        obj, created = Document.objects.update_or_create(
+          user=userid,
+          defaults={'keyword': key_word, 'file': filename},
+        )
+      # Step 3: Check if the document quality is good
+       is_clear = is_head_shot_clear(obj.file.path)
+
+      # Step 4: if it's not clear, Enhance itis
+      if not is_clear:
+        im_path = enhancepictures(userid)
+        if im_path != "":
+          old_file = obj.file.path
+          deletefile(obj.file.path)
+          os.rename(im_path, old_file)
+
+      # Stp 5: Return result
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
