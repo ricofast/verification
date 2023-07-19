@@ -362,6 +362,7 @@ class FileUpdatetestView(APIView):
       # Step 4: if it's not clear, Enhance itis
       if not is_clear:
         im_path = enhancepictures(userid)
+        print(im_path)
         if im_path != "":
           old_file = obj.file.path
           deletefile(obj.file.path)
