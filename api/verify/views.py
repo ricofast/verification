@@ -358,13 +358,13 @@ class FileUpdatetestView(APIView):
         # Step 3: Check if the document quality is good
 
         is_clear = is_head_shot_clear(obj.file.path)
-        if not is_clear:
-          im_path = enhancepictures(userid)
-          print(im_path)
-          if im_path != "":
-            old_file = obj.file.path
-            deletefile(obj.file.path)
-            os.rename(im_path, old_file)
+        # if not is_clear:
+        im_path = enhancepictures(userid)
+        print(im_path)
+        if im_path != "":
+          old_file = obj.file.path
+          deletefile(obj.file.path)
+          os.rename(im_path, old_file)
 
       # Stp 5: Return result
       return Response(verified, status=status.HTTP_201_CREATED)
