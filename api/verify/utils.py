@@ -8,7 +8,7 @@ import os
 from django.conf import settings
 
 # media_folder = settings.MEDIA_ROOT
-model_path = os.getcwd() + "/static/aimodels/RRDB_ESRGAN_x4.pth"  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
+model_path = "../../static/models/RRDB_ESRGAN_x4.pth"  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
 # device = torch.device('cpu')
 userid = 1
