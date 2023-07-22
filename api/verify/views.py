@@ -125,6 +125,7 @@ def enhancepictures(userid):
       output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
+    print("Write picture to file")
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
     im_path = '{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base)
   return im_path
