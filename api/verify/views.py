@@ -98,8 +98,8 @@ def enhancepictures(userid):
 
   media_folder = settings.MEDIA_ROOT
 
-  test_img_folder = media_folder + "images/user_" + str(userid) + "/*"
-  test_user_folder = media_folder + "media/images/user_" + str(userid) + "/"
+  test_img_folder = media_folder + "/images/user_" + str(userid) + "/*"
+  test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
   print(test_user_folder)
   model = arch.RRDBNet(3, 3, 64, 23, gc=32)
   model.load_state_dict(torch.load(model_path), strict=True)
@@ -120,7 +120,7 @@ def enhancepictures(userid):
     img = torch.from_numpy(np.transpose(img[:, :, [2, 1, 0]], (2, 0, 1))).float()
     img_LR = img.unsqueeze(0)
     img_LR = img_LR.to(device)
-
+    print("Finished")
     with torch.no_grad():
       output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
