@@ -360,7 +360,8 @@ class FileUpdatetestView(APIView):
         # Step 3: Check if the document quality is good
 
         is_clear = is_head_shot_clear(obj.file.path)
-        print("is clear: " + is_clear)
+        print("is clear: ")
+        print(is_clear)
         # if not is_clear:
         im_path = enhancepictures(userid)
         # print(im_path)
