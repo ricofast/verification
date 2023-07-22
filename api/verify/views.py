@@ -368,6 +368,7 @@ class FileUpdatetestView(APIView):
         # if im_path != "":
         #   old_file = obj.file.path
         #   deletefile(obj.file.path)
+
         #   os.rename(im_path, old_file)
 
       # Stp 5: Return result
