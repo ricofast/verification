@@ -5,13 +5,15 @@ import numpy as np
 import torch
 import RRDBNet_arch as arch
 import os
+from django.conf import settings
 
+media_folder = settings.MEDIA_ROOT
 model_path = os.getcwd() + "/static/aimodels/RRDB_ESRGAN_x4.pth"  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
 # device = torch.device('cpu')
 userid = 1
-test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
+test_img_folder = media_folder + "images/user_" + str(userid) + "/*"
+test_user_folder = media_folder + "media/images/user_" + str(userid) + "/"
 print(test_img_folder)
 print(test_user_folder)
 model = arch.RRDBNet(3, 3, 64, 23, gc=32)
