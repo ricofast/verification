@@ -9,10 +9,11 @@ import os
 model_path = os.getcwd() + "/static/aimodels/RRDB_ESRGAN_x4.pth"  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
 device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
 # device = torch.device('cpu')
-userid= 2
+userid = 1
 test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
 test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
-
+print(test_img_folder)
+print(test_user_folder)
 model = arch.RRDBNet(3, 3, 64, 23, gc=32)
 model.load_state_dict(torch.load(model_path), strict=True)
 model.eval()
