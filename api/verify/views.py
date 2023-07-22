@@ -98,7 +98,7 @@ def enhancepictures(userid):
 
   media_folder = settings.MEDIA_ROOT
   print("current folder")
-  print(static_folder)
+  print(model_path)
   test_img_folder = media_folder + "/images/user_" + str(userid) + "/*"
   test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
   print(test_user_folder)
