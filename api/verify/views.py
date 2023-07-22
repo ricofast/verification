@@ -96,8 +96,10 @@ def enhancepictures(userid):
   device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
   # device = torch.device('cpu')
 
-  test_img_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  test_user_folder = os.getcwd() + "/media/images/user_" + str(userid) + "/"
+  media_folder = settings.MEDIA_ROOT
+
+  test_img_folder = media_folder + "images/user_" + str(userid) + "/*"
+  test_user_folder = media_folder + "media/images/user_" + str(userid) + "/"
   print(test_user_folder)
   model = arch.RRDBNet(3, 3, 64, 23, gc=32)
   model.load_state_dict(torch.load(model_path), strict=True)
