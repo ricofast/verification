@@ -32,7 +32,7 @@ classes = [
 
 static_folder = settings.STATIC_ROOT
 picture_id_model = static_folder + "/models/best_model.pth"
-picture_enhance_model = os.getcwd() + "/models/RRDB_ESRGAN_x4.pth"
+picture_enhance_model = os.getcwd() + "/static/models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 
@@ -98,7 +98,7 @@ def enhancepictures(userid):
 
   media_folder = settings.MEDIA_ROOT
   print("current folder")
-  print(os.getcwd())
+  print(static_folder)
   test_img_folder = media_folder + "/images/user_" + str(userid) + "/*"
   test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
   print(test_user_folder)
