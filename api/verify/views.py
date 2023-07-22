@@ -97,7 +97,8 @@ def enhancepictures(userid):
   # device = torch.device('cpu')
 
   media_folder = settings.MEDIA_ROOT
-
+  print("current folder")
+  print(os.getcwd())
   test_img_folder = media_folder + "/images/user_" + str(userid) + "/*"
   test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
   print(test_user_folder)
