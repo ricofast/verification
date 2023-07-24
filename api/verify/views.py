@@ -267,6 +267,7 @@ def Scanpicture(athname, userid):
     pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_to_document]]
     prediction_groups = pipeline.recognize(images)
+    print("Finished")
     df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
     print(df)
     # reader = easyocr.Reader(['en'])
