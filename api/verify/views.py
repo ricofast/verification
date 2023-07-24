@@ -12,6 +12,7 @@ from .serializers import FileSerializer, FileScanSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel
 import glob
+import pandas as pd
 import cv2
 import numpy as np
 import re
@@ -24,6 +25,7 @@ from . import RRDBNet_arch as arch
 import os.path as osp
 # from piq import niqe
 # import easyocr
+import keras_ocr
 
 classes = [
           'Birth Certificate',
@@ -251,30 +253,29 @@ def Scanpicture(athname, userid):
     img = preprocess_image(path_to_document)
 
     # pytesseract method
-    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    predicted_result = pytesseract.image_to_string(img, lang='eng')
+    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    # predicted_result = pytesseract.image_to_string(img, lang='eng')
+
+    # Keras OCR method
+    pipeline = keras_ocr.pipeline.Pipeline()
+    images = [keras_ocr.tools.read(img) for img in [img]]
+    prediction_groups = pipeline.recognize(images)
+    df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
 
     # reader = easyocr.Reader(['en'])
     # predicted_result = reader.readtext(img)
 
 
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
-    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
+    # filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
 
   words = athname.split()
-  # status = {}
-  #
-  # for wd in words:
-  #   nameexist = find_string(filter_predicted_result, wd)
-  #   if nameexist:
-  #     status[wd] = "Verified"
-  #   else:
-  #     status[wd] = "Unverified"
 
   status = ""
 
   for wd in words:
-    nameexist = find_string(filter_predicted_result, wd)
+    # nameexist = find_string(filter_predicted_result, wd)
+    nameexist = wd in df['text'].values
     if nameexist:
       status = status + wd + " Verified - "
     else:
