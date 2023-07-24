@@ -262,6 +262,7 @@ def Scanpicture(athname, userid):
     # predicted_result = pytesseract.image_to_string(img, lang='eng')
 
     # Keras OCR method
+    print("path to document")
     print(path_to_document)
     pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_to_document]]
