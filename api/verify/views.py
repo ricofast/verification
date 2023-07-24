@@ -258,7 +258,7 @@ def Scanpicture(athname, userid):
 
     # Keras OCR method
     pipeline = keras_ocr.pipeline.Pipeline()
-    images = [keras_ocr.tools.read(img) for img in [img]]
+    images = [keras_ocr.tools.read(img) for img in [path_to_document]]
     prediction_groups = pipeline.recognize(images)
     df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
 
