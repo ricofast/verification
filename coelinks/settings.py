@@ -50,8 +50,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_swagger',
     'api.verify.apps.VerifyConfig',
     'api.chatbot.apps.ChatbotConfig',
+    'api.ocrserver.apps.DjangoOcrServerConfig',
     'corsheaders',
 ]
 
