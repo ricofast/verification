@@ -250,7 +250,7 @@ def Scanpicture(athname, userid):
   # test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
   folder = os.getcwd() + '/media/images/user_' + str(userid) + '/'
   for filename in os.listdir(folder):
-    path_to_document = os.path.join(folder, filename)
+    path_to_document = folder + filename
   # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
   # filter_predicted_result = ""
   # for path_to_document in glob.glob(path, recursive=True):
