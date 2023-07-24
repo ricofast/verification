@@ -33,6 +33,8 @@ classes = [
           'Invalid']
 
 static_folder = settings.STATIC_ROOT
+media_folder = settings.MEDIA_ROOT
+
 picture_id_model = static_folder + "/models/best_model.pth"
 picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
@@ -98,7 +100,6 @@ def enhancepictures(userid):
   device = torch.device('cpu')  # if you want to run on CPU, change 'cuda' -> cpu
   # device = torch.device('cpu')
 
-  media_folder = settings.MEDIA_ROOT
   print("current folder")
   print(model_path)
   test_img_folder = media_folder + "/images/user_" + str(userid) + "/*"
@@ -246,11 +247,15 @@ def find_string(text, target_string):
 def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/images/*"
-  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  filter_predicted_result = ""
-  for path_to_document in glob.glob(path, recursive=True):
-    # img = cv2.imread(path_to_document)
-    img = preprocess_image(path_to_document)
+  # test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
+  folder = os.getcwd() + '/media/images/user_' + str(userid) + '/'
+  for filename in os.listdir(folder):
+    path_to_document = os.path.join(folder, filename)
+  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  # filter_predicted_result = ""
+  # for path_to_document in glob.glob(path, recursive=True):
+  #   # img = cv2.imread(path_to_document)
+  #   img = preprocess_image(path_to_document)
 
     # pytesseract method
     # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
