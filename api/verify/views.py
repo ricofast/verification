@@ -257,11 +257,12 @@ def Scanpicture(athname, userid):
     # predicted_result = pytesseract.image_to_string(img, lang='eng')
 
     # Keras OCR method
+    print(path_to_document)
     pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_to_document]]
     prediction_groups = pipeline.recognize(images)
     df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
-
+    print(df)
     # reader = easyocr.Reader(['en'])
     # predicted_result = reader.readtext(img)
 
