@@ -322,7 +322,11 @@ def Scanpicture(athname, userid):
     if nameexist:
       status = status + wd + " Verified - "
     else:
-      similar = difflib.get_close_matches(wd, filter_predicted_result)
+      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+      df = pd.DataFrame(datax[0])
+      df[0] = df[0].map(str.lower)
+      lwd= wd.lower()
+      similar = difflib.get_close_matches(lwd, df[0].values)
       if len(similar) > 0:
         status = status + wd + " Verified - "
       else:
