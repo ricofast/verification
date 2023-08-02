@@ -11,21 +11,27 @@ from rest_framework import status
 from .serializers import FileSerializer, FileScanSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel
+import re
+import os.path as osp
+
+# AI libraries
 import glob
 import pandas as pd
 import cv2
 import numpy as np
-import re
 import pytesseract
 import torchvision
 import torch
 import torchvision.transforms as transforms
 import PIL.Image as Image
 from . import RRDBNet_arch as arch
-import os.path as osp
 # from piq import niqe
 # import easyocr
 import keras_ocr
+from numpy.lib.polynomial import poly
+import matplotlib.pyplot as plt
+import cvlib as cv
+from cvlib.object_detection import draw_bbox
 
 classes = [
           'Birth Certificate',
@@ -57,6 +63,7 @@ def set_device():
     dev = "cpu"
   return torch.device(dev)
 
+
 def is_head_shot_clear(image_path, threshold=100):
   # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
   # image = ""
@@ -74,6 +81,26 @@ def is_head_shot_clear(image_path, threshold=100):
   is_clear = variance_of_laplacian > threshold
 
   return is_clear
+
+
+def headshots_count(image_path):
+  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  # image = ""
+  # for image_path in glob.glob(path, recursive=True):
+    # Load the image using OpenCV
+  image = cv2.imread(image_path)
+
+  # Convert the image to grayscale
+  # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+  # Call Yolo to detect objects in the image
+  box, label, count = cv.detect_common_objects(image)
+  output = draw_bbox(image, box, label, count)
+
+  # Determine if the image is clear based on the threshold
+  one_person = len(count) == 1
+
+  return one_person
 
 
 def is_image_clear(image_path, threshold=3.5):
@@ -222,10 +249,14 @@ class PictureVerifyView(APIView):
       )
       # is_clear = True
       # print("File path: " + obj.file.path)
+      verified = ""
       is_clear = is_head_shot_clear(obj.file.path)
-      if is_clear:
-        verified = "clear"
-      else:
+      one_person = headshots_count(obj.file.path)
+      if is_clear and one_person:
+        verified = "passed"
+      elif not one_person:
+        verified = "more than one person"
+      elif not is_clear:
         verified = "not clear"
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
