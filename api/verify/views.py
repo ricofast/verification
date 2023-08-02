@@ -334,7 +334,7 @@ def Scanpicture(athname, userid):
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
-  status = filter_predicted_result
+  # status = filter_predicted_result
   return status
   # context = {'form': form}
   # return render(request, 'homepage.html', context)
