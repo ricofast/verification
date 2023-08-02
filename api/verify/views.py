@@ -320,10 +320,13 @@ def Scanpicture(athname, userid):
     if nameexist:
       status = status + wd + " Verified - "
     else:
-      status = status + wd + " Unverified - "
+      similar = difflib.get_close_matches(wd, filter_predicted_result)
+      if len(similar) > 0:
+        status = status + wd + " Verified - "
+      else:
+        status = status + wd + " Unverified - "
 
 
-  status = filter_predicted_result
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
   return status
