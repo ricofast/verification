@@ -309,7 +309,7 @@ def Scanpicture(athname, userid):
 
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
-    df = pd.DataFrame(filter_predicted_result)
+
   words = athname.split()
 
   status = ""
@@ -323,7 +323,7 @@ def Scanpicture(athname, userid):
       status = status + wd + " Unverified - "
 
 
-  status = df
+  status = filter_predicted_result
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
   return status
