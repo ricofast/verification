@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel
 import re
 import os.path as osp
+import difflib
 
 # AI libraries
 import glob
@@ -32,6 +33,7 @@ from numpy.lib.polynomial import poly
 import matplotlib.pyplot as plt
 import cvlib as cv
 from cvlib.object_detection import draw_bbox
+
 
 classes = [
           'Birth Certificate',
@@ -289,32 +291,32 @@ def Scanpicture(athname, userid):
   #   img = preprocess_image(path_to_document)
 
     # pytesseract method
-    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    # predicted_result = pytesseract.image_to_string(img, lang='eng')
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    predicted_result = pytesseract.image_to_string(img, lang='eng')
 
     # Keras OCR method
-    print("path to document")
-    print(path_to_document)
-    pipeline = keras_ocr.pipeline.Pipeline()
-    images = [keras_ocr.tools.read(img) for img in [path_to_document]]
-    prediction_groups = pipeline.recognize(images)
-    print("Finished")
-    df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
-    print(df)
+    # print("path to document")
+    # print(path_to_document)
+    # pipeline = keras_ocr.pipeline.Pipeline()
+    # images = [keras_ocr.tools.read(img) for img in [path_to_document]]
+    # prediction_groups = pipeline.recognize(images)
+    # print("Finished")
+    # df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
+    # print(df)
     # reader = easyocr.Reader(['en'])
     # predicted_result = reader.readtext(img)
 
 
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
-    # filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
+    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
 
   words = athname.split()
 
   status = ""
 
   for wd in words:
-    # nameexist = find_string(filter_predicted_result, wd)
-    nameexist = wd in df['text'].values
+    nameexist = find_string(filter_predicted_result, wd)
+    # nameexist = wd in df['text'].values
     if nameexist:
       status = status + wd + " Verified - "
     else:
@@ -405,7 +407,7 @@ class FileUpdatetestView(APIView):
         print("is clear: ")
         print(is_clear)
         # if not is_clear:
-        im_path = enhancepictures(userid)
+        # im_path = enhancepictures(userid)
         # print(im_path)
         # if im_path != "":
         #   old_file = obj.file.path
