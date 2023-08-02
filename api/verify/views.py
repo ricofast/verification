@@ -293,7 +293,7 @@ def Scanpicture(athname, userid):
     # pytesseract method
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     predicted_result = pytesseract.image_to_string(img, lang='eng')
-
+    df = pd.DataFrame(predicted_result)
     # Keras OCR method
     # print("path to document")
     # print(path_to_document)
@@ -322,6 +322,8 @@ def Scanpicture(athname, userid):
     else:
       status = status + wd + " Unverified - "
 
+
+  status = df
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
 
   return status
