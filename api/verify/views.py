@@ -293,7 +293,7 @@ def Scanpicture(athname, userid):
     # pytesseract method
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     predicted_result = pytesseract.image_to_string(img, lang='eng')
-    df = pd.DataFrame(predicted_result)
+
     # Keras OCR method
     # print("path to document")
     # print(path_to_document)
@@ -309,7 +309,7 @@ def Scanpicture(athname, userid):
 
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "").replace("-", "")
-
+    df = pd.DataFrame(filter_predicted_result)
   words = athname.split()
 
   status = ""
