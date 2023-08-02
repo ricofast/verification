@@ -281,14 +281,14 @@ def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/images/*"
   # test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
-  folder = os.getcwd() + '/media/images/user_' + str(userid) + '/'
-  for filename in os.listdir(folder):
-    path_to_document = folder + filename
-  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
-  # filter_predicted_result = ""
-  # for path_to_document in glob.glob(path, recursive=True):
+  # folder = os.getcwd() + '/media/images/user_' + str(userid) + '/'
+  # for filename in os.listdir(folder):
+  #   path_to_document = folder + filename
+  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  filter_predicted_result = ""
+  for path_to_document in glob.glob(path, recursive=True):
   #   # img = cv2.imread(path_to_document)
-  #   img = preprocess_image(path_to_document)
+    img = preprocess_image(path_to_document)
 
     # pytesseract method
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
