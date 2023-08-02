@@ -11,5 +11,5 @@ class DjangoOcrServerConfig(AppConfig):
     """
     OCR Server configuration 2019-04-03
     """
-    name = 'django_ocr_server'
+    name = 'api.ocrserver'
     verbose_name = 'Django OCR Server'
