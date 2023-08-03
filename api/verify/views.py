@@ -34,7 +34,7 @@ from numpy.lib.polynomial import poly
 import matplotlib.pyplot as plt
 import cvlib as cv
 from cvlib.object_detection import draw_bbox
-
+from ultralytics import YOLO
 
 classes = [
           'Birth Certificate',
@@ -96,12 +96,17 @@ def headshots_count(image_path):
   # Convert the image to grayscale
   # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-  # Call Yolo to detect objects in the image
-  box, label, count = cv.detect_common_objects(image)
-  output = draw_bbox(image, box, label, count)
+  # Call Yolo V4 to detect objects in the image
+  # box, label, count = cv.detect_common_objects(image)
+  # output = draw_bbox(image, box, label, count)
+
+  # Call Yolo V8 to detect objects in the image
+  model = YOLO("yolov8s.pt")
+  results = model.predict(source=image_path, conf=0.4)
+  boxes = results[0].boxes
 
   # Determine if the image is clear based on the threshold
-  one_person = len(count) == 1
+  one_person = len(boxes) == 1
 
   return one_person
 
