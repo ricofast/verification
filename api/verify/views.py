@@ -97,7 +97,10 @@ def headshots_count(image_path):
   # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
   # Call Yolo V4 to detect objects in the image
+  print("Start image detection")
   boxes, label, count = cv.detect_common_objects(image)
+  print("Number of boxes")
+  print(len(boxes))
   ## output = draw_bbox(image, box, label, count)
 
   # Call Yolo V8 to detect objects in the image
