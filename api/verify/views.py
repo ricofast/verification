@@ -97,13 +97,13 @@ def headshots_count(image_path):
   # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
   # Call Yolo V4 to detect objects in the image
-  # box, label, count = cv.detect_common_objects(image)
-  # output = draw_bbox(image, box, label, count)
+  boxes, label, count = cv.detect_common_objects(image)
+  ## output = draw_bbox(image, box, label, count)
 
   # Call Yolo V8 to detect objects in the image
-  model = YOLO("yolov8s.pt")
-  results = model.predict(source=image_path, conf=0.4)
-  boxes = results[0].boxes
+  # model = YOLO("yolov8s.pt")
+  # results = model.predict(source=image_path, conf=0.4)
+  # boxes = results[0].boxes
 
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
