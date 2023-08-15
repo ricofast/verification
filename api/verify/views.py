@@ -62,16 +62,11 @@ image_transforms = transforms.Compose([
 
 
 def verifySignature(receivedSignature: str, secret, params):
-  print("secret")
-  print(secret)
+
   data = "-".join(params)
   data = data.encode('utf-8')
-  print("data")
-  print(data)
   computed_sig = hmac.new(secret.encode('utf-8'), msg=data, digestmod=hashlib.sha256).digest()
   signature = b64encode(computed_sig).decode()
-  print("signature")
-  print(signature)
   if signature == receivedSignature:
     return True
   return False
@@ -420,25 +415,20 @@ class FileUpdatetestView(APIView):
   @csrf_exempt
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
-    print(request.path)
-    print(request.method)
-    # Check if call is autorized
+
+    # Check if call is authorized
     # *******************************************************************************************************
     api_signature = request.headers['Authorization']
-    print(api_signature)
-    if api_signature is None:
+    if (api_signature is None) or (api_signature == ""):
       return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
     sha_name, signature = api_signature.split("=", 1)
-    print(signature)
     if sha_name != "sha256":
       return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
     secret = settings.UPLOADDOCUMENTKEY
     params = [secret, request.method, request.path]
     is_valid = verifySignature(signature, secret, params)
-    print("is_valid=")
-    print(is_valid)
     if is_valid != True:
       return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
     # *******************************************************************************************************
