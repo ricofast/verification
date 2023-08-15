@@ -62,9 +62,12 @@ image_transforms = transforms.Compose([
 
 
 def verifySignature(receivedSignature: str, secret, params):
-
+  print("secret")
+  print(secret)
   data = "-".join(params)
   data = data.encode('utf-8')
+  print("data")
+  print(data)
   computed_sig = hmac.new(secret.encode('utf-8'), msg=data, digestmod=hashlib.sha256).digest()
   signature = b64encode(computed_sig).decode()
   print("signature")
