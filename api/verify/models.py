@@ -4,7 +4,13 @@ from .formatChecker import ContentTypeRestrictedFileField
 
 def document_directory_path(instance, filename):
 
-    return 'images/user_{0}/{1}'.format(instance.user, filename)
+    return 'images/documents/user_{0}/{1}'.format(instance.user, filename)
+
+
+def headshot_directory_path(instance, filename):
+
+    return 'images/headshots/user_{0}/{1}'.format(instance.user, filename)
+
 
 # Create your models here.
 class Document(models.Model):
