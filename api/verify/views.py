@@ -421,7 +421,7 @@ class FileUpdatetestView(APIView):
     # Check if call is autorized
     # *******************************************************************************************************
     api_signature = request.META.get('HTTP_SIGNATURE')
-
+    print(api_signature)
     # if api_signature is None:
     #   return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
     #
