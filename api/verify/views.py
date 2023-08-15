@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FileSerializer, FileScanSerializer, HeadShotSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .models import Document, AIModel
+from .models import Document, AIModel, HeadShot
 import re
 import os.path as osp
 import difflib
@@ -315,11 +315,11 @@ class PictureVerifyView(APIView):
       userid = file_serializer.data['user']
       filename = file_serializer.validated_data['file']
       # key_word = file_serializer.data['keyword']
-      doc = Document.objects.filter(user=userid).first()
+      doc = HeadShot.objects.filter(user=userid).first()
       if doc:
         delete(userid)
 
-      obj, created = Document.objects.update_or_create(
+      obj, created = HeadShot.objects.update_or_create(
         user=userid,
         defaults={'file': filename},
       )
