@@ -420,21 +420,23 @@ class FileUpdatetestView(APIView):
     print(request.method)
     # Check if call is autorized
     # *******************************************************************************************************
-    api_signature = request.headers
+    api_signature = request.headers['Authorization']
     print(api_signature)
-    # if api_signature is None:
-    #   return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
-    #
-    # sha_name, signature = api_signature.split("=", 1)
-    # if sha_name != "sha256":
-    #   return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
-    #
-    # secret = settings.UPLOADDOCUMENTKEY
-    # params = [secret, request.method, request.path]
-    # is_valid = verifySignature(signature, secret, params)
-    #
-    # if is_valid != True:
-    #   return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    if api_signature is None:
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    print(signature)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.UPLOADDOCUMENTKEY
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    print("is_valid=")
+    print(is_valid)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
     # *******************************************************************************************************
 
 
