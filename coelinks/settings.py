@@ -23,8 +23,7 @@ env = environ.Env()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = environ.Path(__file__) - 2
-print("*************************************")
-print(BASE_DIR)
+
 env.read_env(os.path.join(BASE_DIR, ".env"))
 _ENV = env.str("DJANGO_SETTINGS_MODULE", "config.settings.base")
 
@@ -39,6 +38,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 ADMIN_URL = 'admin/'
+
+
 
 # Application definition
 
@@ -160,3 +161,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = str(BASE_DIR("media"))
+
+
+UPLOADDOCUMENTKEY = env.str("UPLOAD_DOCUMENT_KEY")
+SCANDOCUMENTKEY = env.str("SCAN_DOCUMENT_KEY")
+PICTUREVERIFYKEY = env.str("PICTURE_VERIFY_KEY")

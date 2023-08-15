@@ -15,7 +15,9 @@ import re
 import os.path as osp
 import difflib
 from io import StringIO
-
+import hmac
+import hashlib
+from base64 import b64encode
 # AI libraries
 import glob
 import pandas as pd
@@ -57,6 +59,19 @@ image_transforms = transforms.Compose([
     transforms.ToTensor(),
     transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
 ])
+
+
+def verifySignature(receivedSignature: str, secret, params):
+
+  data = "-".join(params)
+  data = data.encode('utf-8')
+  computed_sig = hmac.new(secret.encode('utf-8'), msg=data, digestmod=hashlib.sha256).digest()
+  signature = b64encode(computed_sig).decode()
+
+  if signature == receivedSignature:
+    return True
+  return False
+
 
 
 def set_device():
@@ -401,6 +416,28 @@ class FileUpdatetestView(APIView):
   @csrf_exempt
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
+    print(request.path)
+    print(request.method)
+    # Check if call is autorized
+    # *******************************************************************************************************
+    api_signature = request.META.get('HTTP_SIGNATURE')
+
+    # if api_signature is None:
+    #   return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    #
+    # sha_name, signature = api_signature.split("=", 1)
+    # if sha_name != "sha256":
+    #   return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+    #
+    # secret = settings.UPLOADDOCUMENTKEY
+    # params = [secret, request.method, request.path]
+    # is_valid = verifySignature(signature, secret, params)
+    #
+    # if is_valid != True:
+    #   return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
+
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
