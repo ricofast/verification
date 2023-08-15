@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import FileSerializer, FileScanSerializer
+from .serializers import FileSerializer, FileScanSerializer, HeadShotSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel
 import re
@@ -291,7 +291,7 @@ class PictureVerifyView(APIView):
 
   @csrf_exempt
   def post(self, request, *args, **kwargs):
-    file_serializer = FileSerializer(data=request.data)
+    file_serializer = HeadShotSerializer(data=request.data)
 
     # Check if call is authorized
     # *******************************************************************************************************
@@ -314,15 +314,14 @@ class PictureVerifyView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       filename = file_serializer.validated_data['file']
-      key_word = file_serializer.data['keyword']
-      print(filename)
+      # key_word = file_serializer.data['keyword']
       doc = Document.objects.filter(user=userid).first()
       if doc:
         delete(userid)
 
       obj, created = Document.objects.update_or_create(
         user=userid,
-        defaults={'keyword': key_word, 'file': filename},
+        defaults={'file': filename},
       )
       # is_clear = True
       # print("File path: " + obj.file.path)
