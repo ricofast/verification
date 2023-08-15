@@ -28,7 +28,7 @@ class Document(models.Model):
 
 class HeadShot(models.Model):
     user = models.IntegerField()
-    file = ContentTypeRestrictedFileField(upload_to=document_directory_path,
+    file = ContentTypeRestrictedFileField(upload_to=headshot_directory_path,
                                           content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                           max_upload_size=52428800, blank=True, null=True)
     uploaded = models.DateTimeField(auto_now_add=True)
