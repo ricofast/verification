@@ -206,6 +206,23 @@ class FileUpdateView(APIView):
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
 
+    # Check if call is authorized
+    # *******************************************************************************************************
+    api_signature = request.headers['Authorization']
+    if (api_signature is None) or (api_signature == ""):
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.UPLOADDOCUMENTKEY
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
@@ -239,6 +256,23 @@ class DocumentScanView(APIView):
   def post(self, request, *args, **kwargs):
     file_serializer = FileScanSerializer(data=request.data)
 
+    # Check if call is authorized
+    # *******************************************************************************************************
+    api_signature = request.headers['Authorization']
+    if (api_signature is None) or (api_signature == ""):
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.SCANDOCUMENTKEY
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
@@ -258,6 +292,24 @@ class PictureVerifyView(APIView):
   @csrf_exempt
   def post(self, request, *args, **kwargs):
     file_serializer = FileSerializer(data=request.data)
+
+    # Check if call is authorized
+    # *******************************************************************************************************
+    api_signature = request.headers['Authorization']
+    if (api_signature is None) or (api_signature == ""):
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.PICTUREVERIFYKEY
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
