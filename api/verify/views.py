@@ -67,7 +67,8 @@ def verifySignature(receivedSignature: str, secret, params):
   data = data.encode('utf-8')
   computed_sig = hmac.new(secret.encode('utf-8'), msg=data, digestmod=hashlib.sha256).digest()
   signature = b64encode(computed_sig).decode()
-
+  print("signature")
+  print(signature)
   if signature == receivedSignature:
     return True
   return False
