@@ -82,7 +82,7 @@ def set_device():
 
 
 def is_head_shot_clear(image_path, threshold=100):
-  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  # path = os.getcwd() + "/media/headshots/user_" + str(userid) + "/*"
   # image = ""
   # for image_path in glob.glob(path, recursive=True):
     # Load the image using OpenCV
@@ -101,7 +101,7 @@ def is_head_shot_clear(image_path, threshold=100):
 
 
 def headshots_count(image_path):
-  # path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  # path = os.getcwd() + "/media/headshots/user_" + str(userid) + "/*"
   # image = ""
   # for image_path in glob.glob(path, recursive=True):
     # Load the image using OpenCV
@@ -154,8 +154,8 @@ def enhancepictures(userid):
 
   print("current folder")
   print(model_path)
-  test_img_folder = media_folder + "/images/user_" + str(userid) + "/*"
-  test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
+  test_img_folder = media_folder + "/documents/user_" + str(userid) + "/*"
+  test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
   print(test_user_folder)
   model = arch.RRDBNet(3, 3, 64, 23, gc=32)
   model.load_state_dict(torch.load(model_path), strict=True)
@@ -232,7 +232,7 @@ class FileUpdateView(APIView):
       # if verified == "Invalid":
       doc = Document.objects.filter(user=userid).first()
       if doc and doc.verified == False:
-        delete(userid)
+        delete(userid, 1)
         if verified == "Invalid":
           obj, created = Document.objects.update_or_create(
             user=userid,
@@ -298,7 +298,7 @@ class DocumentScanView(APIView):
         scanned = Scanpicture(key_word, userid)
         if scanned == "passed":
           doc.delete()
-          delete(userid)
+          delete(userid, 1)
         else:
           obj, created = Document.objects.update_or_create(
             user=userid,
@@ -343,7 +343,7 @@ class PictureVerifyView(APIView):
       # key_word = file_serializer.data['keyword']
       doc = HeadShot.objects.filter(user=userid).first()
       if doc:
-        delete(userid)
+        delete(userid, 1)
 
       obj, created = HeadShot.objects.update_or_create(
         user=userid,
@@ -379,12 +379,12 @@ def find_string(text, target_string):
 
 def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
-  # path = os.getcwd() + "/media/images/*"
-  # test_user_folder = media_folder + "/images/user_" + str(userid) + "/"
-  # folder = os.getcwd() + '/media/images/user_' + str(userid) + '/'
+  # path = os.getcwd() + "/media/documents/*"
+  # test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
+  # folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
   # for filename in os.listdir(folder):
   #   path_to_document = folder + filename
-  path = os.getcwd() + "/media/images/user_" + str(userid) + "/*"
+  path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
   #   # img = cv2.imread(path_to_document)
@@ -439,8 +439,13 @@ def Scanpicture(athname, userid):
   # return render(request, 'homepage.html', context)
 
 
-def delete(userid):
-  folder = os.getcwd() + '/media/images/user_' + str(userid) + '/'
+def delete(userid, type):
+  folder = ""
+  if type == 1:
+    folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+  elif type == 2:
+    folder = os.getcwd() + '/media/headshots/user_' + str(userid) + '/'
+
   for filename in os.listdir(folder):
     file_path = os.path.join(folder, filename)
     try:
@@ -524,7 +529,7 @@ class FileUpdatetestView(APIView):
       if verified != "Invalid":
         doc = Document.objects.filter(user=userid).first()
         if doc:
-          delete(userid)
+          delete(userid, 1)
 
         obj, created = Document.objects.update_or_create(
           user=userid,
