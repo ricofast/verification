@@ -291,12 +291,12 @@ class DocumentScanView(APIView):
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
 
-      scanned = "passed"
+      scanned = "Verified"
       doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.scanned == False and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
-        if scanned == "passed":
+        if scanned == "Verified":
           doc.delete()
           delete(userid, 1)
         else:
@@ -423,17 +423,21 @@ def Scanpicture(athname, userid):
     nameexist = find_string(filter_predicted_result, wd)
     # nameexist = wd in df['text'].values
     if nameexist:
-      status = status + wd + " Verified - "
+      # status = status + wd + " Verified - "
+      status = "Verified"
     else:
+      # Check if
       datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
       df = pd.DataFrame(datax[0])
       df[0] = df[0].map(str.lower)
       lwd= wd.lower()
       similar = difflib.get_close_matches(lwd, df[0].values)
       if len(similar) > 0:
-        status = status + wd + " Verified - "
+        # status = status + wd + " Verified - "
+        status = "Verified"
       else:
-        status = status + wd + " Unverified - "
+        # status = status + wd + " Unverified - "
+        status = "Unverified"
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
