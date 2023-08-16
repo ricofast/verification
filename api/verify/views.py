@@ -225,22 +225,31 @@ class FileUpdateView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-      key_word = file_serializer.data['keyword']
+      # key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
 
-
-
       verified = classify(ai_model, image_transforms, filename, classes)
-      if verified != "Invalid":
-        doc = Document.objects.filter(user=userid).first()
-        if doc:
-          delete(userid)
+      # if verified == "Invalid":
+      doc = Document.objects.filter(user=userid).first()
+      if doc and doc.verified == False:
+        delete(userid)
 
         obj, created = Document.objects.update_or_create(
           user=userid,
-          defaults={'keyword': key_word, 'file': filename},
+          defaults={'verified': False, 'file': filename},
         )
-        print("step 1")
+      elif doc is None and verified == "Invalid":
+        obj, created = Document.objects.update_or_create(
+          user=userid,
+          defaults={'verified': False, 'file': filename},
+        )
+      elif doc is None and verified != "Invalid":
+        obj, created = Document.objects.update_or_create(
+          user=userid,
+          defaults={'verified': True, 'file': filename},
+        )
+
+      print("step 1")
       # enhancepictures(userid)
       print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
@@ -276,11 +285,23 @@ class DocumentScanView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
+
+      scanned = "passed"
+      doc = Document.objects.filter(user=userid).first()
       print('Scan 1')
-      verified = Scanpicture(key_word, userid)
+      if doc and doc.scanned == False:
+        scanned = Scanpicture(key_word, userid)
+        if scanned == "passed":
+          doc.delete()
+          delete(userid)
+        else:
+          obj, created = Document.objects.update_or_create(
+            user=userid,
+            defaults={'scanned': False},
+          )
       print('Scan 2')
 
-      return Response(verified, status=status.HTTP_201_CREATED)
+      return Response(scanned, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

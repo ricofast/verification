@@ -18,9 +18,10 @@ class Document(models.Model):
     file = ContentTypeRestrictedFileField(upload_to=document_directory_path,
                                              content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                              max_upload_size=52428800, blank=True, null=True)
-    keyword = models.CharField(max_length=50, null=True, blank=True)
+    keyword = models.CharField(max_length=150, null=True, blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
+    scanned = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user)
