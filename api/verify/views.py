@@ -445,7 +445,7 @@ def delete(userid, type):
     folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
   elif type == 2:
     folder = os.getcwd() + '/media/headshots/user_' + str(userid) + '/'
-  if os.listdir(folder):
+  if os.path.exists(folder):
     for filename in os.listdir(folder):
       file_path = os.path.join(folder, filename)
       try:
