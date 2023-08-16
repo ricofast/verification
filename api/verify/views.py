@@ -293,8 +293,8 @@ class DocumentScanView(APIView):
 
       scanned = "passed"
       doc = Document.objects.filter(user=userid).first()
-      print('Scan 1')
-      if doc and doc.scanned == False:
+
+      if doc and doc.scanned == False and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
         if scanned == "passed":
           doc.delete()
@@ -304,10 +304,11 @@ class DocumentScanView(APIView):
             user=userid,
             defaults={'scanned': False, 'keyword': key_word},
           )
-
+      elif doc and doc.scanned == False and doc.verified == False:
+        return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
       elif doc is None:
-        return Response('No File to Scan', status=status.HTTP_400_BAD_REQUEST)
-      print('Scan 2')
+        return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
+
 
       return Response(scanned, status=status.HTTP_201_CREATED)
     else:
