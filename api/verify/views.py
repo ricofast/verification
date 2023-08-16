@@ -438,6 +438,7 @@ def Scanpicture(athname, userid):
       else:
         # status = status + wd + " Unverified - "
         status = "Unverified"
+        return status
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
