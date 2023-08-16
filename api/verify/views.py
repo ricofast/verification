@@ -347,19 +347,21 @@ class PictureVerifyView(APIView):
       # key_word = file_serializer.data['keyword']
       doc = HeadShot.objects.filter(user=userid).first()
       if doc:
-        delete(userid, 1)
+        delete(userid, 2)
 
       obj, created = HeadShot.objects.update_or_create(
         user=userid,
         defaults={'file': filename},
       )
       # is_clear = True
-      # print("File path: " + obj.file.path)
+      print("File path: " + obj.file.path)
       verified = ""
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
       if is_clear and one_person:
         verified = "passed"
+        obj.delete()
+        delete(userid, 2)
       elif not one_person:
         verified = "more than one person"
       elif not is_clear:

@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'api.verify.apps.VerifyConfig',
     'api.chatbot.apps.ChatbotConfig',
+    'django_crontab',
     # 'api.ocrserver.apps.DjangoOcrServerConfig',
     'corsheaders',
 ]
@@ -70,6 +71,10 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CRONJOBS = [
+('1 0 * * *', 'api.verify.cron.document_ocr')
+]
 
 ROOT_URLCONF = 'coelinks.urls'
 
