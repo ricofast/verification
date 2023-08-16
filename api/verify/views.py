@@ -302,8 +302,11 @@ class DocumentScanView(APIView):
         else:
           obj, created = Document.objects.update_or_create(
             user=userid,
-            defaults={'scanned': False},
+            defaults={'scanned': False, 'keyword': key_word},
           )
+
+      elif doc is None:
+        return Response('No File to Scan', status=status.HTTP_400_BAD_REQUEST)
       print('Scan 2')
 
       return Response(scanned, status=status.HTTP_201_CREATED)
