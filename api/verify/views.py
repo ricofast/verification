@@ -233,11 +233,16 @@ class FileUpdateView(APIView):
       doc = Document.objects.filter(user=userid).first()
       if doc and doc.verified == False:
         delete(userid)
-
-        obj, created = Document.objects.update_or_create(
-          user=userid,
-          defaults={'verified': False, 'file': filename},
-        )
+        if verified == "Invalid":
+          obj, created = Document.objects.update_or_create(
+            user=userid,
+            defaults={'verified': False, 'file': filename},
+          )
+        elif verified != "Invalid":
+          obj, created = Document.objects.update_or_create(
+            user=userid,
+            defaults={'verified': True, 'file': filename},
+          )
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
