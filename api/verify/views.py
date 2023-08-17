@@ -439,7 +439,7 @@ def Scanpicture(athname, userid):
         status = "Verified"
       else:
         # status = status + wd + " Unverified - "
-        status = "Unverified - "
+        status = "Unverified - https://coelinks.com"
         return status
 
 
