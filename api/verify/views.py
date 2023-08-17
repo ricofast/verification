@@ -304,12 +304,11 @@ class DocumentScanView(APIView):
             user=userid,
             defaults={'scanned': False, 'keyword': key_word},
           )
-          scanned = scanned + obj.file.path
+          scanned = scanned + obj.file.url
       elif doc and doc.scanned == False and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
       elif doc is None:
         return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
-
 
       return Response(scanned, status=status.HTTP_201_CREATED)
     else:
@@ -364,9 +363,9 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = "2 - " + obj.file.path
+        verified = "2 - " + obj.file.url
       elif not is_clear:
-        verified = "3 - " + obj.file.path
+        verified = "3 - " + obj.file.url
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
