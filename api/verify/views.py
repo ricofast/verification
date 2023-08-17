@@ -244,7 +244,6 @@ class FileUpdateView(APIView):
             user=userid,
             defaults={'verified': True, 'file': filename},
           )
-          verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
@@ -256,7 +255,7 @@ class FileUpdateView(APIView):
           user=userid,
           defaults={'verified': True, 'file': filename},
         )
-        verified = verified + " - https://coelinks.com" + obj.file.url
+
 
       # print("step 1")
       # enhancepictures(userid)
