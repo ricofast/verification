@@ -363,9 +363,9 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = "2 - " + obj.file.url
+        verified = "2 - https://coelinks.com/" + obj.file.url
       elif not is_clear:
-        verified = "3 - " + obj.file.url
+        verified = "3 - https://coelinks.com/" + obj.file.url
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
