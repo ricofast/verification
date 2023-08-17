@@ -15,6 +15,7 @@ class FileScanSerializer(serializers.ModelSerializer):
 
 
 class HeadShotSerializer(serializers.ModelSerializer):
+    file = serializers.FileField(max_length=None, use_url=True, allow_null=True, required=False)
     class Meta():
         model = HeadShot
         fields = ('user', 'file', 'uploaded')
