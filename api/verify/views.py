@@ -238,25 +238,29 @@ class FileUpdateView(APIView):
             user=userid,
             defaults={'verified': False, 'file': filename},
           )
+          verified = verified + " - https://coelinks.com" + obj.file.url
         elif verified != "Invalid":
           obj, created = Document.objects.update_or_create(
             user=userid,
             defaults={'verified': True, 'file': filename},
           )
+          verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
           defaults={'verified': False, 'file': filename},
         )
+        verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified != "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
           defaults={'verified': True, 'file': filename},
         )
+        verified = verified + " - https://coelinks.com" + obj.file.url
 
-      print("step 1")
+      # print("step 1")
       # enhancepictures(userid)
-      print("step 2")
+      # print("step 2")
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
