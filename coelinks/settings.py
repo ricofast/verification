@@ -73,7 +73,7 @@ MIDDLEWARE = [
 CORS_ORIGIN_ALLOW_ALL = True
 
 CRONJOBS = [
-('1 0 * * *', 'api.verify.cron.document_ocr')
+('1 * * * *', 'api.verify.cron.document_ocr')
 ]
 
 ROOT_URLCONF = 'coelinks.urls'
