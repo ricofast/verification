@@ -425,7 +425,7 @@ class DocumentVerifiedView(APIView):
         deleted = "Done"
 
 
-      return Response(deleted, status=status.HTTP_201_CREATED)
+      return Response(deleted, status=status.HTTP_200_OK)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
