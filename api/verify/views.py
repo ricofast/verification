@@ -269,6 +269,8 @@ class FileUpdateView(APIView):
           defaults={'verified': True, 'file': filename},
         )
         checkTextinImage = Checkpicture(userid)
+        print("checkTextinImage")
+        print(checkTextinImage)
         if not checkTextinImage:
           obj.verified = False
           obj.save()
