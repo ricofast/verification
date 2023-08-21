@@ -240,10 +240,18 @@ class FileUpdateView(APIView):
           )
           # verified = verified + " - https://coelinks.com" + obj.file.url
         elif verified != "Invalid":
-          obj, created = Document.objects.update_or_create(
-            user=userid,
-            defaults={'verified': True, 'file': filename},
-          )
+          checkTextinImage = Checkpicture(userid)
+          if checkTextinImage:
+            obj, created = Document.objects.update_or_create(
+              user=userid,
+              defaults={'verified': True, 'file': filename},
+            )
+          else:
+            obj, created = Document.objects.update_or_create(
+              user=userid,
+              defaults={'verified': False, 'file': filename},
+            )
+            verified = "Invalid"
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
@@ -251,10 +259,18 @@ class FileUpdateView(APIView):
         )
         # verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified != "Invalid":
-        obj, created = Document.objects.update_or_create(
-          user=userid,
-          defaults={'verified': True, 'file': filename},
-        )
+        checkTextinImage = Checkpicture(userid)
+        if checkTextinImage:
+          obj, created = Document.objects.update_or_create(
+            user=userid,
+            defaults={'verified': True, 'file': filename},
+          )
+        else:
+          obj, created = Document.objects.update_or_create(
+            user=userid,
+            defaults={'verified': False, 'file': filename},
+          )
+          verified = "Invalid"
       verified = verified + " - https://coelinks.com" + obj.file.url
 
       # print("step 1")
@@ -491,6 +507,29 @@ def Scanpicture(athname, userid):
   return status
   # context = {'form': form}
   # return render(request, 'homepage.html', context)
+
+
+def Checkpicture(userid):
+
+  path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
+  filter_predicted_result = ""
+  status = False
+  for path_to_document in glob.glob(path, recursive=True):
+    img = preprocess_image(path_to_document)
+
+    # pytesseract method
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    predicted_result = pytesseract.image_to_string(img, lang='eng')
+
+    # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
+      .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
+
+
+    if len(filter_predicted_result) > 0:
+      status = True
+
+  return status
 
 
 def delete(userid, type):
