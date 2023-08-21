@@ -268,9 +268,10 @@ class FileUpdateView(APIView):
           defaults={'verified': True, 'file': filename},
         )
         checkTextinImage = Checkpicture(userid)
+        verified = checkTextinImage
         if checkTextinImage:
           obj.verified = False
-          verified = "Invalid"
+
 
         else:
           obj, created = Document.objects.update_or_create(
@@ -534,7 +535,7 @@ def Checkpicture(userid):
 
 
     if len(filter_predicted_result) > 0:
-      status = True
+      status = filter_predicted_result
 
   return status
 
