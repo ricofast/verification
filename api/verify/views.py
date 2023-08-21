@@ -526,7 +526,7 @@ def Checkpicture(userid):
   status = False
   for path_to_document in glob.glob(path, recursive=True):
     img = preprocess_image(path_to_document)
-
+    print(path_to_document)
     # pytesseract method
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     predicted_result = pytesseract.image_to_string(img, lang='eng')
@@ -534,11 +534,12 @@ def Checkpicture(userid):
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
       .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
-
-
+    print("filter_predicted:")
+    print(len(filter_predicted_result))
     if len(filter_predicted_result) > 0:
       status = True
       print(status)
+
       print(filter_predicted_result)
 
   return status
