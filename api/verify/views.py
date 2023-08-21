@@ -247,14 +247,9 @@ class FileUpdateView(APIView):
           )
           checkTextinImage = Checkpicture(userid)
           if not checkTextinImage:
-            obj.verified = False
-            obj.save()
-            verified = "Invalid"
-
-          else:
             obj, created = Document.objects.update_or_create(
               user=userid,
-              defaults={'verified': False, 'file': filename},
+              defaults={'verified': False},
             )
             verified = "Invalid"
       elif doc is None and verified == "Invalid":
@@ -269,18 +264,11 @@ class FileUpdateView(APIView):
           defaults={'verified': True, 'file': filename},
         )
         checkTextinImage = Checkpicture(userid)
-        print("checkTextinImage")
-        print(checkTextinImage)
+
         if not checkTextinImage:
-          obj.verified = False
-          obj.save()
-          verified = "Invalid"
-
-
-        else:
           obj, created = Document.objects.update_or_create(
             user=userid,
-            defaults={'verified': False, 'file': filename},
+            defaults={'verified': False},
           )
           verified = "Invalid"
       verified = verified + " - https://coelinks.com" + obj.file.url
@@ -524,25 +512,19 @@ def Scanpicture(athname, userid):
 def Checkpicture(userid):
 
   path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
-  filter_predicted_result = ""
   status = False
   for path_to_document in glob.glob(path, recursive=True):
     img = preprocess_image(path_to_document)
-    print(path_to_document)
+
     # pytesseract method
     pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     predicted_result = pytesseract.image_to_string(img, lang='eng')
 
-    # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
-    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
+    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "") \
       .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
-    print("filter_predicted:")
-    print(len(filter_predicted_result))
+
     if len(filter_predicted_result) > 0:
       status = True
-      print(status)
-
-      print(filter_predicted_result)
 
   return status
 
