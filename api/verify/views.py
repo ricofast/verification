@@ -299,7 +299,7 @@ class DocumentScanView(APIView):
 
       if doc and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
-        if scanned != "Verified":
+        # if scanned != "Verified":
           # doc.delete()
           # delete(userid, 1)
         # else:
@@ -307,7 +307,7 @@ class DocumentScanView(APIView):
         #     user=userid,
         #     defaults={'scanned': False, 'keyword': key_word},
         #   )
-          scanned = scanned + doc.file.url
+        scanned = scanned + doc.file.url
       elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
       elif doc is None:
