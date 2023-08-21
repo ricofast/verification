@@ -269,7 +269,6 @@ class FileUpdateView(APIView):
           defaults={'verified': True, 'file': filename},
         )
         checkTextinImage = Checkpicture(userid)
-        verified = checkTextinImage
         if not checkTextinImage:
           obj.verified = False
           obj.save()
@@ -539,6 +538,8 @@ def Checkpicture(userid):
 
     if len(filter_predicted_result) > 0:
       status = True
+      print(status)
+      print(filter_predicted_result)
 
   return status
 
