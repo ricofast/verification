@@ -240,12 +240,16 @@ class FileUpdateView(APIView):
           )
           # verified = verified + " - https://coelinks.com" + obj.file.url
         elif verified != "Invalid":
+
+          obj, created = Document.objects.update_or_create(
+            user=userid,
+            defaults={'verified': True, 'file': filename},
+          )
           checkTextinImage = Checkpicture(userid)
           if checkTextinImage:
-            obj, created = Document.objects.update_or_create(
-              user=userid,
-              defaults={'verified': True, 'file': filename},
-            )
+            obj.verified = False
+            verified = "Invalid"
+
           else:
             obj, created = Document.objects.update_or_create(
               user=userid,
@@ -259,12 +263,15 @@ class FileUpdateView(APIView):
         )
         # verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified != "Invalid":
+        obj, created = Document.objects.update_or_create(
+          user=userid,
+          defaults={'verified': True, 'file': filename},
+        )
         checkTextinImage = Checkpicture(userid)
         if checkTextinImage:
-          obj, created = Document.objects.update_or_create(
-            user=userid,
-            defaults={'verified': True, 'file': filename},
-          )
+          obj.verified = False
+          verified = "Invalid"
+
         else:
           obj, created = Document.objects.update_or_create(
             user=userid,
