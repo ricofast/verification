@@ -297,18 +297,18 @@ class DocumentScanView(APIView):
       scanned = "Verified"
       doc = Document.objects.filter(user=userid).first()
 
-      if doc and doc.scanned == False and doc.verified == True:
+      if doc and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
-        if scanned == "Verified":
-          doc.delete()
-          delete(userid, 1)
-        else:
-          obj, created = Document.objects.update_or_create(
-            user=userid,
-            defaults={'scanned': False, 'keyword': key_word},
-          )
-          scanned = scanned + obj.file.url
-      elif doc and doc.scanned == False and doc.verified == False:
+        if scanned != "Verified":
+          # doc.delete()
+          # delete(userid, 1)
+        # else:
+        #   obj, created = Document.objects.update_or_create(
+        #     user=userid,
+        #     defaults={'scanned': False, 'keyword': key_word},
+        #   )
+          scanned = scanned + doc.file.url
+      elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
       elif doc is None:
         return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
@@ -370,6 +370,46 @@ class PictureVerifyView(APIView):
       elif not is_clear:
         verified = "3 - https://coelinks.com" + obj.file.url
       return Response(verified, status=status.HTTP_201_CREATED)
+    else:
+      return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DocumentVerifiedView(APIView):
+  parser_classes = (MultiPartParser, FormParser)
+
+  @csrf_exempt
+  def post(self, request, *args, **kwargs):
+    file_serializer = FileScanSerializer(data=request.data)
+
+    # Check if call is authorized
+    # *******************************************************************************************************
+    api_signature = request.headers['Authorization']
+    if (api_signature is None) or (api_signature == ""):
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.SCANDOCUMENTKEY
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
+    if file_serializer.is_valid():
+      userid = file_serializer.data['user']
+
+      doc = Document.objects.filter(user=userid).first()
+      deleted = ""
+      if doc:
+        doc.delete()
+        delete(userid, 1)
+        deleted = "Done"
+
+
+      return Response(deleted, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
