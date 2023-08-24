@@ -36,5 +36,5 @@ urlpatterns = [
     path('api/endverify/', DocumentVerifiedView.as_view(), name='endverify'),
     path('api/checkimage/', PictureVerifyView.as_view(), name='checkimage'),
     path('api/chat', include('api.chatbot.urls', namespace='chat')),
-    # path("api/", include(router.urls))
+    path("api/ocr", include('api.ocrserver.urls'), namespace='ocr'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
