@@ -24,7 +24,7 @@ import PyPDF2  # needed to get pdfInfo
 # django
 from django.conf import settings
 # django_ocr_server
-from ..ocrserver import ocr_settings
+from ..ocrserver.conf import ocr_settings
 
 
 def read_binary_file(path: str) -> bytes:
