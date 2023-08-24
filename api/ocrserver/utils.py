@@ -20,7 +20,7 @@ from io import BytesIO  # for conversion a pdf content represented as bytes to a
 from datetime import datetime, timedelta
 # dependencies
 import pdftotext  # needed to extraction text from pdf
-import PyPDF2  # needed to get pdfInfo
+import PyPDF  # needed to get pdfInfo
 # django
 from django.conf import settings
 # django_ocr_server
