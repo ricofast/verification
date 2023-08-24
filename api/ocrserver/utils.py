@@ -138,7 +138,7 @@ class PdfInfo:
 
 
 def pypdf_info_to_pdf_info(
-        pypdf_info: PyPDF2.pdf.DocumentInformation) -> PdfInfo:
+        pypdf_info) -> PdfInfo:
     """Converts PyPDF2.pdf.DocumentInformation to PdfInfo"""
     pdf_info: PdfInfo = PdfInfo()
     if '/Author' in pypdf_info:
