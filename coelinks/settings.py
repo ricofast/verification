@@ -55,7 +55,7 @@ INSTALLED_APPS = [
     'api.verify.apps.VerifyConfig',
     'api.chatbot.apps.ChatbotConfig',
     'django_crontab',
-    # 'api.ocrserver.apps.DjangoOcrServerConfig',
+    'api.ocrserver.apps.DjangoOcrServerConfig',
     'corsheaders',
 ]
 

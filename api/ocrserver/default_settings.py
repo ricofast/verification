@@ -19,7 +19,7 @@ if not settings.configured:
 
 OCR_STORE_FILES: bool = True  #: Store uploaded files (True) or not (False), default to True
 OCR_FILE_PREVIEW: bool = True  #: Show file preview in admin (True) or not (False), default to True
-OCR_TESSERACT_LANG: str = 'rus+eng'  #: Sets priority of using languages, default to 'rus+eng'
+OCR_TESSERACT_LANG: str = 'eng'  #: Sets priority of using languages, default to 'rus+eng'
 OCR_STORE_PDF: bool = True  #: Generate and store recognized searchable PDF (True) or not (False), default to True
 
 OCR_STORE_FILES_DISABLED_LABEL: str = 'store_files_disabled'

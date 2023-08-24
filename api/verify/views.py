@@ -246,6 +246,7 @@ class FileUpdateView(APIView):
             defaults={'verified': True, 'file': filename, 'scanned': False},
           )
           checkTextinImage = Checkpicture(userid)
+          verified = "Valid"
           if not checkTextinImage:
             obj, created = Document.objects.update_or_create(
               user=userid,
@@ -265,7 +266,7 @@ class FileUpdateView(APIView):
           defaults={'verified': True, 'file': filename},
         )
         checkTextinImage = Checkpicture(userid)
-
+        verified = "Valid"
         if not checkTextinImage:
           obj, created = Document.objects.update_or_create(
             user=userid,
@@ -379,7 +380,7 @@ class PictureVerifyView(APIView):
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
       if is_clear and one_person:
-        verified = "passed"
+        verified = "1 - https://coelinks.com" + obj.file.url
         obj.delete()
         delete(userid, 2)
       elif not one_person:
@@ -496,7 +497,7 @@ def Scanpicture(athname, userid):
       similar = difflib.get_close_matches(lwd, df[0].values)
       if len(similar) > 0:
         # status = status + wd + " Verified - "
-        status = "Verified"
+        status = "Verified - https://coelinks.com"
       else:
         # status = status + wd + " Unverified - "
         status = "Unverified - https://coelinks.com"
