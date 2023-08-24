@@ -18,9 +18,19 @@ class Document(models.Model):
     file = ContentTypeRestrictedFileField(upload_to=document_directory_path,
                                              content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                              max_upload_size=52428800, blank=True, null=True)
+    # document1 = ContentTypeRestrictedFileField(upload_to=document_directory_path,
+    #                                       content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
+    #                                       max_upload_size=52428800, blank=True, null=True)
+    # document2 = ContentTypeRestrictedFileField(upload_to=document_directory_path,
+    #                                       content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
+    #                                       max_upload_size=52428800, blank=True, null=True)
     keyword = models.CharField(max_length=150, null=True, blank=True)
+    # keyword1 = models.CharField(max_length=150, null=True, blank=True)
+    # keyword2 = models.CharField(max_length=150, null=True, blank=True)
     uploaded = models.DateTimeField(auto_now_add=True)
     verified = models.BooleanField(default=False)
+    # verified1 = models.BooleanField(default=False)
+    # verified2 = models.BooleanField(default=False)
     scanned = models.BooleanField(default=False)
 
     def __str__(self):

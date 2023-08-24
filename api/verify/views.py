@@ -231,19 +231,19 @@ class FileUpdateView(APIView):
       verified = classify(ai_model, image_transforms, filename, classes)
       # if verified == "Invalid":
       doc = Document.objects.filter(user=userid).first()
-      if doc and doc.verified == False:
+      if doc:
         delete(userid, 1)
         if verified == "Invalid":
           obj, created = Document.objects.update_or_create(
             user=userid,
-            defaults={'verified': False, 'file': filename},
+            defaults={'verified': False, 'file': filename, 'scanned': False},
           )
           verified = verified + " - https://coelinks.com" + obj.file.url
         elif verified != "Invalid":
 
           obj, created = Document.objects.update_or_create(
             user=userid,
-            defaults={'verified': True, 'file': filename},
+            defaults={'verified': True, 'file': filename, 'scanned': False},
           )
           checkTextinImage = Checkpicture(userid)
           if not checkTextinImage:
