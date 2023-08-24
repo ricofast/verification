@@ -238,7 +238,7 @@ class FileUpdateView(APIView):
             user=userid,
             defaults={'verified': False, 'file': filename},
           )
-          # verified = verified + " - https://coelinks.com" + obj.file.url
+          verified = verified + " - https://coelinks.com" + obj.file.url
         elif verified != "Invalid":
 
           obj, created = Document.objects.update_or_create(
@@ -252,12 +252,13 @@ class FileUpdateView(APIView):
               defaults={'verified': False},
             )
             verified = "Invalid"
+          verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
           defaults={'verified': False, 'file': filename},
         )
-        # verified = verified + " - https://coelinks.com" + obj.file.url
+        verified = verified + " - https://coelinks.com" + obj.file.url
       elif doc is None and verified != "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
@@ -271,7 +272,7 @@ class FileUpdateView(APIView):
             defaults={'verified': False},
           )
           verified = "Invalid"
-      verified = verified + " - https://coelinks.com" + obj.file.url
+        verified = verified + " - https://coelinks.com" + obj.file.url
 
       # print("step 1")
       # enhancepictures(userid)
