@@ -105,6 +105,7 @@ class OCRedFileList(OcrApiView):
         :param request: rest framework request
         :return: rest framework response
         """
+        print("__package__")
         print(__package__)
         ocred_files = OCRedFile.objects.all()[:20]
         data = OCRedFileSerializer(ocred_files, many=True).data
