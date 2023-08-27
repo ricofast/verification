@@ -127,7 +127,7 @@ def headshots_count(image_path):
   sts.update({'runs_dir': yolov8_run})
   sts.reset()
   model = YOLO(yolov8_model + "yolov8s.pt")
-  results = model.predict(source=image_path, conf=0.4)
+  results = model.predict(source=image_path, conf=0.3)
   boxes = results[0].boxes
 
   # Determine if the image is clear based on the threshold
