@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 import cvlib as cv
 from cvlib.object_detection import draw_bbox
 from ultralytics import YOLO
-
+from ultralytics import settings as sts
 classes = [
           'Birth Certificate',
           'ID/DL',
@@ -50,6 +50,9 @@ picture_id_model = static_folder + "/models/best_model.pth"
 picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
+yolov8_model: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels')
+print('yolov8_model')
+print(yolov8_model)
 
 mean = [0.7683, 0.7671, 0.7645]
 std = [0.2018, 0.1925, 0.1875]
@@ -118,6 +121,7 @@ def headshots_count(image_path):
   ## output = draw_bbox(image, box, label, count)
 
   # Call Yolo V8 to detect objects in the image
+  sts.update({'runs_dir': '/path/to/runs'})
   # model = YOLO("yolov8s.pt")
   # results = model.predict(source=image_path, conf=0.4)
   # boxes = results[0].boxes
