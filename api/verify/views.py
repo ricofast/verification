@@ -122,7 +122,7 @@ def headshots_count(image_path):
 
   # Call Yolo V8 to detect objects in the image
   sts.update({'runs_dir': yolov8_model})
-  settings.reset()
+  sts.reset()
   model = YOLO("yolov8s.pt")
   results = model.predict(source=image_path, conf=0.4)
   boxes = results[0].boxes
