@@ -227,7 +227,8 @@ class FileUpdateView(APIView):
       userid = file_serializer.data['user']
       # key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
-
+      print("__package__")
+      print(__package__)
       verified = classify(ai_model, image_transforms, filename, classes)
       # if verified == "Invalid":
       doc = Document.objects.filter(user=userid).first()
