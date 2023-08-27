@@ -384,14 +384,14 @@ class PictureVerifyView(APIView):
         defaults={'file': filename},
       )
       # is_clear = True
-      print("File path: " + obj.file.path)
+
       verified = ""
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
       if is_clear and one_person:
         verified = "1 - https://coelinks.com" + obj.file.url
-        obj.delete()
-        delete(userid, 2)
+        # obj.delete()
+        # delete(userid, 2)
       elif not one_person:
         verified = "2 - https://coelinks.com" + obj.file.url
       elif not is_clear:
@@ -433,8 +433,49 @@ class DocumentVerifiedView(APIView):
       if doc:
         doc.delete()
         delete(userid, 1)
+
         deleted = "Done"
 
+
+      return Response(deleted, status=status.HTTP_200_OK)
+    else:
+      return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class HeadshotVerifiedView(APIView):
+  parser_classes = (MultiPartParser, FormParser)
+
+  @csrf_exempt
+  def post(self, request, *args, **kwargs):
+    file_serializer = FileScanSerializer(data=request.data)
+
+    # Check if call is authorized
+    # *******************************************************************************************************
+    api_signature = request.headers['Authorization']
+    if (api_signature is None) or (api_signature == ""):
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.DELETEDOCUMENTKEY
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
+    if file_serializer.is_valid():
+      userid = file_serializer.data['user']
+
+      doc = HeadShot.objects.filter(user=userid).first()
+      deleted = ""
+      if doc:
+        doc.delete()
+        delete(userid, 2)
+
+        deleted = "Done"
 
       return Response(deleted, status=status.HTTP_200_OK)
     else:
