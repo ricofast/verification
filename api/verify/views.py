@@ -50,7 +50,10 @@ picture_id_model = static_folder + "/models/best_model.pth"
 picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
-yolov8_model: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels')
+yolov8_model: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels/')
+yolov8_run: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels')
+
+
 print('yolov8_model')
 print(yolov8_model)
 
@@ -121,9 +124,9 @@ def headshots_count(image_path):
   ## output = draw_bbox(image, box, label, count)
 
   # Call Yolo V8 to detect objects in the image
-  sts.update({'runs_dir': yolov8_model})
+  sts.update({'runs_dir': yolov8_run})
   sts.reset()
-  model = YOLO("yolov8s.pt")
+  model = YOLO(yolov8_model + "yolov8s.pt")
   results = model.predict(source=image_path, conf=0.4)
   boxes = results[0].boxes
 
