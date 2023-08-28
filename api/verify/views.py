@@ -560,15 +560,15 @@ def Scanpicture(athname, userid):
       df = pd.DataFrame(datax[0])
       df[0] = df[0].map(str.lower)
       lwd= wd.lower()
-      # similar = difflib.get_close_matches(lwd, df[0].values)
-      similar = []
+      similar = difflib.get_close_matches(lwd, df[0].values)
+      # similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
         status = "Verified - https://coelinks.com"
       else:
         # status = status + wd + " Unverified - "
-        # status = "Unverified - https://coelinks.com"
-        status = filter_predicted_result
+        status = "Unverified - https://coelinks.com"
+        # status = filter_predicted_result
         return status
 
 
