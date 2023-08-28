@@ -140,7 +140,7 @@ def headshots_count(image_path):
   CONFIDENCE_TRESHOLD = 0.35
   result = list(model.predict(image_path, conf=CONFIDENCE_TRESHOLD))[0]
   dp = result.prediction
-  boxes = len(dp.bboxes_xyxy)
+  boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
 
