@@ -394,24 +394,24 @@ class PictureVerifyView(APIView):
       one_person = headshots_count(obj.file.path)
       if is_clear and one_person:
         verified = "1 - https://coelinks.com" + obj.file.url
-        obj, created = HeadShot.objects.update_or_create(
-          user=userid,
-          defaults={'verified': True},
-        )
-        # obj.delete()
-        # delete(userid, 2)
+        # obj, created = HeadShot.objects.update_or_create(
+        #   user=userid,
+        #   defaults={'verified': True},
+        # )
+        obj.delete()
+        delete(userid, 2)
       elif not one_person:
         verified = "2 - https://coelinks.com" + obj.file.url
-        obj, created = HeadShot.objects.update_or_create(
-          user=userid,
-          defaults={'verified': False},
-        )
+        # obj, created = HeadShot.objects.update_or_create(
+        #   user=userid,
+        #   defaults={'verified': False},
+        # )
       elif not is_clear:
         verified = "3 - https://coelinks.com" + obj.file.url
-        obj, created = HeadShot.objects.update_or_create(
-          user=userid,
-          defaults={'verified': False},
-        )
+        # obj, created = HeadShot.objects.update_or_create(
+        #   user=userid,
+        #   defaults={'verified': False},
+        # )
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
