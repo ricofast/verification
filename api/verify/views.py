@@ -38,6 +38,9 @@ import cvlib as cv
 from cvlib.object_detection import draw_bbox
 from ultralytics import YOLO
 from ultralytics import settings as sts
+from super_gradients.training import models
+
+
 classes = [
           'Birth Certificate',
           'ID/DL',
@@ -53,9 +56,6 @@ ai_model = torch.load(picture_id_model)
 yolov8_model: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels/')
 yolov8_run: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels')
 
-
-print('yolov8_model')
-print(yolov8_model)
 
 mean = [0.7683, 0.7671, 0.7645]
 std = [0.2018, 0.1925, 0.1875]
@@ -116,6 +116,7 @@ def headshots_count(image_path):
   # Convert the image to grayscale
   # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
+# Method 1
   # Call Yolo V4 to detect objects in the image
   # print("Start image detection")
   # boxes, label, count = cv.detect_common_objects(image)
@@ -123,13 +124,23 @@ def headshots_count(image_path):
   # print(len(boxes))
   ## output = draw_bbox(image, box, label, count)
 
+# Method 2
   # Call Yolo V8 to detect objects in the image
-  sts.update({'runs_dir': yolov8_run})
-  sts.reset()
-  model = YOLO(yolov8_model + "yolov8s.pt")
-  results = model.predict(source=image_path, conf=0.3)
-  boxes = results[0].boxes
+  # sts.update({'runs_dir': yolov8_run})
+  # sts.reset()
+  # model = YOLO(yolov8_model + "yolov8s.pt")
+  # results = model.predict(source=image_path, conf=0.3)
+  # boxes = results[0].boxes
 
+# Method 3
+  # call Yolo Nas to detect objects in the image
+  DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+  MODEL_ARCH = 'yolo_nas_l'
+  model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
+  CONFIDENCE_TRESHOLD = 0.35
+  result = list(model.predict(image_path, conf=CONFIDENCE_TRESHOLD))[0]
+  dp = result.prediction
+  boxes = len(dp.bboxes_xyxy)
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
 
