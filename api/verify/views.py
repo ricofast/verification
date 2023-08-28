@@ -561,7 +561,7 @@ def Scanpicture(athname, userid):
       df[0] = df[0].map(str.lower)
       lwd= wd.lower()
       # similar = difflib.get_close_matches(lwd, df[0].values)
-      similar = [0, 0]
+      similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
         status = "Verified - https://coelinks.com"
