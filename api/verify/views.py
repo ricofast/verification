@@ -567,7 +567,8 @@ def Scanpicture(athname, userid):
         status = "Verified - https://coelinks.com"
       else:
         # status = status + wd + " Unverified - "
-        status = "Unverified - https://coelinks.com"
+        # status = "Unverified - https://coelinks.com"
+        status = filter_predicted_result
         return status
 
 
