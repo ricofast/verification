@@ -560,7 +560,7 @@ def Scanpicture(athname, userid):
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
-      status = "Verified"
+      status = "Verified - https://coelinks.com"
     else:
       # Check if
       datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
