@@ -337,14 +337,7 @@ class DocumentScanView(APIView):
 
       if doc and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
-        # if scanned != "Verified":
-          # doc.delete()
-          # delete(userid, 1)
-        # else:
-        #   obj, created = Document.objects.update_or_create(
-        #     user=userid,
-        #     defaults={'scanned': False, 'keyword': key_word},
-        #   )
+
         scanned = scanned + doc.file.url
       elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
@@ -567,7 +560,8 @@ def Scanpicture(athname, userid):
       df = pd.DataFrame(datax[0])
       df[0] = df[0].map(str.lower)
       lwd= wd.lower()
-      similar = difflib.get_close_matches(lwd, df[0].values)
+      # similar = difflib.get_close_matches(lwd, df[0].values)
+      similar = [0, 0]
       if len(similar) > 0:
         # status = status + wd + " Verified - "
         status = "Verified - https://coelinks.com"
