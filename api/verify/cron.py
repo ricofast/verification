@@ -1,4 +1,4 @@
-from .models import Document, HeadShot
+from api.verify.models import Document, HeadShot
 
 
 def document_ocr():
