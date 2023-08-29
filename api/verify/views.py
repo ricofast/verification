@@ -87,7 +87,7 @@ def set_device():
   return torch.device(dev)
 
 
-def is_head_shot_clear(image_path, threshold=100):
+def is_head_shot_clear(image_path, threshold=1000):
   # path = os.getcwd() + "/media/headshots/user_" + str(userid) + "/*"
   # image = ""
   # for image_path in glob.glob(path, recursive=True):
