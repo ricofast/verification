@@ -44,6 +44,7 @@ ADMIN_URL = 'admin/'
 # Application definition
 
 INSTALLED_APPS = [
+    'django_crontab',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +55,7 @@ INSTALLED_APPS = [
     'rest_framework_swagger',
     'api.verify.apps.VerifyConfig',
     'api.chatbot.apps.ChatbotConfig',
-    'django_crontab',
+
     # 'api.ocrserver.apps.DjangoOcrServerConfig',
     'corsheaders',
 ]
@@ -72,9 +73,6 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = True
 
-CRONJOBS = [
-('*/1 * * * *', 'api.verify.cron.document_ocr')
-]
 
 ROOT_URLCONF = 'coelinks.urls'
 
@@ -172,3 +170,7 @@ UPLOADDOCUMENTKEY = env.str("UPLOAD_DOCUMENT_KEY")
 SCANDOCUMENTKEY = env.str("SCAN_DOCUMENT_KEY")
 PICTUREVERIFYKEY = env.str("PICTURE_VERIFY_KEY")
 DELETEDOCUMENTKEY = env.str("DELETE_DOCUMENT_KEY")
+
+CRONJOBS = [
+('*/5 * * * *', 'api.verify.cron.document_ocr')
+]
