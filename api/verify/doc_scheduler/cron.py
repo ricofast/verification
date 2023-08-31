@@ -1,6 +1,5 @@
-# from api.verify.models import Document, HeadShot
 from apscheduler.schedulers.background import BackgroundScheduler
-from api.verify.views import UnverifiedViewset
+from api.verify.models import Document
 
 # def document_ocr():
 #     # docs = Document.objects.filter(verified=True, scanned=True)
@@ -11,10 +10,13 @@ from api.verify.views import UnverifiedViewset
 #     doc.save()
 #     return
 
+scheduler = BackgroundScheduler()
+
+def period():
+    docs = Document.objects.all()
+    print(docs)
 
 def start():
-  scheduler = BackgroundScheduler()
-  unverify_docs = UnverifiedViewset()
-  scheduler.add_job(unverify_docs._get_unverified_users(), "interval", minutes=1, id="unverifiedusers_001",
+    scheduler.add_job(period, "interval", minutes=1, id="unverifiedusers_001",
                     replace_existing=True)
-  scheduler.start()
+    scheduler.start()
