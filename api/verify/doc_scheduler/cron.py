@@ -20,7 +20,7 @@ scheduler = BackgroundScheduler()
 def period():
     docs = Document.objects.filter(verified=True, scanned=True).first()
     # doc = Document.objects.create(user=19, keyword='Test 22')
-    userid = docs.pk
+    userid = docs.user
     kw = docs.keyword
     print("user Id:")
     print(userid)
