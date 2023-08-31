@@ -36,7 +36,7 @@ def period():
         if nameexist:
             status = "Verified"
             with open('verifiedids.txt', 'a') as f:
-                f.writelines(docs.pk)
+                f.writelines(docs.user)
     print(status)
 
 
