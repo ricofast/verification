@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from .cron import start
+from api.verify.doc_scheduler import cron
 
 class VerifyConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -7,4 +7,4 @@ class VerifyConfig(AppConfig):
 
     def ready(self):
         print("Starting Scheduler ...")
-        start()
+        cron.start()

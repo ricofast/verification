@@ -1,6 +1,6 @@
 from api.verify.models import Document, HeadShot
 from apscheduler.schedulers.background import BackgroundScheduler
-from .views import UnverifiedViewset
+from api.verify.views import UnverifiedViewset
 
 def document_ocr():
     # docs = Document.objects.filter(verified=True, scanned=True)
