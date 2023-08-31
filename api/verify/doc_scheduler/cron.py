@@ -14,7 +14,7 @@ scheduler = BackgroundScheduler()
 
 def period():
     docs = Document.objects.all()
-    doc = Document.objects.create(user=19, keyword='Test 22')
+    # doc = Document.objects.create(user=19, keyword='Test 22')
     print(docs)
 
 def start():
