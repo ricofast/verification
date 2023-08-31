@@ -35,8 +35,10 @@ def period():
         nameexist = kw in df['text'].values
         if nameexist:
             status = "Verified"
-
+            with open('verifiedids.txt', 'a') as f:
+                f.writelines(docs.pk)
     print(status)
+
 
 
 def start():
