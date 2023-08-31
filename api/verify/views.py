@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import JsonResponse
 # Create your views here.
 from rest_framework import authentication, permissions
+from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser, FileUploadParser
 from rest_framework.response import Response
@@ -645,6 +646,21 @@ def preprocess_image(image_path):
                                           cv2.THRESH_BINARY, 11, 2)
 
   return threshold_image
+
+# ********************************************************************************************
+# ********************************************************************************************
+# ******************************* Views to Handle Cron Jobs ****************************
+# ********************************************************************************************
+# ********************************************************************************************
+
+
+class UnverifiedViewset(viewsets.ModelViewSet):
+  serializer_class = FileSerializer
+
+  def _get_unverified_users(self):
+    docs = Document.objects.filter(verified=True)
+    return docs
+
 
 
 # ********************************************************************************************
