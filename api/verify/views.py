@@ -659,6 +659,7 @@ class UnverifiedViewset(viewsets.ModelViewSet):
 
   def _get_unverified_users(self):
     docs = Document.objects.filter(verified=True)
+    print(docs)
     return docs
 
 
