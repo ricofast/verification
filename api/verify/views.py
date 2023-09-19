@@ -88,7 +88,7 @@ def set_device():
   return torch.device(dev)
 
 
-def is_head_shot_clear(image_path, threshold=1000):
+def is_head_shot_clear(image_path, threshold=300):
   # path = os.getcwd() + "/media/headshots/user_" + str(userid) + "/*"
   # image = ""
   # for image_path in glob.glob(path, recursive=True):
@@ -102,8 +102,8 @@ def is_head_shot_clear(image_path, threshold=1000):
   variance_of_laplacian = cv2.Laplacian(gray_image, cv2.CV_64F).var()
 
   # Determine if the image is clear based on the threshold
-  # is_clear = variance_of_laplacian > threshold
-  is_clear = variance_of_laplacian
+  is_clear = variance_of_laplacian > threshold
+  # is_clear = variance_of_laplacian
 
   return is_clear
 
@@ -398,11 +398,11 @@ class PictureVerifyView(APIView):
       # is_clear = True
 
       verified = ""
-      is_clears = is_head_shot_clear(obj.file.path)
+      is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
-      is_clear = True
+      # is_clear = True
       if is_clear and one_person:
-        verified = str(is_clears) + " - https://coelinks.com" + obj.file.url
+        verified = "1 - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': True},
@@ -410,13 +410,13 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = str(is_clears) + " - https://coelinks.com" + obj.file.url
+        verified = "2 - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
         # )
       elif not is_clear:
-        verified = str(is_clears) + " - https://coelinks.com" + obj.file.url
+        verified = "3 - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
