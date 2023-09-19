@@ -102,7 +102,8 @@ def is_head_shot_clear(image_path, threshold=1000):
   variance_of_laplacian = cv2.Laplacian(gray_image, cv2.CV_64F).var()
 
   # Determine if the image is clear based on the threshold
-  is_clear = variance_of_laplacian > threshold
+  # is_clear = variance_of_laplacian > threshold
+  is_clear = variance_of_laplacian
 
   return is_clear
 
@@ -340,6 +341,12 @@ class DocumentScanView(APIView):
         scanned = Scanpicture(key_word, userid)
 
         scanned = scanned + doc.file.url
+        # obj, created = Document.objects.update_or_create(
+        #   user=userid,
+        #   defaults={'scanned': True},
+        # )
+        doc.scanned = True
+        doc.save()
       elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
       elif doc is None:
@@ -391,8 +398,9 @@ class PictureVerifyView(APIView):
       # is_clear = True
 
       verified = ""
-      is_clear = is_head_shot_clear(obj.file.path)
+      is_clears = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
+      is_clear = True
       if is_clear and one_person:
         verified = "1 - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
@@ -408,7 +416,7 @@ class PictureVerifyView(APIView):
         #   defaults={'verified': False},
         # )
       elif not is_clear:
-        verified = "3 - https://coelinks.com" + obj.file.url
+        verified = str(is_clears) + " - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
