@@ -402,7 +402,7 @@ class PictureVerifyView(APIView):
       one_person = headshots_count(obj.file.path)
       is_clear = True
       if is_clear and one_person:
-        verified = "1 - https://coelinks.com" + obj.file.url
+        verified = str(is_clears) + " - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': True},
@@ -410,7 +410,7 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = "2 - https://coelinks.com" + obj.file.url
+        verified = str(is_clears) + " - https://coelinks.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
