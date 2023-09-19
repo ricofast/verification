@@ -25,12 +25,19 @@ class Document(models.Model):
     #                                       content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
     #                                       max_upload_size=52428800, blank=True, null=True)
     keyword = models.CharField(max_length=150, null=True, blank=True)
-    # keyword1 = models.CharField(max_length=150, null=True, blank=True)
-    # keyword2 = models.CharField(max_length=150, null=True, blank=True)
+
+    name = models.CharField(max_length=150, null=True, blank=True)
+    name_checked = models.BooleanField(default=False)
+
+    dob = models.CharField(max_length=50, null=True, blank=True)
+    dob_checked = models.BooleanField(default=False)
+
+    grade = models.CharField(max_length=10, null=True, blank=True)
+    grade_checked = models.BooleanField(default=False)
+
     uploaded = models.DateTimeField(auto_now_add=True)
+
     verified = models.BooleanField(default=False)
-    # verified1 = models.BooleanField(default=False)
-    # verified2 = models.BooleanField(default=False)
     scanned = models.BooleanField(default=False)
 
     def __str__(self):
