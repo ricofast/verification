@@ -33,6 +33,7 @@ def period():
         # for path_to_document in glob.glob(path, recursive=True):
         #     path_of_docs = path_of_docs.append(path_to_document)
     print(path_of_docs)
+    print(os.getcwd())
     pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
     prediction_groups = pipeline.recognize(images)
