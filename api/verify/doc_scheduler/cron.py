@@ -22,6 +22,7 @@ def period():
     docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword")
     # doc = Document.objects.create(user=19, keyword='Test 22')
     df_docs = pd.DataFrame(list(docs))
+    print(df_docs)
     path_of_docs = []
     for ind in df_docs.index:
         path = os.getcwd() + "/media/documents/user_" + str(df_docs["user"][ind]) + "/*"
