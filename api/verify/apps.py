@@ -8,5 +8,5 @@ class VerifyConfig(AppConfig):
     def ready(self):
 
         print("Starting Scheduler ...")
-        from api.verify.doc_scheduler import cron
+        from media import cron
         cron.start()
