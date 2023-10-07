@@ -32,6 +32,7 @@ def period():
         path_of_docs.append(path)
         # for path_to_document in glob.glob(path, recursive=True):
         #     path_of_docs = path_of_docs.append(path_to_document)
+    print(path_of_docs)
     pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
     prediction_groups = pipeline.recognize(images)
@@ -47,6 +48,10 @@ def period():
         nameexist = kw in df['text'].values
         if nameexist:
             status["user"].append(str(userid))
+            obj, created = Document.objects.update_or_create(
+                user=userid,
+                defaults={'scanned': True},
+            )
             # with open('verifieds.json', 'a') as f:
             #     f.write(str(userid))
             #     f.write('\n')
