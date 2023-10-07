@@ -19,15 +19,18 @@ import shutil
 scheduler = BackgroundScheduler()
 
 def period():
-    docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword")
+    docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword", "file")
     # doc = Document.objects.create(user=19, keyword='Test 22')
     df_docs = pd.DataFrame(list(docs))
+    images = []
     print(df_docs)
     path_of_docs = []
     for ind in df_docs.index:
-        path = os.getcwd() + "/media/documents/user_" + str(df_docs["user"][ind]) + "/*"
-        for path_to_document in glob.glob(path, recursive=True):
-            path_of_docs = [path_of_docs.append(img) for img in [path_to_document]]
+        # path = os.getcwd() + "/media/documents/user_" + str(df_docs["user"][ind]) + "/*"
+        path = os.getcwd() + df_docs["file"][ind]
+        path_of_docs.append(path)
+        # for path_to_document in glob.glob(path, recursive=True):
+        #     path_of_docs = path_of_docs.append(path_to_document)
     pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
     prediction_groups = pipeline.recognize(images)
