@@ -81,6 +81,6 @@ def period():
 
 
 def start():
-    scheduler.add_job(period, "interval", minutes=10, id="unverifiedusers_001",
+    scheduler.add_job(period, "interval", minutes=2, id="unverifiedusers_001",
                     replace_existing=True)
     scheduler.start()
