@@ -1,4 +1,4 @@
-from .models import Document
+from models import Document
 from api.verify.views import preprocess_image
 import keras_ocr
 import pandas as pd
