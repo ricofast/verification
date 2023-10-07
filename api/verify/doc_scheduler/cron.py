@@ -18,7 +18,7 @@ import glob
 scheduler = BackgroundScheduler()
 
 def period():
-    docs = Document.objects.filter(verified=True, scanned=True).first()
+    docs = Document.objects.filter(verified=True, scanned=False).first()
     # doc = Document.objects.create(user=19, keyword='Test 22')
     userid = docs.user
     kw = docs.keyword
