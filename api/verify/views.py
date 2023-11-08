@@ -454,18 +454,20 @@ class DocumentVerifiedView(APIView):
       userid = file_serializer.data['user']
 
       doc = Document.objects.filter(user=userid).first()
-      deleted = ""
-      print("UserID to be deleted:", doc.user)
-      print("keyword to be deleted:", doc.keyword)
+      deleted = "Notfound"
+
       if doc:
         doc.delete()
         delete(userid, 1)
 
         deleted = "Done"
 
-      print(deleted)
 
-      return Response(deleted, status=status.HTTP_200_OK)
+
+        return Response(deleted, status=status.HTTP_200_OK)
+      else:
+        return Response(deleted, status=status.HTTP_404_NOT_FOUND)
+
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
