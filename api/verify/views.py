@@ -260,7 +260,7 @@ class FileUpdateView(APIView):
             user=userid,
             defaults={'verified': False, 'file': filename, 'scanned': False},
           )
-          verified = verified + " - https://coelinks.com" + obj.file.url
+          verified = verified + " - https://coelink.com" + obj.file.url
         elif verified != "Invalid":
 
           obj, created = Document.objects.update_or_create(
@@ -275,13 +275,13 @@ class FileUpdateView(APIView):
               defaults={'verified': False},
             )
             verified = "Invalid"
-          verified = verified + " - https://coelinks.com" + obj.file.url
+          verified = verified + " - https://coelink.com" + obj.file.url
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
           defaults={'verified': False, 'file': filename},
         )
-        verified = verified + " - https://coelinks.com" + obj.file.url
+        verified = verified + " - https://coelink.com" + obj.file.url
       elif doc is None and verified != "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
@@ -295,7 +295,7 @@ class FileUpdateView(APIView):
             defaults={'verified': False},
           )
           verified = "Invalid"
-        verified = verified + " - https://coelinks.com" + obj.file.url
+        verified = verified + " - https://coelink.com" + obj.file.url
 
       # print("step 1")
       # enhancepictures(userid)
@@ -402,7 +402,7 @@ class PictureVerifyView(APIView):
       one_person = headshots_count(obj.file.path)
       # is_clear = True
       if is_clear and one_person:
-        verified = "1 - https://coelinks.com" + obj.file.url
+        verified = "1 - https://coelink.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': True},
@@ -410,13 +410,13 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = "2 - https://coelinks.com" + obj.file.url
+        verified = "2 - https://coelink.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
         # )
       elif not is_clear:
-        verified = "3 - https://coelinks.com" + obj.file.url
+        verified = "3 - https://coelink.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
@@ -567,7 +567,7 @@ def Scanpicture(athname, userid):
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
-      status = "Verified - https://coelinks.com"
+      status = "Verified - https://coelink.com"
     else:
       # Check if
       datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
@@ -578,10 +578,10 @@ def Scanpicture(athname, userid):
       # similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
-        status = "Verified - https://coelinks.com"
+        status = "Verified - https://coelink.com"
       else:
         # status = status + wd + " Unverified - "
-        status = "Unverified - https://coelinks.com"
+        status = "Unverified - https://coelink.com"
         # status = filter_predicted_result
         return status
 
