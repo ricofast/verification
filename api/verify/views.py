@@ -32,13 +32,13 @@ import PIL.Image as Image
 from . import RRDBNet_arch as arch
 # from piq import niqe
 # import easyocr
-import keras_ocr
-from numpy.lib.polynomial import poly
-import matplotlib.pyplot as plt
-import cvlib as cv
-from cvlib.object_detection import draw_bbox
-from ultralytics import YOLO
-from ultralytics import settings as sts
+# import keras_ocr
+# from numpy.lib.polynomial import poly
+# import matplotlib.pyplot as plt
+# import cvlib as cv
+# from cvlib.object_detection import draw_bbox
+# from ultralytics import YOLO
+# from ultralytics import settings as sts
 from super_gradients.training import models
 
 
