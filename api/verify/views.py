@@ -113,7 +113,7 @@ def headshots_count(image_path):
   # image = ""
   # for image_path in glob.glob(path, recursive=True):
     # Load the image using OpenCV
-  image = cv2.imread(image_path)
+  #image = cv2.imread(image_path)
 
   # Convert the image to grayscale
   # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)

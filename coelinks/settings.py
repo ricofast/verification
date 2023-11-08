@@ -24,7 +24,7 @@ env = environ.Env()
 # BASE_DIR = Path(__file__).resolve().parent.parent
 BASE_DIR = environ.Path(__file__) - 2
 
-env.read_env(os.path.join(BASE_DIR, ".env"))
+env.read_env(os.path.join(BASE_DIR, ".envprod"))
 _ENV = env.str("DJANGO_SETTINGS_MODULE", "config.settings.base")
 
 # Quick-start development settings - unsuitable for production
@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_swagger',
     'api.verify.apps.VerifyConfig',
-    'api.chatbot.apps.ChatbotConfig',
+    # 'api.chatbot.apps.ChatbotConfig',
 
     # 'api.ocrserver.apps.DjangoOcrServerConfig',
     'corsheaders',

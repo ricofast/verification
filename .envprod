@@ -1,0 +1,11 @@
+DJANGO_DEBUG=False
+DJANGO_SECRET_KEY=django-insecure-62i!1xc-c18mvvebry2n7*7@9z-3w@m+(q&x(js)zcam=>
+DJANGO_ALLOWED_HOSTS=127.0.0.1,coelink.com,www.coelink.com,*
+DJANGO_ADMIN_URL=admin/
+DATABASE_NAME=coelinkdatabase
+DATABASE_USER_SNAME=adilcoelinkadmin
+DATABASE_PASS_WORD=Amiro2016$!
+UPLOAD_DOCUMENT_KEY=MwqHygtpxEdnC9ljVdFnv4a3SUCIJhY8tCueR+nhgDQ=
+SCAN_DOCUMENT_KEY=MwqHygtrXEdnC9lJVdGni4a9SUCIJHY8tCueR+nhgDQ=
+PICTURE_VERIFY_KEY=MwaMygtoxTdnC9ljVdRTy4a3S9CIJhY8tCueR+nhgDQ=
+DELETE_DOCUMENT_KEY=MwxTygtpxUjnH8ljVdNTy5a1S0CIJhY8tueT+nhgDQ=
