@@ -1,6 +1,6 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from api.verify.models import Document
-# from api.verify.views import preprocess_image
+#  from api.verify.views import preprocess_image
 import keras_ocr
 import pandas as pd
 import os
