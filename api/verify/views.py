@@ -455,12 +455,15 @@ class DocumentVerifiedView(APIView):
 
       doc = Document.objects.filter(user=userid).first()
       deleted = ""
+      print("UserID to be deleted:", doc.user)
+      print("keyword to be deleted:", doc.keyword)
       if doc:
         doc.delete()
         delete(userid, 1)
 
         deleted = "Done"
 
+      print(deleted)
 
       return Response(deleted, status=status.HTTP_200_OK)
     else:
