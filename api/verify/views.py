@@ -103,7 +103,7 @@ def is_head_shot_clear(image_path, threshold=300):
 
   # Determine if the image is clear based on the threshold
   is_clear = variance_of_laplacian > threshold
-  # is_clear = variance_of_laplacian
+  is_clear = variance_of_laplacian
 
   return is_clear
 
@@ -245,7 +245,7 @@ class FileUpdateView(APIView):
     # *******************************************************************************************************
 
     if file_serializer.is_valid():
-      userid = file_serializer.data['user']
+      userid = int(file_serializer.data['user'])
       # key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
       print("__name__")
@@ -331,7 +331,7 @@ class DocumentScanView(APIView):
     # *******************************************************************************************************
 
     if file_serializer.is_valid():
-      userid = file_serializer.data['user']
+      userid = int(file_serializer.data['user'])
       key_word = file_serializer.data['keyword']
 
       scanned = "Verified"
@@ -384,7 +384,7 @@ class PictureVerifyView(APIView):
 
 
     if file_serializer.is_valid():
-      userid = file_serializer.data['user']
+      userid = int(file_serializer.data['user'])
       filename = file_serializer.validated_data['file']
       # key_word = file_serializer.data['keyword']
       doc = HeadShot.objects.filter(user=userid).first()
@@ -398,9 +398,9 @@ class PictureVerifyView(APIView):
       # is_clear = True
 
       verified = ""
-      is_clear = is_head_shot_clear(obj.file.path)
+      is_clears = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
-      # is_clear = True
+      is_clear = True
       if is_clear and one_person:
         verified = "1 - https://coelink.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
@@ -417,6 +417,7 @@ class PictureVerifyView(APIView):
         # )
       elif not is_clear:
         verified = "3 - https://coelink.com" + obj.file.url
+        verified = is_clears
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
@@ -451,7 +452,7 @@ class DocumentVerifiedView(APIView):
     # *******************************************************************************************************
 
     if file_serializer.is_valid():
-      userid = file_serializer.data['user']
+      userid = int(file_serializer.data['user'])
 
       doc = Document.objects.filter(user=userid).first()
       deleted = "Notfound"
