@@ -400,7 +400,7 @@ class PictureVerifyView(APIView):
       verified = ""
       is_clears = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
-      is_clear = True
+      is_clear = False
       if is_clear and one_person:
         verified = "1 - https://coelink.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
