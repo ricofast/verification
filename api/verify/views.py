@@ -479,12 +479,13 @@ class HeadshotVerifiedView(APIView):
   @csrf_exempt
   def post(self, request, *args, **kwargs):
     file_serializer = FileScanSerializer(data=request.data)
-    #"Fail": "Permission denied."
+
     # Check if call is authorized
     # *******************************************************************************************************
     api_signature = request.headers['Authorization']
+    print(api_signature)
     if (api_signature is None) or (api_signature == ""):
-      return Response({api_signature}, status=status.HTTP_403_FORBIDDEN)
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
     sha_name, signature = api_signature.split("=", 1)
     if sha_name != "sha256":
