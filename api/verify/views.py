@@ -88,7 +88,7 @@ def set_device():
   return torch.device(dev)
 
 
-def is_head_shot_clear(image_path, threshold=300):
+def is_head_shot_clear(image_path, threshold=20):
   # path = os.getcwd() + "/media/headshots/user_" + str(userid) + "/*"
   # image = ""
   # for image_path in glob.glob(path, recursive=True):
@@ -103,7 +103,7 @@ def is_head_shot_clear(image_path, threshold=300):
 
   # Determine if the image is clear based on the threshold
   is_clear = variance_of_laplacian > threshold
-  is_clear = variance_of_laplacian
+  # is_clear = variance_of_laplacian
 
   return is_clear
 
@@ -248,8 +248,8 @@ class FileUpdateView(APIView):
       userid = int(file_serializer.data['user'])
       # key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
-      print("__name__")
-      print(__name__)
+      # print("__name__")
+      # print(__name__)
       verified = classify(ai_model, image_transforms, filename, classes)
       # if verified == "Invalid":
       doc = Document.objects.filter(user=userid).first()
@@ -398,9 +398,9 @@ class PictureVerifyView(APIView):
       # is_clear = True
 
       verified = ""
-      is_clears = is_head_shot_clear(obj.file.path)
+      is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
-      is_clear = False
+      # is_clear = False
       if is_clear and one_person:
         verified = "1 - https://coelink.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
@@ -417,7 +417,7 @@ class PictureVerifyView(APIView):
         # )
       elif not is_clear:
         verified = "3 - https://coelink.com" + obj.file.url
-        verified = is_clears
+        # verified = is_clear
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
