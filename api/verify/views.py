@@ -484,7 +484,7 @@ class HeadshotVerifiedView(APIView):
     # Check if call is authorized
     # *******************************************************************************************************
     api_signature = request.headers['Authorization']
-    print(api_signature)
+    request_path = '/api/endverify/'
     if (api_signature is None) or (api_signature == ""):
       return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
 
@@ -493,7 +493,7 @@ class HeadshotVerifiedView(APIView):
       return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
     secret = settings.DELETEDOCUMENTKEY
-    params = [secret, request.method, '/api/endverify/']
+    params = [secret, request.method, request_path]
     is_valid = verifySignature(signature, secret, params)
     if is_valid != True:
       return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
