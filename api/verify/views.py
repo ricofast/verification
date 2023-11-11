@@ -445,6 +445,7 @@ class DocumentVerifiedView(APIView):
       return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
     secret = settings.DELETEDOCUMENTKEY
+    print(request.path)
     params = [secret, request.method, request.path]
     is_valid = verifySignature(signature, secret, params)
     if is_valid != True:
