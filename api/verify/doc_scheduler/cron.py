@@ -59,7 +59,7 @@ def period():
         # else:
         #     status.append("Unverified")
 
-        with open('verified.json', 'w') as f:
+        with open('media/verified/verified.json', 'w') as f:
             json.dump(status, f)
 
         # print(status)
