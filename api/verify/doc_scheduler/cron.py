@@ -5,8 +5,8 @@ import keras_ocr
 import pandas as pd
 import os
 import json
-import glob
-import shutil
+# import glob
+# import shutil
 
 # def document_ocr():
 #     # docs = Document.objects.filter(verified=True, scanned=True)
@@ -61,23 +61,6 @@ def period():
 
         with open('media/verified/verified.json', 'w') as f:
             json.dump(status, f)
-
-        # print(status)
-    # for doc in docs:
-    #     userid = doc.user
-    #     kw = doc.keyword
-    #     df_doc1 = pd.DataFrame({"userid": [userid], "keyword": [kw]})
-    #     df_doc2
-    #     print("user Id:")
-    #     print(userid)
-    #     print(kw)
-    #     path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
-
-
-        # for path_to_document in glob.glob(path, recursive=True):
-
-
-
 
 
 

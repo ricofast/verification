@@ -32,7 +32,7 @@ import PIL.Image as Image
 from . import RRDBNet_arch as arch
 # from piq import niqe
 # import easyocr
-# import keras_ocr
+import keras_ocr
 # from numpy.lib.polynomial import poly
 # import matplotlib.pyplot as plt
 # import cvlib as cv
@@ -531,53 +531,54 @@ def Scanpicture(athname, userid):
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/documents/*"
   # test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
-  # folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
-  # for filename in os.listdir(folder):
-  #   path_to_document = folder + filename
-  path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
-  filter_predicted_result = ""
-  for path_to_document in glob.glob(path, recursive=True):
+  folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+  for filename in os.listdir(folder):
+    path_to_document = folder + filename
+  # path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
+  # filter_predicted_result = ""
+  # for path_to_document in glob.glob(path, recursive=True):
   #   # img = cv2.imread(path_to_document)
-    img = preprocess_image(path_to_document)
+  #   img = preprocess_image(path_to_document)
 
     # pytesseract method
-    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    predicted_result = pytesseract.image_to_string(img, lang='eng')
+    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    # predicted_result = pytesseract.image_to_string(img, lang='eng')
 
     # Keras OCR method
     # print("path to document")
     # print(path_to_document)
-    # pipeline = keras_ocr.pipeline.Pipeline()
-    # images = [keras_ocr.tools.read(img) for img in [path_to_document]]
-    # prediction_groups = pipeline.recognize(images)
+    pipeline = keras_ocr.pipeline.Pipeline()
+    images = [keras_ocr.tools.read(img) for img in [path_to_document]]
+    prediction_groups = pipeline.recognize(images)
     # print("Finished")
-    # df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
+    df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
     # print(df)
     # reader = easyocr.Reader(['en'])
     # predicted_result = reader.readtext(img)
 
 
-    # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
-    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
-      .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
+    # # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+    # filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
+    #   .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
 
   words = athname.split()
 
   status = ""
 
   for wd in words:
-    nameexist = find_string(filter_predicted_result, wd)
-    # nameexist = wd in df['text'].values
+    # nameexist = find_string(filter_predicted_result, wd)
+    nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
       status = "Verified - https://verification.gritnetwork.com"
     else:
       # Check if
-      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-      df = pd.DataFrame(datax[0])
-      df[0] = df[0].map(str.lower)
+      # datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+      # df = pd.DataFrame(datax[0])
+      # df[0] = df[0].map(str.lower)
       lwd= wd.lower()
-      similar = difflib.get_close_matches(lwd, df[0].values)
+      similar = difflib.get_close_matches(lwd, df['text'].values)
+      # similar = difflib.get_close_matches(lwd, df[0].values)
       # similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
