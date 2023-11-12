@@ -260,7 +260,7 @@ class FileUpdateView(APIView):
             user=userid,
             defaults={'verified': False, 'file': filename, 'scanned': False},
           )
-          verified = verified + " - https://coelink.com" + obj.file.url
+          verified = verified + " - https://verification.gritnetwork.com" + obj.file.url
         elif verified != "Invalid":
 
           obj, created = Document.objects.update_or_create(
@@ -275,13 +275,13 @@ class FileUpdateView(APIView):
               defaults={'verified': False},
             )
             verified = "Invalid"
-          verified = verified + " - https://coelink.com" + obj.file.url
+          verified = verified + " - https://verification.gritnetwork.com" + obj.file.url
       elif doc is None and verified == "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
           defaults={'verified': False, 'file': filename},
         )
-        verified = verified + " - https://coelink.com" + obj.file.url
+        verified = verified + " - https://verification.gritnetwork.com" + obj.file.url
       elif doc is None and verified != "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
@@ -295,7 +295,7 @@ class FileUpdateView(APIView):
             defaults={'verified': False},
           )
           verified = "Invalid"
-        verified = verified + " - https://coelink.com" + obj.file.url
+        verified = verified + " - https://verification.gritnetwork.com" + obj.file.url
 
       # print("step 1")
       # enhancepictures(userid)
@@ -402,7 +402,7 @@ class PictureVerifyView(APIView):
       one_person = headshots_count(obj.file.path)
       # is_clear = False
       if is_clear and one_person:
-        verified = "1 - https://coelink.com" + obj.file.url
+        verified = "1 - https://verification.gritnetwork.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': True},
@@ -410,13 +410,13 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = "2 - https://coelink.com" + obj.file.url
+        verified = "2 - https://verification.gritnetwork.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
         # )
       elif not is_clear:
-        verified = "3 - https://coelink.com" + obj.file.url
+        verified = "3 - https://verification.gritnetwork.com" + obj.file.url
         # verified = is_clear
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
@@ -570,7 +570,7 @@ def Scanpicture(athname, userid):
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
-      status = "Verified - https://coelink.com"
+      status = "Verified - https://verification.gritnetwork.com"
     else:
       # Check if
       datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
@@ -581,10 +581,10 @@ def Scanpicture(athname, userid):
       # similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
-        status = "Verified - https://coelink.com"
+        status = "Verified - https://verification.gritnetwork.com"
       else:
         # status = status + wd + " Unverified - "
-        status = "Unverified - https://coelink.com"
+        status = "Unverified - https://verification.gritnetwork.com"
         # status = filter_predicted_result
         return status
 
