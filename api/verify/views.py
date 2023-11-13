@@ -346,6 +346,7 @@ class DocumentScanView(APIView):
         #   defaults={'scanned': True},
         # )
         doc.scanned = True
+        doc.keyword = key_word
         doc.save()
       elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
