@@ -5,6 +5,7 @@ import keras_ocr
 import pandas as pd
 import os
 import json
+import difflib
 # import glob
 # import shutil
 
@@ -43,16 +44,28 @@ def period():
         userid = df_docs.loc[j, "user"]
         kw = df_docs.loc[j, "keyword"]
 
+        # check keyword with multiple words
+        words = kw.split()
+        allkeywords_status = False
+        for wd in words:
+            nameexist = wd in df['text'].values
+            if nameexist:
+                allkeywords_status = True
+            else:
+                lwd = wd.lower()
+                similar = difflib.get_close_matches(lwd, df['text'].values)
+                if len(similar) > 0:
+                    allkeywords_status = True
+                else:
+                    allkeywords_status = False
+                    break
         # for i in range(len(df)-1):
         #     kw = df_docs.loc[j, "keyword"]
         #     nameexist = kw in df.loc[i, 'text']
-        nameexist = kw in df['text'].values
-        if nameexist:
+        # nameexist = kw in df['text'].values
+        if allkeywords_status:
             status["user"].append(str(userid))
-            obj, created = Document.objects.update_or_create(
-                user=userid,
-                defaults={'scanned': True},
-            )
+            obj, created = Document.objects.update_or_create(user=userid, defaults={'scanned': True},)
             # with open('verifieds.json', 'a') as f:
             #     f.write(str(userid))
             #     f.write('\n')
@@ -65,6 +78,6 @@ def period():
 
 
 def start():
-    scheduler.add_job(period, "interval", minutes=20, id="unverifiedusers_001",
+    scheduler.add_job(period, "interval", minutes=60, id="unverifiedusers_001",
                     replace_existing=True)
     scheduler.start()
