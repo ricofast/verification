@@ -222,7 +222,7 @@ def classify(aimodel, image_transforms, grayimage_transforms, image_path, classe
   im = image.convert("RGB")
   stat = ImageStat.Stat(im)
   if sum(stat.sum) / 3 != stat.sum[0]:
-    image = image_transforms(image).float()
+    image = image_transforms(im).float()
     image = image.unsqueeze(0)
   else:
     image = grayimage_transforms(image).float()
