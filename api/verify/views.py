@@ -72,8 +72,8 @@ image_transforms = transforms.Compose([
 
 grayimage_transforms = transforms.Compose([
     transforms.Resize((512,512)),
-    transforms.ToTensor(),
-    transforms.Normalize(torch.Tensor(mean), torch.Tensor(std), transforms.Lambda(lambda x: x.repeat(3, 1, 1)))
+    transforms.ToTensor(), transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
+    transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
 ])
 
 
