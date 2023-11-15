@@ -29,6 +29,7 @@ import torchvision
 import torch
 import torchvision.transforms as transforms
 import PIL.Image as Image
+from PIL import ImageStat
 from . import RRDBNet_arch as arch
 # from piq import niqe
 # import easyocr
@@ -61,10 +62,18 @@ yolov8_run: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels')
 mean = [0.7683, 0.7671, 0.7645]
 std = [0.2018, 0.1925, 0.1875]
 
+# transforms.Lambda(lambda x: x.repeat(3, 1, 1))  if im.mode!='RGB'  else NoneTransform()
+
 image_transforms = transforms.Compose([
     transforms.Resize((512,512)),
     transforms.ToTensor(),
     transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
+])
+
+grayimage_transforms = transforms.Compose([
+    transforms.Resize((512,512)),
+    transforms.ToTensor(),
+    transforms.Normalize(torch.Tensor(mean), torch.Tensor(std), transforms.Lambda(lambda x: x.repeat(3, 1, 1)))
 ])
 
 
@@ -207,11 +216,17 @@ def enhancepictures(userid):
     im_path = '{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base)
   return im_path
 
-def classify(aimodel, image_transforms, image_path, classes):
+def classify(aimodel, image_transforms, grayimage_transforms, image_path, classes):
   aimodel = aimodel.eval()
   image = Image.open(image_path)
-  image = image_transforms(image).float()
-  image = image.unsqueeze(0)
+  im = image.convert("RGB")
+  stat = ImageStat.Stat(im)
+  if sum(stat.sum) / 3 != stat.sum[0]:
+    image = image_transforms(image).float()
+    image = image.unsqueeze(0)
+  else:
+    image = grayimage_transforms(image).float()
+    image = image.unsqueeze(0)
 
   output = aimodel(image)
   _, predicted = torch.max(output.data, 1)
@@ -250,7 +265,7 @@ class FileUpdateView(APIView):
       filename = file_serializer.validated_data['file']
       # print("__name__")
       # print(__name__)
-      verified = classify(ai_model, image_transforms, filename, classes)
+      verified = classify(ai_model, image_transforms,grayimage_transforms, filename, classes)
       # if verified == "Invalid":
       doc = Document.objects.filter(user=userid).first()
       if doc:
@@ -717,7 +732,7 @@ class FileUpdatetestView(APIView):
       filename = file_serializer.validated_data['file']
 
       # Step 1: Check if document is valid
-      verified = classify(ai_model, image_transforms, filename, classes)
+      verified = classify(ai_model, image_transforms,grayimage_transforms, filename, classes)
 
       # Step 2: Save the document to database if it's valid
       if verified != "Invalid":
