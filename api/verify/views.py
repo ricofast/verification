@@ -347,7 +347,7 @@ class DocumentScanView(APIView):
     # *******************************************************************************************************
 
     if file_serializer.is_valid():
-      userid = int(file_serializer.data['user'])
+      userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
 
       scanned = "Verified"
@@ -401,7 +401,7 @@ class PictureVerifyView(APIView):
 
 
     if file_serializer.is_valid():
-      userid = int(file_serializer.data['user'])
+      userid = file_serializer.data['user']
       filename = file_serializer.validated_data['file']
       # key_word = file_serializer.data['keyword']
       doc = HeadShot.objects.filter(user=userid).first()
@@ -470,7 +470,7 @@ class DocumentVerifiedView(APIView):
     # *******************************************************************************************************
 
     if file_serializer.is_valid():
-      userid = int(file_serializer.data['user'])
+      userid = file_serializer.data['user']
 
       doc = Document.objects.filter(user=userid).first()
       deleted = "Notfound"
