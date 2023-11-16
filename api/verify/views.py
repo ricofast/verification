@@ -260,10 +260,8 @@ class FileUpdateView(APIView):
     # *******************************************************************************************************
 
     if file_serializer.is_valid():
-      useridx = file_serializer.data['user']
-      print("UserID_str: ", useridx)
-      userid = int(useridx)
-      print("UserID_int: ", userid)
+      userid = file_serializer.data['user']
+
       # key_word = file_serializer.data['keyword']
       filename = file_serializer.validated_data['file']
       # print("__name__")

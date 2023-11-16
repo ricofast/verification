@@ -14,7 +14,7 @@ def headshot_directory_path(instance, filename):
 
 # Create your models here.
 class Document(models.Model):
-    user = models.IntegerField()
+    user = models.CharField(max_length=100)
     file = ContentTypeRestrictedFileField(upload_to=document_directory_path,
                                              content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                              max_upload_size=52428800, blank=True, null=True)
@@ -45,7 +45,7 @@ class Document(models.Model):
 
 
 class HeadShot(models.Model):
-    user = models.IntegerField()
+    user = models.CharField(max_length=100)
     file = ContentTypeRestrictedFileField(upload_to=headshot_directory_path,
                                           content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                           max_upload_size=52428800, blank=True, null=True)
