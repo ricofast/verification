@@ -28,7 +28,7 @@ import cv2
 import numpy as np
 import pytesseract
 import torchvision
-import torch
+import torch, gc
 import torchvision.transforms as transforms
 import PIL.Image as Image
 from PIL import ImageStat
@@ -156,7 +156,8 @@ def headshots_count(image_path):
   boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
-
+  gc.collect()
+  torch.cuda.empty_cache()
   return one_person
 
 
