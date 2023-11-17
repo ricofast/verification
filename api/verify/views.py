@@ -779,14 +779,14 @@ class DocumentManualVerifiedView(APIView):
     api_signature = request.headers['Authorization']
     if (api_signature is None) or (api_signature == ""):
       return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
-
+    request_path = '/api/endverify/'
     sha_name, signature = api_signature.split("=", 1)
     if sha_name != "sha256":
       return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
     secret = settings.DELETEDOCUMENTKEY
-    print(request.path)
-    params = [secret, request.method, request.path]
+
+    params = [secret, request.method, request_path]
     is_valid = verifySignature(signature, secret, params)
     if is_valid != True:
       return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
