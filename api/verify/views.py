@@ -156,9 +156,10 @@ def headshots_count(image_path):
   boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
-  gc.collect()
-  with torch.no_grad():
-    torch.cuda.empty_cache()
+
+  # gc.collect()
+  # with torch.no_grad():
+  #   torch.cuda.empty_cache()
   return one_person
 
 
@@ -443,6 +444,8 @@ class PictureVerifyView(APIView):
         #   user=userid,
         #   defaults={'verified': False},
         # )
+        cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | sudo xargs -n1 kill -9"
+        os.system(cmd)
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
