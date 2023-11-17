@@ -444,8 +444,7 @@ class PictureVerifyView(APIView):
         #   user=userid,
         #   defaults={'verified': False},
         # )
-        cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | sudo xargs -n1 kill -9"
-        os.system(cmd)
+
       return Response(verified, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
