@@ -794,6 +794,7 @@ class DocumentManualVerifiedView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
+      print("userid: ", userid)
       url = "https://7yq1ahwwq0.execute-api.us-east-1.amazonaws.com/document-verified"
       header = {
         "Content-Type": "application/json",
@@ -803,6 +804,7 @@ class DocumentManualVerifiedView(APIView):
         "user": userid
       }
       deleted = "Not Done"
+      print(url)
       result = requests.post(url, data=json.dumps(payload), headers=header)
       # doc = Document.objects.filter(user=userid).first()
       # deleted = "Notfound"
