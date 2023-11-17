@@ -13,6 +13,8 @@ from .serializers import FileSerializer, FileScanSerializer, HeadShotSerializer
 from django.views.decorators.csrf import csrf_exempt
 from .models import Document, AIModel, HeadShot
 import re
+import requests
+import json
 import os.path as osp
 import difflib
 from io import StringIO
@@ -764,4 +766,59 @@ class FileUpdatetestView(APIView):
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 # Create your views here.
+
+class DocumentManualVerifiedView(APIView):
+  parser_classes = (MultiPartParser, FormParser)
+
+  @csrf_exempt
+  def post(self, request, *args, **kwargs):
+    file_serializer = FileScanSerializer(data=request.data)
+
+    # Check if call is authorized
+    # *******************************************************************************************************
+    api_signature = request.headers['Authorization']
+    if (api_signature is None) or (api_signature == ""):
+      return Response({"Fail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+
+    sha_name, signature = api_signature.split("=", 1)
+    if sha_name != "sha256":
+      return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
+
+    secret = settings.DELETEDOCUMENTKEY
+    print(request.path)
+    params = [secret, request.method, request.path]
+    is_valid = verifySignature(signature, secret, params)
+    if is_valid != True:
+      return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
+    # *******************************************************************************************************
+
+    if file_serializer.is_valid():
+      userid = file_serializer.data['user']
+      url = "https://7yq1ahwwq0.execute-api.us-east-1.amazonaws.com/document-verified"
+      header = {
+        "Content-Type": "application/json",
+        "Authorization": "4b338f063102cc66e604b12941bbefc2fad15840ec7ef98442028edba64ce98a",
+      }
+      payload = {
+        "user": userid
+      }
+      deleted = "Not Done"
+      result = requests.post(url, data=json.dumps(payload), headers=header)
+      # doc = Document.objects.filter(user=userid).first()
+      # deleted = "Notfound"
+      #
+      # if doc:
+      #   doc.delete()
+      #   delete(userid, 1)
+      #
+      #   deleted = "Done"
+      if result.status_code == 200:
+        deleted = "Done"
+
+        return Response(deleted, status=status.HTTP_200_OK)
+      else:
+        return Response(deleted, status=status.HTTP_404_NOT_FOUND)
+
+    else:
+      return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

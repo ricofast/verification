@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from api.verify.views import FileUpdateView, DocumentScanView, PictureVerifyView, FileUpdatetestView, \
-    DocumentVerifiedView, HeadshotVerifiedView
+    DocumentVerifiedView, HeadshotVerifiedView, DocumentManualVerifiedView
 # from rest_framework.routers import DefaultRouter
 # from api.verify.views import FileUpdateView, DocumentScanView
 # from api.chatbot.views import ChatGenerateView
@@ -37,6 +37,7 @@ urlpatterns = [
     path('api/endverify/', DocumentVerifiedView.as_view(), name='endverify'),
     path('api/headshotverified/', HeadshotVerifiedView.as_view(), name='headshotverified'),
     path('api/checkimage/', PictureVerifyView.as_view(), name='checkimage'),
+    path('api/manualverify/', DocumentManualVerifiedView.as_view(), name='endverify'),
     # path('api/chat/', include('api.chatbot.urls', namespace='chat')),
     # path("api/ocr/", include('api.ocrserver.urls', namespace='ocr')),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
