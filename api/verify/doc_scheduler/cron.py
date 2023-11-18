@@ -22,7 +22,7 @@ import difflib
 scheduler = BackgroundScheduler()
 
 def period():
-    cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | sudo xargs -n1 kill -9"
+    cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | xargs -n1 kill -9"
     os.system(cmd)
     docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword", "file")
     # doc = Document.objects.create(user=19, keyword='Test 22')
