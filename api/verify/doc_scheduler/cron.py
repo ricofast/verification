@@ -22,8 +22,8 @@ import difflib
 scheduler = BackgroundScheduler()
 
 def period():
-    cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | xargs -n1 kill -9"
-    os.system(cmd)
+    # cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | xargs -n1 kill -9"
+    # os.system(cmd)
     docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword", "file")
     # doc = Document.objects.create(user=19, keyword='Test 22')
     df_docs = pd.DataFrame(list(docs))
@@ -95,6 +95,6 @@ def period():
 
 
 def start():
-    scheduler.add_job(period, "interval", minutes=2, id="unverifiedusers_001",
+    scheduler.add_job(period, "interval", minutes=60, id="unverifiedusers_001",
                     replace_existing=True)
     scheduler.start()
