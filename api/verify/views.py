@@ -360,15 +360,19 @@ class DocumentScanView(APIView):
 
       if doc and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
-
-        scanned = scanned + doc.file.url
+        if scanned:
+          scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
         # obj, created = Document.objects.update_or_create(
         #   user=userid,
         #   defaults={'scanned': True},
         # )
-        doc.scanned = True
-        doc.keyword = key_word
-        doc.save()
+          doc.scanned = True
+          doc.keyword = key_word
+          doc.save()
+        else:
+          scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
+          doc.keyword = key_word
+          doc.save()
       elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
       elif doc is None:
@@ -586,14 +590,14 @@ def Scanpicture(athname, userid):
 
   words = athname.split()
 
-  status = ""
+  status = False
 
   for wd in words:
     nameexist = find_string(filter_predicted_result, wd)
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
-      status = "Verified - https://verification.gritnetwork.com"
+      status = True
     else:
       # Check if
       datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
@@ -604,10 +608,10 @@ def Scanpicture(athname, userid):
       # similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
-        status = "Verified - https://verification.gritnetwork.com"
+        status = True
       else:
         # status = status + wd + " Unverified - "
-        status = "Unverified - https://verification.gritnetwork.com"
+        status = False
         # status = filter_predicted_result
         return status
 
