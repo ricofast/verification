@@ -34,7 +34,7 @@ import PIL.Image as Image
 from PIL import ImageStat
 from . import RRDBNet_arch as arch
 # from piq import niqe
-# import easyocr
+import easyocr
 import keras_ocr
 # from numpy.lib.polynomial import poly
 # import matplotlib.pyplot as plt
@@ -359,7 +359,7 @@ class DocumentScanView(APIView):
       doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.verified == True:
-        scanned = ScanpictureKeras(key_word, userid)
+        scanned = ScanpicturEasyOCR(key_word, userid)
         if scanned:
           scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
         # obj, created = Document.objects.update_or_create(
@@ -623,28 +623,12 @@ def Scanpicture(athname, userid):
   # return render(request, 'homepage.html', context)
 
 def ScanpictureKeras(athname, userid):
-  # keras_loaded = KerasModelLoaded.objects.first()
-  # if keras_loaded and keras_loaded.loaded is False:
-  #   pipeline = keras_ocr.pipeline.Pipeline()
-  #   keras_loaded.loaded = True
-  #   keras_loaded.save()
-  # elif not keras_loaded:
-  #   pipeline = keras_ocr.pipeline.Pipeline()
-  #   aicreated = KerasModelLoaded.objects.create(loaded=True)
-
-  # docs = Document.objects.filter(user=userid).values("user", "file")
-  # df_docs = pd.DataFrame(list(docs))
-  # images = []
-  # print(df_docs)
 
   path_of_docs = []
   folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
   for filename in os.listdir(folder):
     path_to_document = folder + filename
     path_of_docs.append(path_to_document)
-  # for ind in df_docs.index:
-  # path = os.getcwd() + "/media/" + file
-  # path_of_docs.append(path)
 
   print(path_of_docs)
   pipeline = keras_ocr.pipeline.Pipeline()
@@ -674,6 +658,42 @@ def ScanpictureKeras(athname, userid):
         return allkeywords_status
 
 
+def ScanpicturEasyOCR(athname, userid):
+  folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+  predicted_result = []
+  for filename in os.listdir(folder):
+    img = folder + filename
+    reader = easyocr.Reader(['en'])
+    predicted_result = reader.readtext(img, detail=0)
+
+  df = pd.DataFrame(predicted_result, columns=['text'])
+  kw = athname
+  if kw:
+    # check keyword with multiple words
+    words = kw.split()
+    allkeywords_status = False
+    for wd in words:
+      nameexist = wd in df['text'].values
+      if nameexist:
+        allkeywords_status = True
+      else:
+        lwd = wd.lower()
+        similar = difflib.get_close_matches(lwd, df['text'].values)
+        if len(similar) > 0:
+          allkeywords_status = True
+        else:
+          allkeywords_status = False
+          return allkeywords_status
+
+    if allkeywords_status:
+      return allkeywords_status
+
+
+  # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
+  # status = filter_predicted_result
+  return status
+  # context = {'form': form}
+  # return render(request, 'homepage.html', context)
 
 def Checkpicture(userid):
 
