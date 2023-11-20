@@ -616,10 +616,10 @@ def Scanpicture(athname, userid):
             status = True
           else:
             # Check if
-            datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-            df = pd.DataFrame(datax[0])
-            df[0] = df[0].map(str.lower)
-            lwd= wd.lower()
+            # datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+            # df = pd.DataFrame(datax[0])
+            # df[0] = df[0].map(str.lower)
+            lwd = wd.lower()
             similar = difflib.get_close_matches(lwd, df['text'].values)
             # similar = difflib.get_close_matches(lwd, df[0].values)
             # similar = []
