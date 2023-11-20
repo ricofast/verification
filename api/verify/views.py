@@ -588,7 +588,7 @@ def Scanpicture(athname, userid):
 
     # print("path to document")
     # print(path_to_document)
-    # pipeline = keras_ocr.pipeline.Pipeline()
+    pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
     prediction_groups = pipeline.recognize(images)
 
