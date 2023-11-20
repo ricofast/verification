@@ -359,7 +359,7 @@ class DocumentScanView(APIView):
       doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.verified == True:
-        scanned = Scanpicture(key_word, userid)
+        scanned = ScanpictureKeras(key_word, userid, doc.file)
         if scanned:
           scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
         # obj, created = Document.objects.update_or_create(
@@ -555,16 +555,12 @@ def find_string(text, target_string):
 
 
 def Scanpicture(athname, userid):
-  path_of_docs = []
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/documents/*"
   # test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
-  folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
-  for filename in os.listdir(folder):
-    path_to_document = folder + filename
-    path_of_docs.append(path_to_document)
-
-  print("path_of_docs:", path_of_docs)
+  # folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+  # for filename in os.listdir(folder):
+  #   path_to_document = folder + filename
   path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):
@@ -572,65 +568,52 @@ def Scanpicture(athname, userid):
     img = preprocess_image(path_to_document)
 
     # pytesseract method
-    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    # predicted_result = pytesseract.image_to_string(img, lang='eng')
-  status = False
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    predicted_result = pytesseract.image_to_string(img, lang='eng')
+
     # Keras OCR method
-  keras_loaded = KerasModelLoaded.objects.first()
-  if keras_loaded and keras_loaded.loaded == False:
-    pipeline = keras_ocr.pipeline.Pipeline()
-    keras_loaded.loaded = True
-    keras_loaded.save()
-  elif not keras_loaded:
-    pipeline = keras_ocr.pipeline.Pipeline()
-    aicreated = KerasModelLoaded.objects.create(loaded=True)
-
-
     # print("path to document")
     # print(path_to_document)
-  pipeline = keras_ocr.pipeline.Pipeline()
-  images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
-  prediction_groups = pipeline.recognize(images)
+    # pipeline = keras_ocr.pipeline.Pipeline()
+    # images = [keras_ocr.tools.read(img) for img in [path_to_document]]
+    # prediction_groups = pipeline.recognize(images)
+    # print("Finished")
+    # df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
+    # print(df)
+    # reader = easyocr.Reader(['en'])
+    # predicted_result = reader.readtext(img)
 
-  # print("Finished")
-  # df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
-  # print(df)
-  # reader = easyocr.Reader(['en'])
-  # predicted_result = reader.readtext(img)
 
+    # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
+      .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
 
-  # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
-  # filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
-  #   .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
-  for j in range(len(prediction_groups)):
-    df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
-    words = athname.split()
+  words = athname.split()
 
-    status = False
+  status = False
 
-    for wd in words:
-      #nameexist = find_string(filter_predicted_result, wd)
-      nameexist = wd in df['text'].values
-      if nameexist:
+  for wd in words:
+    nameexist = find_string(filter_predicted_result, wd)
+    # nameexist = wd in df['text'].values
+    if nameexist:
+      # status = status + wd + " Verified - "
+      status = True
+    else:
+      # Check if
+      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+      df = pd.DataFrame(datax[0])
+      df[0] = df[0].map(str.lower)
+      lwd= wd.lower()
+      similar = difflib.get_close_matches(lwd, df[0].values)
+      # similar = []
+      if len(similar) > 0:
         # status = status + wd + " Verified - "
         status = True
       else:
-        # Check if
-        # datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-        # df = pd.DataFrame(datax[0])
-        # df[0] = df[0].map(str.lower)
-        lwd = wd.lower()
-        similar = difflib.get_close_matches(lwd, df['text'].values)
-        # similar = difflib.get_close_matches(lwd, df[0].values)
-        # similar = []
-        if len(similar) > 0:
-          # status = status + wd + " Verified - "
-          status = True
-        else:
-          # status = status + wd + " Unverified - "
-          status = False
-          # status = filter_predicted_result
-          return status
+        # status = status + wd + " Unverified - "
+        status = False
+        # status = filter_predicted_result
+        return status
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
@@ -638,6 +621,54 @@ def Scanpicture(athname, userid):
   return status
   # context = {'form': form}
   # return render(request, 'homepage.html', context)
+
+def ScanpictureKeras(athname, userid, file):
+  keras_loaded = KerasModelLoaded.objects.first()
+  if keras_loaded and keras_loaded.loaded is False:
+    pipeline = keras_ocr.pipeline.Pipeline()
+    keras_loaded.loaded = True
+    keras_loaded.save()
+  elif not keras_loaded:
+    pipeline = keras_ocr.pipeline.Pipeline()
+    aicreated = KerasModelLoaded.objects.create(loaded=True)
+
+  docs = Document.objects.filter(user=userid).values("user", "file")
+  df_docs = pd.DataFrame(list(docs))
+  images = []
+  print(df_docs)
+
+  path_of_docs = []
+  # for ind in df_docs.index:
+  path = os.getcwd() + "/media/" + file
+  path_of_docs.append(path)
+
+  print(path_of_docs)
+
+  images = [keras_ocr.tools.read(img) for img in path_of_docs]
+  prediction_groups = pipeline.recognize(images)
+  for j in range(len(prediction_groups)):
+    df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
+    kw = athname
+    if kw:
+      # check keyword with multiple words
+      words = kw.split()
+      allkeywords_status = False
+      for wd in words:
+        nameexist = wd in df['text'].values
+        if nameexist:
+          allkeywords_status = True
+        else:
+          lwd = wd.lower()
+          similar = difflib.get_close_matches(lwd, df['text'].values)
+          if len(similar) > 0:
+            allkeywords_status = True
+          else:
+            allkeywords_status = False
+            return allkeywords_status
+
+      if allkeywords_status:
+        return allkeywords_status
+
 
 
 def Checkpicture(userid):

@@ -21,6 +21,7 @@ import difflib
 
 scheduler = BackgroundScheduler()
 
+
 def period():
     keras_loaded = KerasModelLoaded.objects.first()
     if keras_loaded and keras_loaded.loaded == False:
