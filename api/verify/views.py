@@ -359,7 +359,7 @@ class DocumentScanView(APIView):
       doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.verified == True:
-        scanned = ScanpictureKeras(key_word, userid, doc.file)
+        scanned = ScanpictureKeras(key_word, userid)
         if scanned:
           scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
         # obj, created = Document.objects.update_or_create(
@@ -622,7 +622,7 @@ def Scanpicture(athname, userid):
   # context = {'form': form}
   # return render(request, 'homepage.html', context)
 
-def ScanpictureKeras(athname, userid, file):
+def ScanpictureKeras(athname, userid):
   keras_loaded = KerasModelLoaded.objects.first()
   if keras_loaded and keras_loaded.loaded is False:
     pipeline = keras_ocr.pipeline.Pipeline()
@@ -638,9 +638,13 @@ def ScanpictureKeras(athname, userid, file):
   print(df_docs)
 
   path_of_docs = []
+  folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+  for filename in os.listdir(folder):
+    path_to_document = folder + filename
+    path_of_docs.append(path_to_document)
   # for ind in df_docs.index:
-  path = os.getcwd() + "/media/" + file
-  path_of_docs.append(path)
+  # path = os.getcwd() + "/media/" + file
+  # path_of_docs.append(path)
 
   print(path_of_docs)
 
