@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FileSerializer, FileScanSerializer, HeadShotSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .models import Document, AIModel, HeadShot, AIModelLoaded
+from .models import Document, AIModel, HeadShot, AIModelLoaded, KerasModelLoaded
 import re
 import requests
 import json
@@ -35,7 +35,7 @@ from PIL import ImageStat
 from . import RRDBNet_arch as arch
 # from piq import niqe
 # import easyocr
-# import keras_ocr
+import keras_ocr
 # from numpy.lib.polynomial import poly
 # import matplotlib.pyplot as plt
 # import cvlib as cv
@@ -572,15 +572,27 @@ def Scanpicture(athname, userid):
     img = preprocess_image(path_to_document)
 
     # pytesseract method
-    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
-    predicted_result = pytesseract.image_to_string(img, lang='eng')
+    # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    # predicted_result = pytesseract.image_to_string(img, lang='eng')
 
     # Keras OCR method
+  keras_loaded = KerasModelLoaded.objects.first()
+  if keras_loaded and keras_loaded.loaded == False:
+    pipeline = keras_ocr.pipeline.Pipeline()
+    keras_loaded.loaded = True
+    keras_loaded.save()
+  elif not keras_loaded:
+    pipeline = keras_ocr.pipeline.Pipeline()
+    aicreated = KerasModelLoaded.objects.create(loaded=True)
+
+
     # print("path to document")
     # print(path_to_document)
     # pipeline = keras_ocr.pipeline.Pipeline()
-    # images = [keras_ocr.tools.read(img) for img in [path_to_document]]
-    # prediction_groups = pipeline.recognize(images)
+    images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
+    prediction_groups = pipeline.recognize(images)
+
+
     # print("Finished")
     # df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
     # print(df)
@@ -589,16 +601,16 @@ def Scanpicture(athname, userid):
 
 
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
-    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
-      .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
+    # filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
+    #   .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
 
   words = athname.split()
 
   status = False
 
   for wd in words:
-    nameexist = find_string(filter_predicted_result, wd)
-    # nameexist = wd in df['text'].values
+    #nameexist = find_string(filter_predicted_result, wd)
+    nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
       status = True
@@ -608,7 +620,8 @@ def Scanpicture(athname, userid):
       df = pd.DataFrame(datax[0])
       df[0] = df[0].map(str.lower)
       lwd= wd.lower()
-      similar = difflib.get_close_matches(lwd, df[0].values)
+      similar = difflib.get_close_matches(lwd, df['text'].values)
+      # similar = difflib.get_close_matches(lwd, df[0].values)
       # similar = []
       if len(similar) > 0:
         # status = status + wd + " Verified - "
