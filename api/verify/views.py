@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import FileSerializer, FileScanSerializer, HeadShotSerializer
 from django.views.decorators.csrf import csrf_exempt
-from .models import Document, AIModel, HeadShot
+from .models import Document, AIModel, HeadShot, AIModelLoaded
 import re
 import requests
 import json
@@ -53,7 +53,7 @@ classes = [
 static_folder = settings.STATIC_ROOT
 media_folder = settings.MEDIA_ROOT
 
-picture_id_model = static_folder + "/models/best_model.pth"
+picture_id_model = static_folder + "/models/best_model1.pth"
 picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
@@ -555,12 +555,16 @@ def find_string(text, target_string):
 
 
 def Scanpicture(athname, userid):
+  path_of_docs = []
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/documents/*"
   # test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
-  # folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
-  # for filename in os.listdir(folder):
-  #   path_to_document = folder + filename
+  folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+  for filename in os.listdir(folder):
+    path_to_document = folder + filename
+    path_of_docs.append(path_to_document)
+
+  print("path_of_docs:", path_of_docs)
   path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
   filter_predicted_result = ""
   for path_to_document in glob.glob(path, recursive=True):

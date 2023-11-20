@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from api.verify.models import Document
+from api.verify.models import Document, KerasModelLoaded
 #  from api.verify.views import preprocess_image
 import keras_ocr
 import pandas as pd
@@ -22,6 +22,15 @@ import difflib
 scheduler = BackgroundScheduler()
 
 def period():
+    keras_loaded = KerasModelLoaded.objects.first()
+    if keras_loaded and keras_loaded.loaded == False:
+        pipeline = keras_ocr.pipeline.Pipeline()
+        keras_loaded.loaded = True
+        keras_loaded.save()
+    elif not keras_loaded:
+        pipeline = keras_ocr.pipeline.Pipeline()
+        aicreated = KerasModelLoaded.objects.create(loaded=True)
+
     # cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | xargs -n1 kill -9"
     # os.system(cmd)
     docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword", "file")
@@ -43,7 +52,7 @@ def period():
         #     path_of_docs = path_of_docs.append(path_to_document)
     print(path_of_docs)
     # print(os.getcwd())
-    pipeline = keras_ocr.pipeline.Pipeline()
+
     images = [keras_ocr.tools.read(img) for img in path_of_docs]
     prediction_groups = pipeline.recognize(images)
     status = {"user":[]}

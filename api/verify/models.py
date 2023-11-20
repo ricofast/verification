@@ -64,3 +64,13 @@ class AIModel(models.Model):
 
     def __str__(self):
         return str(self.name)
+
+
+class KerasModelLoaded(models.Model):
+    loaded = models.BooleanField(default=False)
+    loadeddate = models.DateTimeField(auto_now=True)
+
+
+class AIModelLoaded(models.Model):
+    loaded = models.BooleanField(default=False)
+    loadeddate = models.DateTimeField(auto_now=True)
