@@ -574,7 +574,7 @@ def Scanpicture(athname, userid):
     # pytesseract method
     # pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
     # predicted_result = pytesseract.image_to_string(img, lang='eng')
-
+  status = False
     # Keras OCR method
   keras_loaded = KerasModelLoaded.objects.first()
   if keras_loaded and keras_loaded.loaded == False:
@@ -592,7 +592,6 @@ def Scanpicture(athname, userid):
     images = [keras_ocr.tools.read(img) for img in [path_of_docs]]
     prediction_groups = pipeline.recognize(images)
 
-
     # print("Finished")
     # df = pd.DataFrame(prediction_groups[0], columns=['text', 'bbox'])
     # print(df)
@@ -603,34 +602,35 @@ def Scanpicture(athname, userid):
     # predicted_result = pytesseract.image_to_string(img, lang='eng',config='--oem 3 --psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
     # filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
     #   .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
+    for j in range(len(prediction_groups)):
+        df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
+        words = athname.split()
 
-  words = athname.split()
-
-  status = False
-
-  for wd in words:
-    #nameexist = find_string(filter_predicted_result, wd)
-    nameexist = wd in df['text'].values
-    if nameexist:
-      # status = status + wd + " Verified - "
-      status = True
-    else:
-      # Check if
-      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-      df = pd.DataFrame(datax[0])
-      df[0] = df[0].map(str.lower)
-      lwd= wd.lower()
-      similar = difflib.get_close_matches(lwd, df['text'].values)
-      # similar = difflib.get_close_matches(lwd, df[0].values)
-      # similar = []
-      if len(similar) > 0:
-        # status = status + wd + " Verified - "
-        status = True
-      else:
-        # status = status + wd + " Unverified - "
         status = False
-        # status = filter_predicted_result
-        return status
+
+        for wd in words:
+          #nameexist = find_string(filter_predicted_result, wd)
+          nameexist = wd in df['text'].values
+          if nameexist:
+            # status = status + wd + " Verified - "
+            status = True
+          else:
+            # Check if
+            datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+            df = pd.DataFrame(datax[0])
+            df[0] = df[0].map(str.lower)
+            lwd= wd.lower()
+            similar = difflib.get_close_matches(lwd, df['text'].values)
+            # similar = difflib.get_close_matches(lwd, df[0].values)
+            # similar = []
+            if len(similar) > 0:
+              # status = status + wd + " Verified - "
+              status = True
+            else:
+              # status = status + wd + " Unverified - "
+              status = False
+              # status = filter_predicted_result
+              return status
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
