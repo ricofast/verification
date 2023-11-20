@@ -623,19 +623,19 @@ def Scanpicture(athname, userid):
   # return render(request, 'homepage.html', context)
 
 def ScanpictureKeras(athname, userid):
-  keras_loaded = KerasModelLoaded.objects.first()
-  if keras_loaded and keras_loaded.loaded is False:
-    pipeline = keras_ocr.pipeline.Pipeline()
-    keras_loaded.loaded = True
-    keras_loaded.save()
-  elif not keras_loaded:
-    pipeline = keras_ocr.pipeline.Pipeline()
-    aicreated = KerasModelLoaded.objects.create(loaded=True)
+  # keras_loaded = KerasModelLoaded.objects.first()
+  # if keras_loaded and keras_loaded.loaded is False:
+  #   pipeline = keras_ocr.pipeline.Pipeline()
+  #   keras_loaded.loaded = True
+  #   keras_loaded.save()
+  # elif not keras_loaded:
+  #   pipeline = keras_ocr.pipeline.Pipeline()
+  #   aicreated = KerasModelLoaded.objects.create(loaded=True)
 
-  docs = Document.objects.filter(user=userid).values("user", "file")
-  df_docs = pd.DataFrame(list(docs))
-  images = []
-  print(df_docs)
+  # docs = Document.objects.filter(user=userid).values("user", "file")
+  # df_docs = pd.DataFrame(list(docs))
+  # images = []
+  # print(df_docs)
 
   path_of_docs = []
   folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
@@ -647,7 +647,7 @@ def ScanpictureKeras(athname, userid):
   # path_of_docs.append(path)
 
   print(path_of_docs)
-
+  pipeline = keras_ocr.pipeline.Pipeline()
   images = [keras_ocr.tools.read(img) for img in path_of_docs]
   prediction_groups = pipeline.recognize(images)
   for j in range(len(prediction_groups)):
