@@ -899,7 +899,7 @@ class DocumentManualVerifiedView(APIView):
 
         return Response(result.text, status=status.HTTP_200_OK)
       else:
-        return Response(result.text, status=status.HTTP_404_NOT_FOUND)
+        return Response(result.status_code, status=status.HTTP_404_NOT_FOUND)
 
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
