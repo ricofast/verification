@@ -897,9 +897,9 @@ class DocumentManualVerifiedView(APIView):
       if result.status_code == 200:
         deleted = "Done"
 
-        return Response(deleted, status=status.HTTP_200_OK)
+        return Response(result, status=status.HTTP_200_OK)
       else:
-        return Response(deleted, status=status.HTTP_404_NOT_FOUND)
+        return Response(result, status=status.HTTP_404_NOT_FOUND)
 
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
