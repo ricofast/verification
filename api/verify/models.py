@@ -18,13 +18,10 @@ class Document(models.Model):
     file = ContentTypeRestrictedFileField(upload_to=document_directory_path,
                                              content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                              max_upload_size=52428800, blank=True, null=True)
-    # document1 = ContentTypeRestrictedFileField(upload_to=document_directory_path,
-    #                                       content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
-    #                                       max_upload_size=52428800, blank=True, null=True)
-    # document2 = ContentTypeRestrictedFileField(upload_to=document_directory_path,
-    #                                       content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
-    #                                       max_upload_size=52428800, blank=True, null=True)
+
     keyword = models.CharField(max_length=150, null=True, blank=True)
+    # 1: Name
+    # 2: DOB
 
     name = models.CharField(max_length=150, null=True, blank=True)
     name_checked = models.BooleanField(default=False)
@@ -39,7 +36,7 @@ class Document(models.Model):
 
     verified = models.BooleanField(default=False)
     scanned = models.BooleanField(default=False)
-
+    scanned_historic = models.CharField(max_length=50, null=True, blank=True)
     def __str__(self):
         return str(self.user)
 

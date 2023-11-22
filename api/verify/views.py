@@ -354,9 +354,16 @@ class DocumentScanView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
+      key_type = file_serializer.data['keytype']
+      # athlete_dob = file_serializer.data['athdob']
 
+      # keyword = key_word
       scanned = "Verified"
       doc = Document.objects.filter(user=userid).first()
+
+      # if key_type == "1":
+        # if athlete_name:
+        #   doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.verified == True:
         scanned = Scanpicture(key_word, userid)
@@ -366,12 +373,42 @@ class DocumentScanView(APIView):
         #   user=userid,
         #   defaults={'scanned': True},
         # )
+          if key_type == "1":
+            doc.name = key_word
+            doc.name_checked = True
+            if doc.scanned_historic:
+              doc.scanned_historic = doc.scanned_historic + "-1"
+            else:
+                doc.scanned_historic = "1"
+          elif key_type == "2":
+            doc.dob = key_word
+            doc.dob_checked = True
+            if doc.scanned_historic:
+              doc.scanned_historic = doc.scanned_historic + "-2"
+            else:
+              doc.scanned_historic = "2"
+
           doc.scanned = True
-          doc.keyword = key_word
+          doc.keyword = key_type
+
           doc.save()
         else:
           scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
-          doc.keyword = key_word
+          if key_type == "1":
+            doc.name = key_word
+            doc.name_checked = False
+            if doc.scanned_historic:
+              doc.scanned_historic = doc.scanned_historic + "-1"
+            else:
+                doc.scanned_historic = "1"
+          elif key_type == "2":
+            doc.dob = key_word
+            doc.dob_checked = False
+            if doc.scanned_historic:
+              doc.scanned_historic = doc.scanned_historic + "-2"
+            else:
+              doc.scanned_historic = "2"
+          doc.keyword = key_type
           doc.save()
       elif doc and doc.verified == False:
         return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
