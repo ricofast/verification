@@ -353,8 +353,8 @@ class DocumentScanView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-      key_word = file_serializer.data['keyword']
-      key_type = file_serializer.data['keytype']
+      key_word = file_serializer.data['name']
+      key_type = file_serializer.data['keyword']
       # athlete_dob = file_serializer.data['athdob']
 
       # keyword = key_word
