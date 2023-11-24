@@ -33,79 +33,162 @@ def period():
     #     pipeline = keras_ocr.pipeline.Pipeline()
     #     aicreated = KerasModelLoaded.objects.create(loaded=True)
 
+    all_docs = Document.objects.filter(verified=True)
+    doc = all_docs.filter((Q(name__isnull=False) & Q(name_checked=False)) | (Q(dob__isnull=False) & Q(dob_checked=False)))
+    doc_name = all_docs.filter(name__isnull=False, name_checked=False).values("user", "name", "file")
+    doc_dbo = all_docs.filter(dob__isnull=False, dob_checked=False).values("user", "dob", "file")
 
-    doc = Document.objects.filter(Q(verified=True) & ((Q(name__isnull=False) & Q(name_checked=False)) | (Q(dob__isnull=False) & Q(dob_checked=False))))
-    docs = doc.values("user", "keyword", "file")
+    # docs = doc.values("user", "keyword", "file")
+    df_docs_name = pd.DataFrame(list(doc_name))
+    df_docs_dob = pd.DataFrame(list(doc_dbo))
 
-    df_docs = pd.DataFrame(list(docs))
-    images = []
-    print(df_docs)
+    pipeline = keras_ocr.pipeline.Pipeline()
     url = "https://7yq1ahwwq0.execute-api.us-east-1.amazonaws.com/document-verified"
     header = {
         "Content-Type": "application/json",
         "Authorization": "4b338f063102cc66e604b12941bbefc2fad15840ec7ef98442028edba64ce98a",
     }
-    path_of_docs = []
-    for ind in df_docs.index:
-        # path = os.getcwd() + "/media/documents/user_" + str(df_docs["user"][ind]) + "/*"
-        path = os.getcwd() + "/media/" + df_docs["file"][ind]
-        path_of_docs.append(path)
-        # for path_to_document in glob.glob(path, recursive=True):
-        #     path_of_docs = path_of_docs.append(path_to_document)
-    print(path_of_docs)
-    # print(os.getcwd())
-    pipeline = keras_ocr.pipeline.Pipeline()
-    images = [keras_ocr.tools.read(img) for img in path_of_docs]
-    prediction_groups = pipeline.recognize(images)
-    status = {"user":[]}
-    for j in range(len(prediction_groups)):
-        df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
-        userid = df_docs.loc[j, "user"]
-        kw = df_docs.loc[j, "keyword"]
-        if kw:
-            # check keyword with multiple words
-            words = kw.split()
-            allkeywords_status = False
-            for wd in words:
-                nameexist = wd in df['text'].values
-                if nameexist:
-                    allkeywords_status = True
-                else:
-                    lwd = wd.lower()
-                    similar = difflib.get_close_matches(lwd, df['text'].values)
-                    if len(similar) > 0:
+    if df_docs_name.size > 0:
+        df_docs = df_docs_name
+        images = []
+        print(df_docs)
+
+        path_of_docs = []
+        for ind in df_docs.index:
+            # path = os.getcwd() + "/media/documents/user_" + str(df_docs["user"][ind]) + "/*"
+            path = os.getcwd() + "/media/" + df_docs["file"][ind]
+            path_of_docs.append(path)
+            # for path_to_document in glob.glob(path, recursive=True):
+            #     path_of_docs = path_of_docs.append(path_to_document)
+        print(path_of_docs)
+        # print(os.getcwd())
+
+        images = [keras_ocr.tools.read(img) for img in path_of_docs]
+        prediction_groups = pipeline.recognize(images)
+        status = {"user":[]}
+        for j in range(len(prediction_groups)):
+            df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
+            userid = df_docs.loc[j, "user"]
+            kw = df_docs.loc[j, "keyword"]
+            if kw:
+                # check keyword with multiple words
+                words = kw.split()
+                allkeywords_status = False
+                for wd in words:
+                    nameexist = wd in df['text'].values
+                    if nameexist:
                         allkeywords_status = True
                     else:
-                        allkeywords_status = False
-                        break
-            # for i in range(len(df)-1):
-            #     kw = df_docs.loc[j, "keyword"]
-            #     nameexist = kw in df.loc[i, 'text']
-            # nameexist = kw in df['text'].values
-            if allkeywords_status:
+                        lwd = wd.lower()
+                        similar = difflib.get_close_matches(lwd, df['text'].values)
+                        if len(similar) > 0:
+                            allkeywords_status = True
+                        else:
+                            allkeywords_status = False
+                            break
+                # for i in range(len(df)-1):
+                #     kw = df_docs.loc[j, "keyword"]
+                #     nameexist = kw in df.loc[i, 'text']
+                # nameexist = kw in df['text'].values
+                if allkeywords_status:
 
-                payload = {
-                    "user": userid,
-                    "result": "1"
-                }
+                    payload = {
+                        "user": userid,
+                        "result": "1"
+                    }
 
-                result = requests.post(url, data=json.dumps(payload), headers=header)
+                    result = requests.post(url, data=json.dumps(payload), headers=header)
 
-                if result.status_code == 200:
-                    status["user"].append(str(userid))
+                    if result.status_code == 200:
+                        status["user"].append(str(userid))
 
-                    obj, created = Document.objects.update_or_create(user=userid, defaults={'scanned': True},)
+                        obj, created = Document.objects.update_or_create(user=userid, defaults={'name_checked': True},)
+                else:
+                    payload = {
+                        "user": userid,
+                        "result": "2"
+                    }
 
-                # with open('verifieds.json', 'a') as f:
-                #     f.write(str(userid))
-                #     f.write('\n')
-            # else:
-            #     status.append("Unverified")
+                    result = requests.post(url, data=json.dumps(payload), headers=header)
 
-            with open('media/verified/verified.json', 'w') as f:
-                json.dump(status, f)
+                    # with open('verifieds.json', 'a') as f:
+                    #     f.write(str(userid))
+                    #     f.write('\n')
+                # else:
+                #     status.append("Unverified")
 
+                with open('media/verified/verified.json', 'w') as f:
+                    json.dump(status, f)
 
+    if df_docs_dob.size > 0:
+        df_docs = df_docs_dob
+        images = []
+        print(df_docs)
+
+        path_of_docs = []
+        for ind in df_docs.index:
+            # path = os.getcwd() + "/media/documents/user_" + str(df_docs["user"][ind]) + "/*"
+            path = os.getcwd() + "/media/" + df_docs["file"][ind]
+            path_of_docs.append(path)
+            # for path_to_document in glob.glob(path, recursive=True):
+            #     path_of_docs = path_of_docs.append(path_to_document)
+        print(path_of_docs)
+        # print(os.getcwd())
+
+        images = [keras_ocr.tools.read(img) for img in path_of_docs]
+        prediction_groups = pipeline.recognize(images)
+        status = {"user": []}
+        for j in range(len(prediction_groups)):
+            df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
+            userid = df_docs.loc[j, "user"]
+            kw = df_docs.loc[j, "keyword"]
+            if kw:
+                # check keyword with multiple words
+                words = kw.split()
+                allkeywords_status = False
+                for wd in words:
+                    nameexist = wd in df['text'].values
+                    if nameexist:
+                        allkeywords_status = True
+                    else:
+                        lwd = wd.lower()
+                        similar = difflib.get_close_matches(lwd, df['text'].values)
+                        if len(similar) > 0:
+                            allkeywords_status = True
+                        else:
+                            allkeywords_status = False
+                            break
+                # for i in range(len(df)-1):
+                #     kw = df_docs.loc[j, "keyword"]
+                #     nameexist = kw in df.loc[i, 'text']
+                # nameexist = kw in df['text'].values
+                if allkeywords_status:
+
+                    payload = {
+                        "user": userid,
+                        "result": "3"
+                    }
+
+                    result = requests.post(url, data=json.dumps(payload), headers=header)
+
+                    if result.status_code == 200:
+                        status["user"].append(str(userid))
+
+                        obj, created = Document.objects.update_or_create(user=userid, defaults={'dob_checked': True}, )
+                else:
+                    payload = {
+                        "user": userid,
+                        "result": "4"
+                    }
+                    result = requests.post(url, data=json.dumps(payload), headers=header)
+                    # with open('verifieds.json', 'a') as f:
+                    #     f.write(str(userid))
+                    #     f.write('\n')
+                # else:
+                #     status.append("Unverified")
+
+                with open('media/verified/verified.json', 'w') as f:
+                    json.dump(status, f)
 
 def start():
     scheduler.add_job(period, "interval", hours=2, id="unverifiedusers_001",

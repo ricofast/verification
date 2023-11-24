@@ -25,9 +25,11 @@ class Document(models.Model):
 
     name = models.CharField(max_length=150, null=True, blank=True)
     name_checked = models.BooleanField(default=False)
+    name_received = models.BooleanField(default=False)
 
     dob = models.CharField(max_length=50, null=True, blank=True)
     dob_checked = models.BooleanField(default=False)
+    dob_received = models.BooleanField(default=False)
 
     grade = models.CharField(max_length=10, null=True, blank=True)
     grade_checked = models.BooleanField(default=False)
