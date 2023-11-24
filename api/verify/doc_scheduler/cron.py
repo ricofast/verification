@@ -8,6 +8,7 @@ import os
 import json
 import requests
 import difflib
+import datetime
 # import glob
 # import shutil
 
@@ -65,11 +66,12 @@ def period():
 
         images = [keras_ocr.tools.read(img) for img in path_of_docs]
         prediction_groups = pipeline.recognize(images)
-        status = {"user":[]}
+        status = {"user":[],
+                  "passed":[]}
         for j in range(len(prediction_groups)):
             df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
             userid = df_docs.loc[j, "user"]
-            kw = df_docs.loc[j, "keyword"]
+            kw = df_docs.loc[j, "name"]
             if kw:
                 # check keyword with multiple words
                 words = kw.split()
@@ -101,8 +103,9 @@ def period():
 
                     if result.status_code == 200:
                         status["user"].append(str(userid))
-
-                        obj, created = Document.objects.update_or_create(user=userid, defaults={'name_checked': True},)
+                        status["passed"].append("Yes")
+                        obj, created = Document.objects.update_or_create(
+                            user=userid, defaults={'name_checked': True, 'name_received': True},)
                 else:
                     payload = {
                         "user": userid,
@@ -110,15 +113,20 @@ def period():
                     }
 
                     result = requests.post(url, data=json.dumps(payload), headers=header)
-
+                    if result.status_code == 200:
+                        status["user"].append(str(userid))
+                        status["passed"].append("No")
                     # with open('verifieds.json', 'a') as f:
                     #     f.write(str(userid))
                     #     f.write('\n')
                 # else:
                 #     status.append("Unverified")
 
-                with open('media/verified/verified.json', 'w') as f:
-                    json.dump(status, f)
+        dt = datetime.datetime.now()
+        seq = int(dt.strftime("%Y%m%d%H%M%S"))
+        filename = f'media/verified/verified-name-{seq}.json'
+        with open(filename, 'w') as f:
+            json.dump(status, f)
 
     if df_docs_dob.size > 0:
         df_docs = df_docs_dob
@@ -137,11 +145,12 @@ def period():
 
         images = [keras_ocr.tools.read(img) for img in path_of_docs]
         prediction_groups = pipeline.recognize(images)
-        status = {"user": []}
+        status = {"user": [],
+                  "passed": []}
         for j in range(len(prediction_groups)):
             df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
             userid = df_docs.loc[j, "user"]
-            kw = df_docs.loc[j, "keyword"]
+            kw = df_docs.loc[j, "dob"]
             if kw:
                 # check keyword with multiple words
                 words = kw.split()
@@ -173,22 +182,28 @@ def period():
 
                     if result.status_code == 200:
                         status["user"].append(str(userid))
-
-                        obj, created = Document.objects.update_or_create(user=userid, defaults={'dob_checked': True}, )
+                        status["passed"].append("Yes")
+                        obj, created = Document.objects.update_or_create(
+                            user=userid, defaults={'dob_checked': True, 'dob_received': True}, )
                 else:
                     payload = {
                         "user": userid,
                         "result": "4"
                     }
                     result = requests.post(url, data=json.dumps(payload), headers=header)
+                    if result.status_code == 200:
+                        status["user"].append(str(userid))
+                        status["passed"].append("No")
                     # with open('verifieds.json', 'a') as f:
                     #     f.write(str(userid))
                     #     f.write('\n')
                 # else:
                 #     status.append("Unverified")
-
-                with open('media/verified/verified.json', 'w') as f:
-                    json.dump(status, f)
+        dt = datetime.datetime.now()
+        seq = int(dt.strftime("%Y%m%d%H%M%S"))
+        filename = f'media/verified/verified-dob-{seq}.json'
+        with open(filename, 'w') as f:
+            json.dump(status, f)
 
 def start():
     scheduler.add_job(period, "interval", hours=2, id="unverifiedusers_001",
