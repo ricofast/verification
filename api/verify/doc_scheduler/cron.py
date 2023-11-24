@@ -1,6 +1,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from api.verify.models import Document, KerasModelLoaded
 #  from api.verify.views import preprocess_image
+from django.db.models import Q
 import keras_ocr
 import pandas as pd
 import os
@@ -23,19 +24,19 @@ scheduler = BackgroundScheduler()
 
 
 def period():
-    keras_loaded = KerasModelLoaded.objects.first()
-    if keras_loaded and keras_loaded.loaded == False:
-        pipeline = keras_ocr.pipeline.Pipeline()
-        keras_loaded.loaded = True
-        keras_loaded.save()
-    elif not keras_loaded:
-        pipeline = keras_ocr.pipeline.Pipeline()
-        aicreated = KerasModelLoaded.objects.create(loaded=True)
+    # keras_loaded = KerasModelLoaded.objects.first()
+    # if keras_loaded and keras_loaded.loaded == False:
+    #     pipeline = keras_ocr.pipeline.Pipeline()
+    #     keras_loaded.loaded = True
+    #     keras_loaded.save()
+    # elif not keras_loaded:
+    #     pipeline = keras_ocr.pipeline.Pipeline()
+    #     aicreated = KerasModelLoaded.objects.create(loaded=True)
 
-    # cmd = "nvidia-smi | grep 'python' | awk '{ print $5 }' | xargs -n1 kill -9"
-    # os.system(cmd)
-    docs = Document.objects.filter(verified=True, scanned=False).values("user", "keyword", "file")
-    # doc = Document.objects.create(user=19, keyword='Test 22')
+
+    doc = Document.objects.filter(Q(verified=True) & ((Q(name__isnull=False) & Q(name_checked=False)) | (Q(dob__isnull=False) & Q(dob_checked=False))))
+    docs = doc.values("user", "keyword", "file")
+
     df_docs = pd.DataFrame(list(docs))
     images = []
     print(df_docs)
@@ -53,7 +54,7 @@ def period():
         #     path_of_docs = path_of_docs.append(path_to_document)
     print(path_of_docs)
     # print(os.getcwd())
-
+    pipeline = keras_ocr.pipeline.Pipeline()
     images = [keras_ocr.tools.read(img) for img in path_of_docs]
     prediction_groups = pipeline.recognize(images)
     status = {"user":[]}
@@ -84,13 +85,15 @@ def period():
             if allkeywords_status:
 
                 payload = {
-                    "user": userid
+                    "user": userid,
+                    "result": "1"
                 }
 
                 result = requests.post(url, data=json.dumps(payload), headers=header)
 
                 if result.status_code == 200:
                     status["user"].append(str(userid))
+
                     obj, created = Document.objects.update_or_create(user=userid, defaults={'scanned': True},)
 
                 # with open('verifieds.json', 'a') as f:

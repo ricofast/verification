@@ -156,11 +156,15 @@ def headshots_count(image_path):
   boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
+  class_id = dp.labels.astype(int)
 
+  verified = False
+  if one_person and class_id[0] == 0:
+    verified = True
   # gc.collect()
   # with torch.no_grad():
   #   torch.cuda.empty_cache()
-  return one_person
+  return verified
 
 
 def is_image_clear(image_path, threshold=3.5):
