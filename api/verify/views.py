@@ -290,7 +290,7 @@ class FileUpdateView(APIView):
 
           obj, created = Document.objects.update_or_create(
             user=userid,
-            defaults={'verified': True, 'file': filename, 'scanned': False},
+            defaults={'verified': True, 'file': filename, 'scanned': False, 'document_type': verified},
           )
           checkTextinImage = Checkpicture(userid)
           verified = "Valid"
@@ -310,7 +310,7 @@ class FileUpdateView(APIView):
       elif doc is None and verified != "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
-          defaults={'verified': True, 'file': filename},
+          defaults={'verified': True, 'file': filename, 'document_type': verified},
         )
         checkTextinImage = Checkpicture(userid)
         verified = "Valid"
@@ -357,8 +357,8 @@ class DocumentScanView(APIView):
 
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
-      key_word = file_serializer.data['name']
-      key_type = file_serializer.data['keyword']
+      key_word = file_serializer.data['keyword']
+      key_type = file_serializer.data['keyword_type']
       # athlete_dob = file_serializer.data['athdob']
 
       # keyword = key_word

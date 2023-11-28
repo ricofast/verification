@@ -5,14 +5,14 @@ from .models import Document, HeadShot
 class FileSerializer(serializers.ModelSerializer):
     class Meta():
         model = Document
-        fields = ('user', 'verified', 'file', 'uploaded')
+        fields = ('user', 'verified', 'file', 'uploaded', 'document_type')
 
 
 class FileScanSerializer(serializers.ModelSerializer):
     class Meta():
         model = Document
         fields = ('user', 'keyword', 'name', 'name_checked', 'dob', 'dob_checked',
-                  'grade', 'grade_checked', 'scanned', 'verified')
+                  'grade', 'grade_checked', 'scanned', 'verified', 'keyword_type', 'document_type')
 
 
 class HeadShotSerializer(serializers.ModelSerializer):
