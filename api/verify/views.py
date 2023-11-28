@@ -380,6 +380,7 @@ class DocumentScanView(APIView):
           if key_type == 1:
             doc.name = key_word
             doc.name_checked = True
+            doc.keyword_type = "1"
             if doc.scanned_historic:
               doc.scanned_historic = doc.scanned_historic + "-1"
             else:
@@ -387,13 +388,14 @@ class DocumentScanView(APIView):
           elif key_type == 2:
             doc.dob = key_word
             doc.dob_checked = True
+            doc.keyword_type = "2"
             if doc.scanned_historic:
               doc.scanned_historic = doc.scanned_historic + "-2"
             else:
               doc.scanned_historic = "2"
 
           doc.scanned = True
-          doc.keyword = key_word
+          doc.keywor = key_word
 
           doc.save()
         else:
@@ -401,6 +403,7 @@ class DocumentScanView(APIView):
           if key_type == "1":
             doc.name = key_word
             doc.name_checked = False
+            doc.keyword_type = "1"
             if doc.scanned_historic:
               doc.scanned_historic = doc.scanned_historic + "-1"
             else:
@@ -408,6 +411,7 @@ class DocumentScanView(APIView):
           elif key_type == "2":
             doc.dob = key_word
             doc.dob_checked = False
+            doc.keyword_type = "2"
             if doc.scanned_historic:
               doc.scanned_historic = doc.scanned_historic + "-2"
             else:
