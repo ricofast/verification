@@ -358,7 +358,7 @@ class DocumentScanView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
-      key_type = file_serializer.data['keyword_type']
+      key_type = int(file_serializer.data['keyword_type'])
       # athlete_dob = file_serializer.data['athdob']
 
       # keyword = key_word
@@ -377,14 +377,14 @@ class DocumentScanView(APIView):
         #   user=userid,
         #   defaults={'scanned': True},
         # )
-          if key_type == "1":
+          if key_type == 1:
             doc.name = key_word
             doc.name_checked = True
             if doc.scanned_historic:
               doc.scanned_historic = doc.scanned_historic + "-1"
             else:
                 doc.scanned_historic = "1"
-          elif key_type == "2":
+          elif key_type == 2:
             doc.dob = key_word
             doc.dob_checked = True
             if doc.scanned_historic:
@@ -393,7 +393,7 @@ class DocumentScanView(APIView):
               doc.scanned_historic = "2"
 
           doc.scanned = True
-          doc.keyword = key_type
+          doc.keyword = key_word
 
           doc.save()
         else:
