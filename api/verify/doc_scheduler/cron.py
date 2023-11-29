@@ -51,8 +51,8 @@ def period():
         "Content-Type": "application/json",
         "Authorization": "4b338f063102cc66e604b12941bbefc2fad15840ec7ef98442028edba64ce98a",
     }
-    if df_docs_name.size > 0:
-        df_docs = df_docs_name
+    if df_docs_name_dob.size > 0:
+        df_docs = df_docs_name_dob
         images = []
         print(df_docs)
 
