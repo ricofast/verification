@@ -18,7 +18,7 @@ class Document(models.Model):
     file = ContentTypeRestrictedFileField(upload_to=document_directory_path,
                                              content_types=['image/bmp', 'image/gif', 'image/jpeg', 'image/png', ],
                                              max_upload_size=52428800, blank=True, null=True)
-    document_type = models.CharField(max_length=50, null=True, blank=True) # 1: Birth Certificate, 2: ID ,...
+    document_type = models.IntegerField(default=0) # 1: Birth Certificate, 2: ID ,...
     keyword_type = models.CharField(max_length=1, null=True, blank=True) # 1: Name, 2: DOB
     keyword = models.CharField(max_length=150, null=True, blank=True)
 

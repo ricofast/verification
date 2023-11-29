@@ -239,7 +239,7 @@ def classify(aimodel, image_transforms, grayimage_transforms, image_path, classe
 
   output = aimodel(image)
   _, predicted = torch.max(output.data, 1)
-
+  # predicted : "Birth Certificate" or "ID / DL" or "Invalide"
   return classes[predicted.item()]
 
 
@@ -276,6 +276,13 @@ class FileUpdateView(APIView):
       # print("__name__")
       # print(__name__)
       verified = classify(ai_model, image_transforms,grayimage_transforms, filename, classes)
+      doc_type = 0
+      if verified == "Birth Certificate":
+        doc_type = 1
+      elif verified == "ID / DL":
+        doc_type = 2
+
+
       # if verified == "Invalid":
       doc = Document.objects.filter(user=userid).first()
       if doc:
@@ -290,7 +297,7 @@ class FileUpdateView(APIView):
 
           obj, created = Document.objects.update_or_create(
             user=userid,
-            defaults={'verified': True, 'file': filename, 'scanned': False, 'document_type': verified},
+            defaults={'verified': True, 'file': filename, 'scanned': False, 'document_type': doc_type},
           )
           checkTextinImage = Checkpicture(userid)
           verified = "Valid"
@@ -310,7 +317,7 @@ class FileUpdateView(APIView):
       elif doc is None and verified != "Invalid":
         obj, created = Document.objects.update_or_create(
           user=userid,
-          defaults={'verified': True, 'file': filename, 'document_type': verified},
+          defaults={'verified': True, 'file': filename, 'document_type': doc_type},
         )
         checkTextinImage = Checkpicture(userid)
         verified = "Valid"
