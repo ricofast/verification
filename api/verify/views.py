@@ -279,7 +279,7 @@ class FileUpdateView(APIView):
       doc_type = 0
       if verified == "Birth Certificate":
         doc_type = 1
-      elif verified == "ID / DL":
+      elif verified == "ID/DL":
         doc_type = 2
 
 
