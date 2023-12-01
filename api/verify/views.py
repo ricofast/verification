@@ -995,7 +995,7 @@ class TestDocumentScanView(APIView):
         #   doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.verified == True:
-        scanned = Scanpicture(key_word, userid)
+        scanned = TestScanpicture(key_word, userid)
         if scanned:
           scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
         # obj, created = Document.objects.update_or_create(
@@ -1051,3 +1051,49 @@ class TestDocumentScanView(APIView):
       return Response(scanned, status=status.HTTP_201_CREATED)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+def TestScanpicture(athname, userid):
+
+  path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
+  filter_predicted_result = ""
+  for path_to_document in glob.glob(path, recursive=True):
+    img = preprocess_image(path_to_document)
+
+    # pytesseract method
+    pytesseract.pytesseract.tesseract_cmd = r'/usr/bin/tesseract'
+    predicted_result = pytesseract.image_to_string(img, lang='eng')
+
+    filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
+      .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
+
+  words = athname.split()
+
+  status = False
+
+  for wd in words:
+    print("keyword:", wd)
+    nameexist = find_string(filter_predicted_result, wd)
+    print("Exist: ", nameexist)
+    if nameexist:
+      status = True
+    else:
+      # Check if
+      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+      df = pd.DataFrame(datax[0])
+      print(df[0])
+      df[0] = df[0].map(str.lower)
+      lwd= wd.lower()
+      similar = difflib.get_close_matches(lwd, df[0].values)
+      print("Similar: ",similar)
+      # similar = []
+      if len(similar) > 0:
+        # status = status + wd + " Verified - "
+        status = True
+      else:
+        # status = status + wd + " Unverified - "
+        status = False
+        # status = filter_predicted_result
+        return status
+
+  return status
