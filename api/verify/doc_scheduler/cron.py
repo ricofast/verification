@@ -72,12 +72,17 @@ def period():
                   "Name": [], "DOB": []}
         for j in range(len(prediction_groups)):
             df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
+            print("predictions:", df['text'].values)
             dobchecked = df_docs.loc[j, "dob_checked"]
             namechecked = df_docs.loc[j, "name_checked"]
             userid = df_docs.loc[j, "user"]
+            print("User: ", userid)
+            print("dob_checked: ", dobchecked)
+            print("name_checked: ", namechecked)
             if namechecked is False:
 
                 kw = df_docs.loc[j, "name"]
+                print("name: ", kw)
                 name_status = 2
                 if kw:
                     # check keyword with multiple words
@@ -85,13 +90,18 @@ def period():
                     allkeywords_status = False
 
                     for wd in words:
+
+                        print("keyword:", wd)
+
                         nameexist = wd in df['text'].values
+                        print("Exist: ", nameexist)
                         if nameexist:
                             allkeywords_status = True
                             name_status = 1
                         else:
                             lwd = wd.lower()
                             similar = difflib.get_close_matches(lwd, df['text'].values)
+                            print(similar)
                             if len(similar) > 0:
                                 allkeywords_status = True
                                 name_status = 1
@@ -110,13 +120,17 @@ def period():
                     allkeywords_status = False
 
                     for wd in words:
+                        print("keyword:", wd)
+
                         nameexist = wd in df['text'].values
+                        print("Exist: ", nameexist)
                         if nameexist:
                             allkeywords_status = True
                             dob_status = 1
                         else:
                             lwd = wd.lower()
                             similar = difflib.get_close_matches(lwd, df['text'].values)
+                            print(similar)
                             if len(similar) > 0:
                                 allkeywords_status = True
                                 dob_status = 1
@@ -178,7 +192,7 @@ def period():
                     status["user"].append(str(userid))
                     status["Name"].append("No")
                     status["DOB"].append("No")
-
+        print("status: ", status)
         dt = datetime.datetime.now()
         seq = int(dt.strftime("%Y%m%d%H%M%S"))
         filename = f'media/verified/verified-athlete-{seq}.json'
@@ -263,6 +277,6 @@ def period():
     #         json.dump(status, f)
 
 def start():
-    scheduler.add_job(period, "interval", hours=2, id="unverifiedusers_001",
+    scheduler.add_job(period, "interval", minutes=2, id="unverifiedusers_001",
                     replace_existing=True)
     scheduler.start()
