@@ -68,6 +68,7 @@ def period():
 
         images = [keras_ocr.tools.read(img) for img in path_of_docs]
         prediction_groups = pipeline.recognize(images)
+        print("predictions Done")
         status = {"user": [],
                   "Name": [], "DOB": []}
         for j in range(len(prediction_groups)):
