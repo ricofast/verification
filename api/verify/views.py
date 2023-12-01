@@ -688,6 +688,7 @@ def ScanpictureKeras(athname, userid):
   prediction_groups = pipeline.recognize(images)
   for j in range(len(prediction_groups)):
     df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
+    print(df['text'])
     kw = athname
     if kw:
       # check keyword with multiple words
