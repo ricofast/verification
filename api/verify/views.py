@@ -995,7 +995,7 @@ class TestDocumentScanView(APIView):
         #   doc = Document.objects.filter(user=userid).first()
 
       if doc and doc.verified == True:
-        scanned = TestScanpicture(key_word, userid)
+        scanned = ScanpictureKeras(key_word, userid)
         if scanned:
           scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
         # obj, created = Document.objects.update_or_create(
