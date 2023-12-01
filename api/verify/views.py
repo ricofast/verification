@@ -694,7 +694,10 @@ def ScanpictureKeras(athname, userid):
       words = kw.split()
       allkeywords_status = False
       for wd in words:
+        print("keyword:", wd)
+
         nameexist = wd in df['text'].values
+        print("Exist: ", nameexist)
         if nameexist:
           allkeywords_status = True
         else:
