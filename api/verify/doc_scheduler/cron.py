@@ -80,6 +80,8 @@ def period():
             print("User: ", userid)
             print("dob_checked: ", dobchecked)
             print("name_checked: ", namechecked)
+            print("Name: ", df_docs.loc[j, "name"])
+
             if namechecked is False:
 
                 kw = df_docs.loc[j, "name"]
