@@ -35,7 +35,7 @@ def period():
     #     aicreated = KerasModelLoaded.objects.create(loaded=True)
 
     all_docs = Document.objects.filter(verified=True)
-    doc = all_docs.filter((Q(name_checked=False)) | (Q(dob_checked=False)))
+    doc = all_docs.filter((Q(name_checked=False) & Q(name__isnull=False)) | (Q(dob_checked=False) & Q(dob__isnull=False)))
     doc_name_dob = doc.values("user", "name", "dob", "file", "name_checked", "dob_checked")
     doc_name = all_docs.filter(name__isnull=False, name_checked=False).values("user", "name", "file").values("user", "name", "file")
     doc_dbo = all_docs.filter(dob__isnull=False, dob_checked=False).values("user", "dob", "file")
