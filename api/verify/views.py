@@ -704,6 +704,7 @@ def ScanpictureKeras(athname, userid):
         else:
           lwd = wd.lower()
           similar = difflib.get_close_matches(lwd, df['text'].values)
+          print(similar)
           if len(similar) > 0:
             allkeywords_status = True
           else:
