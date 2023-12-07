@@ -158,13 +158,13 @@ def headshots_count(image_path):
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
   class_id = dp.labels.astype(int)
-
+  count = class_id.count(0)
   verified = False
   if one_person and class_id[0] == 0:
     verified = True
   # gc.collect()
   # with torch.no_grad():
-  verified = class_id[0]
+
   #   torch.cuda.empty_cache()
   return verified
 
@@ -481,7 +481,7 @@ class PictureVerifyView(APIView):
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
       # is_clear = False
-      if is_clear and one_person == True:
+      if is_clear and one_person:
         verified = "1 - https://verification.gritnetwork.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
@@ -490,8 +490,8 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        # verified = "2 - https://verification.gritnetwork.com" + obj.file.url
-        verified = one_person
+        verified = "2 - https://verification.gritnetwork.com" + obj.file.url
+        # verified = one_person
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
