@@ -40,3 +40,5 @@ for path in glob.glob(test_img_folder):
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
     cv2.imwrite('{pth}{file}_rlt.png'.format(pth=test_user_folder, file=base), output)
+
+

@@ -127,7 +127,7 @@ def headshots_count(image_path):
   #image = cv2.imread(image_path)
 
   # Convert the image to grayscale
-  # image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+  image1 = cv2.cvtColor(image_path, cv2.COLOR_BGR2RGB)
 
 # Method 1
   # Call Yolo V4 to detect objects in the image
@@ -151,7 +151,7 @@ def headshots_count(image_path):
   MODEL_ARCH = 'yolo_nas_l'
   model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
   CONFIDENCE_TRESHOLD = 0.35
-  result = list(model.predict(image_path, conf=CONFIDENCE_TRESHOLD))[0]
+  result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
   dp = result.prediction
   boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
