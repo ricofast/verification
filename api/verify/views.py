@@ -127,7 +127,8 @@ def headshots_count(image_path):
   #image = cv2.imread(image_path)
 
   # Convert the image to grayscale
-  image1 = cv2.cvtColor(image_path, cv2.COLOR_BGR2RGB)
+  image = cv2.imread(image_path)
+  image1 = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # Method 1
   # Call Yolo V4 to detect objects in the image
