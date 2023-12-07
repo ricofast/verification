@@ -158,7 +158,7 @@ def headshots_count(image_path):
   # Determine if the image is clear based on the threshold
   one_person = len(boxes) == 1
   class_id = dp.labels.astype(int)
-  count = class_id.count(0)
+  count = np.count_nonzero(class_id == 0)
   verified = False
   if one_person and class_id[0] == 0:
     verified = True
