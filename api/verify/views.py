@@ -491,7 +491,7 @@ class PictureVerifyView(APIView):
         delete(userid, 2)
       elif not one_person:
         # verified = "2 - https://verification.gritnetwork.com" + obj.file.url
-        verified = one_person + obj.file.url
+        verified = one_person
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
