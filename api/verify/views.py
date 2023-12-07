@@ -164,6 +164,7 @@ def headshots_count(image_path):
     verified = True
   # gc.collect()
   # with torch.no_grad():
+  verified = class_id[0]
   #   torch.cuda.empty_cache()
   return verified
 
@@ -489,7 +490,8 @@ class PictureVerifyView(APIView):
         obj.delete()
         delete(userid, 2)
       elif not one_person:
-        verified = "2 - https://verification.gritnetwork.com" + obj.file.url
+        # verified = "2 - https://verification.gritnetwork.com" + obj.file.url
+        verified = one_person + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
         #   defaults={'verified': False},
