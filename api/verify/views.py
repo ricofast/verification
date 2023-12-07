@@ -481,7 +481,7 @@ class PictureVerifyView(APIView):
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
       # is_clear = False
-      if is_clear and one_person:
+      if is_clear and one_person == True:
         verified = "1 - https://verification.gritnetwork.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
