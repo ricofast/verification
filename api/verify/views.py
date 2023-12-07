@@ -159,9 +159,11 @@ def headshots_count(image_path):
   one_person = len(boxes) == 1
   class_id = dp.labels.astype(int)
   count = np.count_nonzero(class_id == 0)
-  verified = False
+  verified = 0
   if one_person and class_id[0] == 0:
-    verified = True
+    verified = 1
+  elif count == 0:
+    verified = 2
   # gc.collect()
   # with torch.no_grad():
 
@@ -481,7 +483,7 @@ class PictureVerifyView(APIView):
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
       # is_clear = False
-      if is_clear and one_person:
+      if is_clear and one_person == 1:
         verified = "1 - https://verification.gritnetwork.com" + obj.file.url
         # obj, created = HeadShot.objects.update_or_create(
         #   user=userid,
@@ -489,7 +491,7 @@ class PictureVerifyView(APIView):
         # )
         obj.delete()
         delete(userid, 2)
-      elif not one_person:
+      elif not one_person == 2:
         verified = "2 - https://verification.gritnetwork.com" + obj.file.url
         # verified = one_person
         # obj, created = HeadShot.objects.update_or_create(
