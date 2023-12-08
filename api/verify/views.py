@@ -173,6 +173,7 @@ def headshots_count(image_path):
   print("classe: ", class_id)
   print("Type: ", type(class_id))
   print("count: ", count)
+  print("verified :", verified)
   # print("one_persone :", one_person)
   #   torch.cuda.empty_cache()
   return verified
@@ -498,7 +499,7 @@ class PictureVerifyView(APIView):
         # )
         obj.delete()
         delete(userid, 2)
-      elif not one_person == 0:
+      elif one_person == 0:
         verified = "2 - https://verification.gritnetwork.com" + obj.file.url
         # verified = one_person
         # obj, created = HeadShot.objects.update_or_create(
