@@ -160,20 +160,20 @@ def headshots_count(image_path):
   class_id = dp.labels.astype(int)
   count = np.count_nonzero(class_id == 0)
   verified = 0
-  if one_person and class_id[0] == 0:
+  if (one_person and class_id[0] == 0) or count == 1:
     verified = 1
   # elif one_person == 1 and not class_id[0] == 0:
   #   verified = 2
-  elif count == 1:
-    verified = 1
+  # elif count == 1:
+  #   verified = 1
   # else:
   #   verified = 0
   # gc.collect()
   # with torch.no_grad():
-  print("classe: ", class_id)
-  print("Type: ", type(class_id))
-  print("count: ", count)
-  print("verified :", verified)
+  # print("classe: ", class_id)
+  # print("Type: ", type(class_id))
+  # print("count: ", count)
+  # print("verified :", verified)
   # print("one_persone :", one_person)
   #   torch.cuda.empty_cache()
   return verified
