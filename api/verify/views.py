@@ -160,7 +160,7 @@ def headshots_count(image_path):
   class_id = dp.labels.astype(int)
   count = np.count_nonzero(class_id == 0)
   verified = 0
-  if one_person == 1 and class_id[0] == 0:
+  if one_person and class_id[0] == 0:
     verified = 1
   # elif one_person == 1 and not class_id[0] == 0:
   #   verified = 2
