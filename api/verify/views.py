@@ -160,14 +160,18 @@ def headshots_count(image_path):
   class_id = dp.labels.astype(int)
   count = np.count_nonzero(class_id == 0)
   verified = 0
-  if one_person and class_id[0] == 0:
+  if one_person == 1 and class_id[0] == 0:
     verified = 1
+  # elif one_person == 1 and not class_id[0] == 0:
+  #   verified = 2
   elif count == 0:
-    verified = 2
+    verified = 1
+  # else:
+  #   verified = 0
   # gc.collect()
   # with torch.no_grad():
-  print("classe: ", class_id[0])
-  print("one_persone :", one_person)
+  # print("classe: ", class_id[0])
+  # print("one_persone :", one_person)
   #   torch.cuda.empty_cache()
   return verified
 
@@ -492,7 +496,7 @@ class PictureVerifyView(APIView):
         # )
         obj.delete()
         delete(userid, 2)
-      elif not one_person == 2:
+      elif not one_person == 0:
         verified = "2 - https://verification.gritnetwork.com" + obj.file.url
         # verified = one_person
         # obj, created = HeadShot.objects.update_or_create(
