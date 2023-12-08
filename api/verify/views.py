@@ -170,7 +170,7 @@ def headshots_count(image_path):
   #   verified = 0
   # gc.collect()
   # with torch.no_grad():
-  # print("classe: ", class_id[0])
+  print("classe: ", class_id)
   # print("one_persone :", one_person)
   #   torch.cuda.empty_cache()
   return verified
