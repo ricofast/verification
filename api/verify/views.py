@@ -164,7 +164,7 @@ def headshots_count(image_path):
     verified = 1
   # elif one_person == 1 and not class_id[0] == 0:
   #   verified = 2
-  elif count == 0:
+  elif count == 1:
     verified = 1
   # else:
   #   verified = 0
