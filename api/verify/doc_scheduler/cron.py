@@ -280,6 +280,5 @@ def period():
     #         json.dump(status, f)
 
 def start():
-    scheduler.add_job(period, "interval", hours=2, id="unverifiedusers_001",
-                    replace_existing=True)
+    scheduler.add_job(period, 'cron', hour=23, minute=59, id="unverifiedusers_001", replace_existing=True)
     scheduler.start()
