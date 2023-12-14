@@ -151,7 +151,7 @@ def headshots_count(image_path):
   DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
   MODEL_ARCH = 'yolo_nas_l'
   model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
-  CONFIDENCE_TRESHOLD = 0.35
+  CONFIDENCE_TRESHOLD = 0.20
   result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
   dp = result.prediction
   boxes = dp.bboxes_xyxy
