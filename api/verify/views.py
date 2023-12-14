@@ -388,10 +388,13 @@ class DocumentScanView(APIView):
         # if athlete_name:
         #   doc = Document.objects.filter(user=userid).first()
       if key_word and keytype:
+        print("Stage 1")
         key_type = int(keytype)
         if doc and doc.verified == True:
+          print("Stage 2")
           scanned = Scanpicture(key_word, userid)
           if scanned:
+            print("Stage 3")
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
           # obj, created = Document.objects.update_or_create(
           #   user=userid,
@@ -419,6 +422,7 @@ class DocumentScanView(APIView):
 
             doc.save()
           else:
+            print("Stage 4")
             scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
             if key_type == "1":
               doc.name = key_word
@@ -441,7 +445,7 @@ class DocumentScanView(APIView):
         elif doc and doc.verified == False:
           return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
         elif doc is None:
-          return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
+          return Response("Fail No File to Scan", status=status.HTTP_400_BAD_REQUEST)
 
         return Response(scanned, status=status.HTTP_201_CREATED)
       else:
