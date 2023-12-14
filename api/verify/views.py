@@ -67,13 +67,13 @@ std = [0.2018, 0.1925, 0.1875]
 # transforms.Lambda(lambda x: x.repeat(3, 1, 1))  if im.mode!='RGB'  else NoneTransform()
 
 image_transforms = transforms.Compose([
-    transforms.Resize((512,512)),
+    transforms.Resize((512, 512)),
     transforms.ToTensor(),
     transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
 ])
 
 grayimage_transforms = transforms.Compose([
-    transforms.Resize((512,512)),
+    transforms.Resize((512, 512)),
     transforms.ToTensor(), transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
     transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
 ])
@@ -242,12 +242,12 @@ def classify(aimodel, image_transforms, grayimage_transforms, image_path, classe
   image = Image.open(image_path)
   im = image.convert("RGB")
   stat = ImageStat.Stat(im)
-  if sum(stat.sum) / 3 != stat.sum[0]:
-    image = image_transforms(im).float()
-    image = image.unsqueeze(0)
-  else:
-    image = grayimage_transforms(im).float()
-    image = image.unsqueeze(0)
+  # if sum(stat.sum) / 3 != stat.sum[0]:
+  image = image_transforms(im).float()
+  image = image.unsqueeze(0)
+  # else:
+  #   image = grayimage_transforms(im).float()
+  #   image = image.unsqueeze(0)
 
   output = aimodel(image)
   _, predicted = torch.max(output.data, 1)
