@@ -444,7 +444,7 @@ class DocumentScanView(APIView):
 
         return Response(scanned, status=status.HTTP_201_CREATED)
       else:
-        return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"Fail": "Keyword or keyword type missing"}, status=status.HTTP_400_BAD_REQUEST)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
