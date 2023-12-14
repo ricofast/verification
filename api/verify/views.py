@@ -377,7 +377,7 @@ class DocumentScanView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
-      key_type = int(file_serializer.data['keyword_type'])
+      keytype = file_serializer.data['keyword_type']
       # athlete_dob = file_serializer.data['athdob']
 
       # keyword = key_word
@@ -387,7 +387,8 @@ class DocumentScanView(APIView):
       # if key_type == "1":
         # if athlete_name:
         #   doc = Document.objects.filter(user=userid).first()
-      if key_word and key_type:
+      if key_word and keytype:
+        key_type = int(keytype)
         if doc and doc.verified == True:
           scanned = Scanpicture(key_word, userid)
           if scanned:
