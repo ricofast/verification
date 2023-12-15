@@ -54,16 +54,17 @@ classes = [
 static_folder = settings.STATIC_ROOT
 media_folder = settings.MEDIA_ROOT
 
-picture_id_model = static_folder + "/models/best_model1.pth"
+picture_id_model = static_folder + "/models/best_model2.pth"
 picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
 yolov8_model: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels/')
 yolov8_run: str = os.path.join(settings.BASE_DIR, 'media', 'aimodels')
 
-
-mean = [0.7683, 0.7671, 0.7645]
-std = [0.2018, 0.1925, 0.1875]
+mean = [0.7685, 0.7668, 0.7631]
+std = [0.2005, 0.1905, 0.1851]
+# mean = [0.7683, 0.7671, 0.7645]
+# std = [0.2018, 0.1925, 0.1875]
 
 # transforms.Lambda(lambda x: x.repeat(3, 1, 1))  if im.mode!='RGB'  else NoneTransform()
 
