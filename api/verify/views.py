@@ -16,6 +16,7 @@ import re
 import requests
 import json
 import os.path as osp
+from dateutil import parser as date_parser
 import difflib
 from io import StringIO
 import hmac
@@ -77,6 +78,13 @@ grayimage_transforms = transforms.Compose([
     transforms.ToTensor(), transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
     transforms.Normalize(torch.Tensor(mean), torch.Tensor(std))
 ])
+
+
+def is_date_parsing(date_str):
+  try:
+    return bool(date_parser.parse(date_str))
+  except ValueError:
+    return False
 
 
 def verifySignature(receivedSignature: str, secret, params):
@@ -1021,7 +1029,7 @@ class TestDocumentScanView(APIView):
         key_type = int(keytype)
         if doc and doc.verified == True:
           print("Stage 2")
-          scanned, res = TestScanpicture(key_word, userid)
+          scanned, res = TestScanpicture(key_word, userid, key_type)
           if scanned:
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
           # obj, created = Document.objects.update_or_create(
@@ -1080,7 +1088,7 @@ class TestDocumentScanView(APIView):
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def TestScanpicture(athname, userid):
+def TestScanpicture(athname, userid, key_type):
 
   path = os.getcwd() + "/media/documents/user_" + str(userid) + "/*"
   filter_predicted_result = ""
@@ -1105,22 +1113,23 @@ def TestScanpicture(athname, userid):
     if nameexist:
       status = True
     else:
-      # Check if
-      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-      df = pd.DataFrame(datax[0])
-      print(df[0])
-      df[0] = df[0].map(str.lower)
-      lwd= wd.lower()
-      similar = difflib.get_close_matches(lwd, df[0].values)
-      print("Similar: ",similar)
-      # similar = []
-      if len(similar) > 0:
-        # status = status + wd + " Verified - "
-        status = True
-      else:
-        # status = status + wd + " Unverified - "
-        status = False
-        # status = filter_predicted_result
-        return status
+      if key_type == 1:
+        # Check if
+        datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+        df = pd.DataFrame(datax[0])
+        print(df[0])
+        df[0] = df[0].map(str.lower)
+        lwd= wd.lower()
+        similar = difflib.get_close_matches(lwd, df[0].values)
+        print("Similar: ",similar)
+        # similar = []
+        if len(similar) > 0:
+          # status = status + wd + " Verified - "
+          status = True
+        else:
+          # status = status + wd + " Unverified - "
+          status = False
+          # status = filter_predicted_result
+          return status
 
   return status, filter_predicted_result
