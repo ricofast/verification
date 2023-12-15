@@ -400,7 +400,7 @@ class DocumentScanView(APIView):
         key_type = int(keytype)
         if doc and doc.verified == True:
           print("Stage 2")
-          scanned = Scanpicture(key_word, userid)
+          scanned = Scanpicture(key_word, userid, keytype)
           if scanned:
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
           # obj, created = Document.objects.update_or_create(
@@ -632,7 +632,7 @@ def find_string(text, target_string):
     return False
 
 
-def Scanpicture(athname, userid):
+def Scanpicture(athname, userid, key_type):
   # athname = request.POST.get('athname')
   # path = os.getcwd() + "/media/documents/*"
   # test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
@@ -677,21 +677,22 @@ def Scanpicture(athname, userid):
       # status = status + wd + " Verified - "
       status = True
     else:
-      # Check if
-      datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-      df = pd.DataFrame(datax[0])
-      df[0] = df[0].map(str.lower)
-      lwd= wd.lower()
-      similar = difflib.get_close_matches(lwd, df[0].values)
-      # similar = []
-      if len(similar) > 0:
-        # status = status + wd + " Verified - "
-        status = True
-      else:
-        # status = status + wd + " Unverified - "
-        status = False
-        # status = filter_predicted_result
-        return status
+      if key_type == 1:
+        # Check if
+        datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+        df = pd.DataFrame(datax[0])
+        df[0] = df[0].map(str.lower)
+        lwd= wd.lower()
+        similar = difflib.get_close_matches(lwd, df[0].values)
+        # similar = []
+        if len(similar) > 0:
+          # status = status + wd + " Verified - "
+          status = True
+        else:
+          # status = status + wd + " Unverified - "
+          status = False
+          # status = filter_predicted_result
+          return status
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
