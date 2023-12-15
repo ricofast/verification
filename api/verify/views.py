@@ -1070,7 +1070,7 @@ class TestDocumentScanView(APIView):
             doc.keyword = key_type
             doc.save()
         elif doc and doc.verified == False:
-          return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
+          return Response("Fail : Document not verified yet.", status=status.HTTP_403_FORBIDDEN)
         elif doc is None:
           return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
 
