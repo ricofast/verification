@@ -15,6 +15,8 @@ import PIL.Image as Image
 from PIL import ImageStat
 from mtcnn import MTCNN
 from numba import cuda
+import gc
+
 
 static_folder = settings.STATIC_ROOT
 media_folder = settings.MEDIA_ROOT
@@ -147,6 +149,7 @@ def headshots_count(image_path):
     # if nfc > 0:
       verified = 1
   torch.cuda.empty_cache()
+  gc.collect()
       # device = cuda.get_current_device()
       # device.reset()
   # elif one_person == 1 and not class_id[0] == 0:
