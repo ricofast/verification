@@ -133,7 +133,7 @@ def headshots_count(image_path):
   DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
   MODEL_ARCH = 'yolo_nas_l'
   model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
-  CONFIDENCE_TRESHOLD = 0.20
+  CONFIDENCE_TRESHOLD = 0.10
   result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
   dp = result.prediction
   boxes = dp.bboxes_xyxy
@@ -143,11 +143,11 @@ def headshots_count(image_path):
   count = np.count_nonzero(class_id == 0)
   verified = 0
   if (one_person and class_id[0] == 0):
-    nfc = check_face(image1)
-    if nfc > 0:
+    # nfc = check_face(image1)
+    # if nfc > 0:
       verified = 1
-      device = cuda.get_current_device()
-      device.reset()
+      # device = cuda.get_current_device()
+      # device.reset()
   # elif one_person == 1 and not class_id[0] == 0:
   #   verified = 2
   # elif count == 1:
