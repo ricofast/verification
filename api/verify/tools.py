@@ -152,8 +152,8 @@ def headshots_count(image_path):
   gc.collect()
   torch.cuda.empty_cache()
 
-      # device = cuda.get_current_device()
-      # device.reset()
+  device = cuda.get_current_device()
+  device.reset()
   # elif one_person == 1 and not class_id[0] == 0:
   #   verified = 2
   # elif count == 1:
