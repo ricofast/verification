@@ -322,7 +322,7 @@ class PictureVerifyView(APIView):
       verified = ""
       is_clear = is_head_shot_clear(obj.file.path)
       one_person = headshots_count(obj.file.path)
-      gc.collect()
+      # torch.cuda.empty_cache()
       # is_clear = False
       if is_clear and one_person == 1:
         verified = "1 - https://verification.gritnetwork.com" + obj.file.url
