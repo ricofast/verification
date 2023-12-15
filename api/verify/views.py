@@ -1068,6 +1068,7 @@ class TestDocumentScanView(APIView):
               else:
                   doc.scanned_historic = "1"
             elif key_type == "2":
+              print("key_word: ", key_word)
               doc.dob = key_word
               doc.dob_checked = False
               doc.keyword_type = "2"
@@ -1082,7 +1083,7 @@ class TestDocumentScanView(APIView):
         elif doc is None:
           return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(res, status=status.HTTP_201_CREATED)
+        return Response(scanned, status=status.HTTP_201_CREATED)
       else:
         return Response("Keyword or keyword type missing", status=status.HTTP_400_BAD_REQUEST)
     else:
