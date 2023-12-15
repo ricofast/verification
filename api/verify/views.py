@@ -430,7 +430,7 @@ class DocumentScanView(APIView):
             doc.save()
           else:
             scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
-            if key_type == "1":
+            if key_type == 1:
               doc.name = key_word
               doc.name_checked = False
               doc.keyword_type = "1"
@@ -438,7 +438,7 @@ class DocumentScanView(APIView):
                 doc.scanned_historic = doc.scanned_historic + "-1"
               else:
                   doc.scanned_historic = "1"
-            elif key_type == "2":
+            elif key_type == 2:
               doc.dob = key_word
               doc.dob_checked = False
               doc.keyword_type = "2"
@@ -1059,7 +1059,7 @@ class TestDocumentScanView(APIView):
             doc.save()
           else:
             scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
-            if key_type == "1":
+            if key_type == 1:
               doc.name = key_word
               doc.name_checked = False
               doc.keyword_type = "1"
@@ -1067,7 +1067,7 @@ class TestDocumentScanView(APIView):
                 doc.scanned_historic = doc.scanned_historic + "-1"
               else:
                   doc.scanned_historic = "1"
-            elif key_type == "2":
+            elif key_type == 2:
               print("key_word: ", key_word)
               doc.dob = key_word
               doc.dob_checked = False
