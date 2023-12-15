@@ -995,9 +995,9 @@ class TestDocumentScanView(APIView):
     sha_name, signature = api_signature.split("=", 1)
     if sha_name != "sha256":
       return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
-    request_path = '/api/scan/'
+
     secret = settings.SCANDOCUMENTKEY
-    params = [secret, request.method, request_path]
+    params = [secret, request.method, request.path]
     is_valid = verifySignature(signature, secret, params)
     if is_valid != True:
       return Response({"Fail": "Invalid signature. Permission denied."}, status=status.HTTP_403_FORBIDDEN)
@@ -1006,7 +1006,7 @@ class TestDocumentScanView(APIView):
     if file_serializer.is_valid():
       userid = file_serializer.data['user']
       key_word = file_serializer.data['keyword']
-      key_type = int(file_serializer.data['keyword_type'])
+      keytype = file_serializer.data['keyword_type']
       # athlete_dob = file_serializer.data['athdob']
 
       # keyword = key_word
@@ -1016,65 +1016,69 @@ class TestDocumentScanView(APIView):
       # if key_type == "1":
         # if athlete_name:
         #   doc = Document.objects.filter(user=userid).first()
+      if key_word and keytype:
+        print("Stage 1")
+        key_type = int(keytype)
+        if doc and doc.verified == True:
+          print("Stage 2")
+          scanned, res = TestScanpicture(key_word, userid)
+          if scanned:
+            scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
+          # obj, created = Document.objects.update_or_create(
+          #   user=userid,
+          #   defaults={'scanned': True},
+          # )
+            if key_type == 1:
+              doc.name = key_word
+              doc.name_checked = True
+              doc.keyword_type = "1"
+              if doc.scanned_historic:
+                doc.scanned_historic = doc.scanned_historic + "-1"
+              else:
+                  doc.scanned_historic = "1"
+            elif key_type == 2:
+              doc.dob = key_word
+              doc.dob_checked = True
+              doc.keyword_type = "2"
+              if doc.scanned_historic:
+                doc.scanned_historic = doc.scanned_historic + "-2"
+              else:
+                doc.scanned_historic = "2"
 
-      if doc and doc.verified == True:
-        scanned = ScanpictureKeras(key_word, userid)
-        if scanned:
-          scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
-        # obj, created = Document.objects.update_or_create(
-        #   user=userid,
-        #   defaults={'scanned': True},
-        # )
-          if key_type == 1:
-            doc.name = key_word
-            doc.name_checked = True
-            doc.keyword_type = "1"
-            if doc.scanned_historic:
-              doc.scanned_historic = doc.scanned_historic + "-1"
-            else:
-                doc.scanned_historic = "1"
-          elif key_type == 2:
-            doc.dob = key_word
-            doc.dob_checked = True
-            doc.keyword_type = "2"
-            if doc.scanned_historic:
-              doc.scanned_historic = doc.scanned_historic + "-2"
-            else:
-              doc.scanned_historic = "2"
+            doc.scanned = True
+            doc.keywor = key_word
 
-          doc.scanned = True
-          doc.keywor = key_word
+            doc.save()
+          else:
+            scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
+            if key_type == "1":
+              doc.name = key_word
+              doc.name_checked = False
+              doc.keyword_type = "1"
+              if doc.scanned_historic:
+                doc.scanned_historic = doc.scanned_historic + "-1"
+              else:
+                  doc.scanned_historic = "1"
+            elif key_type == "2":
+              doc.dob = key_word
+              doc.dob_checked = False
+              doc.keyword_type = "2"
+              if doc.scanned_historic:
+                doc.scanned_historic = doc.scanned_historic + "-2"
+              else:
+                doc.scanned_historic = "2"
+            doc.keyword = key_type
+            doc.save()
+        elif doc and doc.verified == False:
+          return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
+        elif doc is None:
+          return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
 
-          doc.save()
-        else:
-          scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
-          if key_type == "1":
-            doc.name = key_word
-            doc.name_checked = False
-            doc.keyword_type = "1"
-            if doc.scanned_historic:
-              doc.scanned_historic = doc.scanned_historic + "-1"
-            else:
-                doc.scanned_historic = "1"
-          elif key_type == "2":
-            doc.dob = key_word
-            doc.dob_checked = False
-            doc.keyword_type = "2"
-            if doc.scanned_historic:
-              doc.scanned_historic = doc.scanned_historic + "-2"
-            else:
-              doc.scanned_historic = "2"
-          doc.keyword = key_type
-          doc.save()
-      elif doc and doc.verified == False:
-        return Response({"Fail": "Document not verified yet."}, status=status.HTTP_403_FORBIDDEN)
-      elif doc is None:
-        return Response({"Fail": "No File to Scan"}, status=status.HTTP_400_BAD_REQUEST)
-
-      return Response(scanned, status=status.HTTP_201_CREATED)
+        return Response(res, status=status.HTTP_201_CREATED)
+      else:
+        return Response("Keyword or keyword type missing", status=status.HTTP_400_BAD_REQUEST)
     else:
       return Response(file_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 def TestScanpicture(athname, userid):
 
@@ -1119,4 +1123,4 @@ def TestScanpicture(athname, userid):
         # status = filter_predicted_result
         return status
 
-  return status
+  return status, filter_predicted_result
