@@ -562,7 +562,7 @@ def ScanpictureKeras(athname, userid):
         return allkeywords_status
 
 
-def ScanpicturEasyOCR(athname, userid):
+def ScanpicturEasyOCR(athname, userid, key_type):
   folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
   predicted_result = []
   for filename in os.listdir(folder):
@@ -581,16 +581,17 @@ def ScanpicturEasyOCR(athname, userid):
       if nameexist:
         allkeywords_status = True
       else:
-        lwd = wd.lower()
-        similar = difflib.get_close_matches(lwd, df['text'].values)
-        if len(similar) > 0:
-          allkeywords_status = True
-        else:
-          allkeywords_status = False
-          return allkeywords_status
+        if key_type == 1:
+          lwd = wd.lower()
+          similar = difflib.get_close_matches(lwd, df['text'].values)
+          if len(similar) > 0:
+            allkeywords_status = True
+          else:
+            allkeywords_status = False
+            return allkeywords_status
 
-    if allkeywords_status:
-      return allkeywords_status
+      if allkeywords_status:
+        return allkeywords_status
 
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
@@ -850,7 +851,7 @@ class TestDocumentScanView(APIView):
         key_type = int(keytype)
         if doc and doc.verified == True:
           print("Stage 2")
-          scanned, res = TestScanpicture(key_word, userid, key_type)
+          scanned = ScanpicturEasyOCR(key_word, userid, key_type)
           if scanned:
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
           # obj, created = Document.objects.update_or_create(
