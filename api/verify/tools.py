@@ -6,6 +6,7 @@ from base64 import b64encode
 from dateutil import parser as date_parser
 import torch
 import cv2
+import dlib
 import numpy as np
 from django.conf import settings
 from super_gradients.training import models
@@ -102,6 +103,15 @@ def is_head_shot_clear(image_path, threshold=20):
 
   return is_clear
 
+def dlib_headfacerecognize(image):
+  detector = dlib.get_frontal_face_detector()
+  img = dlib.load_rgb_image(image)
+  rects = detector(img, 1)
+  if rects == 1:
+    return True
+  else:
+    return False
+
 
 def headshots_count(image_path):
   # path = os.getcwd() + "/media/headshots/user_" + str(userid) + "/*"
@@ -145,6 +155,7 @@ def headshots_count(image_path):
   count = np.count_nonzero(class_id == 0)
   verified = 0
   if (one_person and class_id[0] == 0):
+    if dlib_headfacerecognize(image_path):
     # nfc = check_face(image1)
     # if nfc > 0:
       verified = 1
