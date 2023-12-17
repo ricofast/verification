@@ -159,12 +159,17 @@ def headshots_count(image_path):
     # nfc = check_face(image1)
     # if nfc > 0:
       verified = 1
-  del model
-  gc.collect()
-  torch.cuda.empty_cache()
 
-  device = cuda.get_current_device()
-  device.reset()
+
+  # del model
+  # gc.collect()
+  # torch.cuda.empty_cache()
+  #
+  # device = cuda.get_current_device()
+  # device.reset()
+
+
+
   # elif one_person == 1 and not class_id[0] == 0:
   #   verified = 2
   # elif count == 1:
