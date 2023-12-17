@@ -9,8 +9,10 @@ import json
 import requests
 import difflib
 import datetime
+from datetime import datetime
 # import glob
 import shutil
+from django.utils import timezone
 
 # def document_ocr():
 #     # docs = Document.objects.filter(verified=True, scanned=True)
@@ -280,21 +282,33 @@ def period():
     #         json.dump(status, f)
 
 
-def delete(userid, type):
+def deletedoc(userid):
 
-  folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
-  if os.path.exists(folder):
-    for filename in os.listdir(folder):
-      file_path = os.path.join(folder, filename)
-      try:
-        if os.path.isfile(file_path) or os.path.islink(file_path):
-          os.unlink(file_path)
-        elif os.path.isdir(file_path):
-          shutil.rmtree(file_path)
-      except Exception as e:
-        print('Failed to delete %s. Reason: %s' % (file_path, e))
+    folder = os.getcwd() + '/media/documents/user_' + str(userid) + '/'
+    if os.path.exists(folder):
+        for filename in os.listdir(folder):
+            file_path = os.path.join(folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print('Failed to delete %s. Reason: %s' % (file_path, e))
+
+
+
+
+def delete_unverified():
+    all_docs = Document.objects.filter(verified=True)
+
+    for doc in all_docs:
+        if (timezone.now()-doc.uploaded).days >= 1:
+            deletedoc(doc.user)
+            doc.delete()
 
 
 def start():
     scheduler.add_job(period, 'cron', hour=23, minute=59, id="unverifiedusers_001", replace_existing=True)
+    scheduler.add_job(delete_unverified, 'interval', minute=2, id="unverifiedusers_002", replace_existing=True)
     scheduler.start()

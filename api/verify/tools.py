@@ -168,13 +168,6 @@ def headshots_count(image_path):
     model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
     result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
 
-
-
-
-
-
-
-
   dp = result.prediction
   boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
@@ -244,10 +237,10 @@ def enhancepictures(userid):
   test_img_folder = media_folder + "/documents/user_" + str(userid) + "/*"
   test_user_folder = media_folder + "/documents/user_" + str(userid) + "/"
   print(test_user_folder)
-  model = arch.RRDBNet(3, 3, 64, 23, gc=32)
-  model.load_state_dict(torch.load(model_path), strict=True)
-  model.eval()
-  model = model.to(device)
+  model_enhance = arch.RRDBNet(3, 3, 64, 23, gc=32)
+  model_enhance.load_state_dict(torch.load(model_path), strict=True)
+  model_enhance.eval()
+  model_enhance = model_enhance.to(device)
 
   print('Model path {:s}. \nTesting...'.format(model_path))
 
@@ -265,7 +258,7 @@ def enhancepictures(userid):
     img_LR = img_LR.to(device)
     print("Finished")
     with torch.no_grad():
-      output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
+      output = model_enhance(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
     print("Write picture to file")
