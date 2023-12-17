@@ -300,7 +300,7 @@ def deletedoc(userid):
 
 
 def delete_unverified():
-    all_docs = Document.objects.filter(verified=True)
+    all_docs = Document.objects.filter(verified=False)
 
     for doc in all_docs:
         if (timezone.now()-doc.uploaded).days >= 1:
