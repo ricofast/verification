@@ -22,7 +22,8 @@ import gc
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 MODEL_ARCH = 'yolo_nas_l'
 
-model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
+
+
 
 
 
@@ -149,10 +150,31 @@ def headshots_count(image_path):
 
 # Method 3
   # call Yolo Nas to detect objects in the image
-
   CONFIDENCE_TRESHOLD = 0.10
+  model_loaded = False
+  if 'model' in locals() and next(model.parameters()).is_cuda:
+    # Attempt to move a dummy tensor to GPU using the same device as the model
+    # dummy_tensor = torch.randn(1, 3, 416, 416).to(torch.device("cuda" if torch.cuda.is_available() else "cpu"))
+    # model = models.get(MODEL_ARCH, pretrained_weights="coco").to(dummy_tensor.device)
+    model_loaded = True
+  # else:
+  #   model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
+  #   pass
 
-  result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
+  if model_loaded:
+    result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
+  else:
+    # If model was not loaded onto GPU, load it onto CPU or GPU as needed
+    model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
+    result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
+
+
+
+
+
+
+
+
   dp = result.prediction
   boxes = dp.bboxes_xyxy
   # Determine if the image is clear based on the threshold
