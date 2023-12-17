@@ -851,7 +851,7 @@ class TestDocumentScanView(APIView):
         key_type = int(keytype)
         if doc and doc.verified == True:
           print("Stage 2")
-          scanned = ScanpicturEasyOCR(key_word, userid, key_type)
+          scanned = TestDocumentScanView(key_word, userid, key_type)
           if scanned:
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
           # obj, created = Document.objects.update_or_create(
