@@ -18,6 +18,13 @@ from mtcnn import MTCNN
 from numba import cuda
 import gc
 
+# Load yolo-nas model
+DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
+MODEL_ARCH = 'yolo_nas_l'
+
+model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
+
+
 
 static_folder = settings.STATIC_ROOT
 media_folder = settings.MEDIA_ROOT
@@ -142,10 +149,9 @@ def headshots_count(image_path):
 
 # Method 3
   # call Yolo Nas to detect objects in the image
-  DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
-  MODEL_ARCH = 'yolo_nas_l'
-  model = models.get(MODEL_ARCH, pretrained_weights="coco").to(DEVICE)
+
   CONFIDENCE_TRESHOLD = 0.10
+
   result = list(model.predict(image1, conf=CONFIDENCE_TRESHOLD))[0]
   dp = result.prediction
   boxes = dp.bboxes_xyxy
