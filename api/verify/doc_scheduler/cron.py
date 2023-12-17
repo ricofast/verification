@@ -310,5 +310,5 @@ def delete_unverified():
 
 def start():
     scheduler.add_job(period, 'cron', hour=23, minute=59, id="unverifiedusers_001", replace_existing=True)
-    scheduler.add_job(delete_unverified, 'interval', minute=2, id="unverifiedusers_002", replace_existing=True)
+    scheduler.add_job(delete_unverified, 'interval', minutes=2, id="unverifiedusers_002", replace_existing=True)
     scheduler.start()
