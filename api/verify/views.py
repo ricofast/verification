@@ -851,7 +851,7 @@ class TestDocumentScanView(APIView):
         key_type = int(keytype)
         if doc and doc.verified == True:
           print("Stage 2")
-          scanned = TestScanpicture(key_word, userid, key_type)
+          scanned, res = TestScanpicture(key_word, userid, key_type)
           if scanned:
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
           # obj, created = Document.objects.update_or_create(
@@ -880,7 +880,8 @@ class TestDocumentScanView(APIView):
 
             doc.save()
           else:
-            scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
+            scanned = res
+            # scanned = "Unverified - https://verification.gritnetwork.com" + doc.file.url
             if key_type == 1:
               doc.name = key_word
               doc.name_checked = False
