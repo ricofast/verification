@@ -68,7 +68,7 @@ grayimage_transforms = transforms.Compose([
 static_folder = settings.STATIC_ROOT
 media_folder = settings.MEDIA_ROOT
 
-picture_id_model = static_folder + "/models/best_model2.pth"
+picture_id_model = static_folder + "/models/best_model3.pth"
 picture_enhance_model = "models/RRDB_ESRGAN_x4.pth"
 
 ai_model = torch.load(picture_id_model)
