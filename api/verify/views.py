@@ -494,6 +494,9 @@ def Scanpicture(athname, userid, key_type):
     nameexist = find_string(filter_predicted_result, wd)
     print("Word: ", wd)
     print("Nameexit:", nameexist)
+    datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+    df = pd.DataFrame(datax[0])
+    print(df[0])
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
