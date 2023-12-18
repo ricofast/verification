@@ -492,17 +492,21 @@ def Scanpicture(athname, userid, key_type):
 
   for wd in words:
     nameexist = find_string(filter_predicted_result, wd)
+    print("Word: ", wd)
+    print("Nameexit:", nameexist)
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
       status = True
+
+
     else:
       if key_type == 1:
         # Check if
         datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
         df = pd.DataFrame(datax[0])
         df[0] = df[0].map(str.lower)
-        print(df[0])
+
         lwd= wd.lower()
         similar = difflib.get_close_matches(lwd, df[0].values)
         # similar = []
