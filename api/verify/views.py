@@ -925,7 +925,7 @@ def TestScanpicture(athname, userid, key_type):
 
     filter_predicted_result = "".join(predicted_result.split("\n")).replace(":", "")\
       .replace("-", "").replace("”", "").replace("“", "").replace(">", "").replace(")", "").replace("(", "")
-
+  print(filter_predicted_result)
   words = athname.split()
 
   status = False
