@@ -547,7 +547,7 @@ def Scanpicture(athname, userid, key_type):
         print("month: ", mth)
         print("day: ", dys)
         print("yeaar: ", yer)
-
+        print(df[0].values)
         date_birth_1 = f"{mth1}-{dys1}-{yer}"
         date_birth_2 = f"{mth1}.{dys1}.{yer}"
         dateexist = find_string(filter_predicted_result, date_birth_1)
