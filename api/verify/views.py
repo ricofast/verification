@@ -540,28 +540,43 @@ def Scanpicture(athname, userid, key_type):
         mth = str(date_birth.month)
         dys = str(date_birth.day)
         yer = str(date_birth.year)
+        if len(mth) == 1:
+          mth = '0' + mth
+        if len(dys) == 1:
+          dys = '0' + dys
         print("month: ", mth)
         print("day: ", dys)
         print("yeaar: ", yer)
 
-        for i in range(3):
-          if df_months[mth][i] in df[0].values:
+        date_birth_1 = f"{mth}-{dys}-{yer}"
+        date_birth_2 = f"{mth}.{dys}.{yer}"
+        dateexist = find_string(filter_predicted_result, date_birth_1)
+        dateexist1 = find_string(filter_predicted_result, date_birth_2)
+        if dateexist:
+          status = True
+          print(date_birth_1)
+        elif dateexist1:
             status = True
-            break
-
-        if status == False:
-          return status
-
-        if dys in df[0].values:
-          status = True
+            print(date_birth_2)
         else:
-          return status
+          for i in range(3):
+            if df_months[mth][i] in df[0].values:
+              print("month v: ", df_months[mth][i])
+              status = True
+              break
 
-        if yer in df[0].values:
-          status = True
-        else:
-          return status
+          if status == False:
+            return status
 
+          if dys in df[0].values:
+            status = True
+          else:
+            return status
+
+          if yer in df[0].values:
+            status = True
+          else:
+            return status
 
   # context = {'filter_predicted_result': filter_predicted_result, 'name': name}
   # status = filter_predicted_result
