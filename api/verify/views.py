@@ -540,9 +540,14 @@ def Scanpicture(athname, userid, key_type):
         mth = str(date_birth.month)
         dys = str(date_birth.day)
         yer = str(date_birth.year)
+        print("month: ", mth)
+        print("day: ", dys)
+        print("yeaar: ", yer)
 
         for i in range(3):
           similar = difflib.get_close_matches(df_months[mth][i], df[0].values)
+          print("month: ", df_months[mth][i])
+          print("similar: ", similar)
           # similar = []
           if len(similar) > 0:
             status = True
