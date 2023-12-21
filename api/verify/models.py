@@ -38,7 +38,7 @@ class Document(models.Model):
     verified = models.BooleanField(default=False)
 
     scanned = models.BooleanField(default=False)
-    scanned_historic = models.CharField(max_length=50, null=True, blank=True)
+    scanned_historic = models.CharField(max_length=255, null=True, blank=True)
     def __str__(self):
         return str(self.user)
 

@@ -48,11 +48,11 @@ def extract_text_with_pyPDF(PDF_File):
     return raw_text
 
 
-def is_date_parsing(date_str):
+def date_parsing(date_str):
   try:
-    return bool(date_parser.parse(date_str))
+    return date_parser.parse(date_str)
   except ValueError:
-    return False
+    return "none"
 
 
 def verifySignature(receivedSignature: str, secret, params):

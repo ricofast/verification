@@ -15,7 +15,7 @@ from .models import Document, AIModel, HeadShot, AIModelLoaded, KerasModelLoaded
 import re
 import requests
 import json
-from .tools import verifySignature, set_device, classify, is_head_shot_clear, headshots_count
+from .tools import verifySignature, set_device, classify, is_head_shot_clear, headshots_count, date_parsing
 
 import difflib
 from io import StringIO
@@ -496,6 +496,7 @@ def Scanpicture(athname, userid, key_type):
     print("Nameexit:", nameexist)
     datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
     df = pd.DataFrame(datax[0])
+    df[0] = df[0].map(str.lower)
     print(df[0])
     # nameexist = wd in df['text'].values
     if nameexist:
@@ -506,9 +507,9 @@ def Scanpicture(athname, userid, key_type):
     else:
       if key_type == 1:
         # Check if
-        datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
-        df = pd.DataFrame(datax[0])
-        df[0] = df[0].map(str.lower)
+        # datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
+        # df = pd.DataFrame(datax[0])
+        # df[0] = df[0].map(str.lower)
 
         lwd= wd.lower()
         similar = difflib.get_close_matches(lwd, df[0].values)
@@ -520,6 +521,43 @@ def Scanpicture(athname, userid, key_type):
           # status = status + wd + " Unverified - "
           status = False
           # status = filter_predicted_result
+          return status
+      else:
+        month_names = {'1': {0: 'jan', 1: 'january', 2: 'enero\xa0'},
+           '2': {0: 'feb', 1: 'february', 2: 'febrero\xa0'},
+           '3': {0: 'mar', 1: 'march', 2: 'marzo\xa0'},
+           '4': {0: 'apr', 1: 'april', 2: 'abril\xa0'},
+           '5': {0: 'may', 1: 'may', 2: 'mayo\xa0'},
+           '6': {0: 'jun', 1: 'june', 2: 'junio\xa0'},
+           '7': {0: 'jul', 1: 'july', 2: 'julio\xa0'},
+           '8': {0: 'aug', 1: 'august', 2: 'agosto\xa0'},
+           '9': {0: 'sep', 1: 'september', 2: 'septiembre'},
+           '10': {0: 'oct', 1: 'october', 2: 'octubre\xa0'},
+           '11': {0: 'nov', 1: 'november', 2: 'noviembre\xa0'},
+           '12': {0: 'dec', 1: 'december', 2: 'diciembre\xa0'}}
+        df_months = pd.DataFrame(month_names)
+        date_birth = date_parsing(wd)
+        mth = str(date_birth.month)
+        dys = str(date_birth.day)
+        yer = str(date_birth.year)
+
+        for i in range(3):
+          similar = difflib.get_close_matches(df_months[mth][i], df[0].values)
+          # similar = []
+          if len(similar) > 0:
+            status = True
+            break
+        if status == False:
+          return status
+
+        if dys in df[0].values:
+          status = True
+        else:
+          return status
+
+        if yer in df[0].values:
+          status = True
+        else:
           return status
 
 
