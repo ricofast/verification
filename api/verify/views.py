@@ -215,10 +215,10 @@ class DocumentScanView(APIView):
         # if athlete_name:
         #   doc = Document.objects.filter(user=userid).first()
       if key_word and keytype:
-        print("Stage 1")
+        # print("Stage 1")
         key_type = int(keytype)
         if doc and doc.verified == True:
-          print("Stage 2")
+          # print("Stage 2")
           scanned = Scanpicture(key_word, userid, keytype)
           if scanned:
             scanned = "Verified - https://verification.gritnetwork.com" + doc.file.url
@@ -370,7 +370,7 @@ class DocumentVerifiedView(APIView):
       return Response({"Fail": "Operation not supported."}, status=status.HTTP_501_NOT_IMPLEMENTED)
 
     secret = settings.DELETEDOCUMENTKEY
-    print(request.path)
+    # print(request.path)
     params = [secret, request.method, request.path]
     is_valid = verifySignature(signature, secret, params)
     if is_valid != True:
@@ -492,12 +492,12 @@ def Scanpicture(athname, userid, key_type):
 
   for wd in words:
     nameexist = find_string(filter_predicted_result, wd)
-    print("Word: ", wd)
-    print("Nameexit:", nameexist)
+    # print("Word: ", wd)
+    # print("Nameexit:", nameexist)
     datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
     df = pd.DataFrame(datax[0])
     df[0] = df[0].map(str.lower)
-    print(df[0].to_string())
+    # print(df[0].to_string())
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
@@ -544,9 +544,9 @@ def Scanpicture(athname, userid, key_type):
           mth1 = '0' + mth
         if len(dys) == 1:
           dys1 = '0' + dys
-        print("month: ", mth)
-        print("day: ", dys)
-        print("yeaar: ", yer)
+        # print("month: ", mth)
+        # print("day: ", dys)
+        # print("yeaar: ", yer)
 
         date_birth_1 = f"{mth1}-{dys1}-{yer}"
         date_birth_2 = f"{mth1}.{dys1}.{yer}"
@@ -554,14 +554,14 @@ def Scanpicture(athname, userid, key_type):
         dateexist1 = find_string(filter_predicted_result, date_birth_2)
         if dateexist:
           status = True
-          print(date_birth_1)
+          # print(date_birth_1)
         elif dateexist1:
             status = True
-            print(date_birth_2)
+            # print(date_birth_2)
         else:
           for i in range(3):
             if df_months[mth][i] in df[0].values:
-              print("month v: ", df_months[mth][i])
+              # print("month v: ", df_months[mth][i])
               status = True
               break
 
@@ -592,13 +592,13 @@ def ScanpictureKeras(athname, userid):
     path_to_document = folder + filename
     path_of_docs.append(path_to_document)
 
-  print(path_of_docs)
+  # print(path_of_docs)
   pipeline = keras_ocr.pipeline.Pipeline()
   images = [keras_ocr.tools.read(img) for img in path_of_docs]
   prediction_groups = pipeline.recognize(images)
   for j in range(len(prediction_groups)):
     df = pd.DataFrame(prediction_groups[j], columns=['text', 'bbox'])
-    print(df['text'])
+    # print(df['text'])
     kw = athname
     if kw:
       # check keyword with multiple words
