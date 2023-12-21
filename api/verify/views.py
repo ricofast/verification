@@ -541,15 +541,15 @@ def Scanpicture(athname, userid, key_type):
         dys = str(date_birth.day)
         yer = str(date_birth.year)
         if len(mth) == 1:
-          mth = '0' + mth
+          mth1 = '0' + mth
         if len(dys) == 1:
-          dys = '0' + dys
+          dys1 = '0' + dys
         print("month: ", mth)
         print("day: ", dys)
         print("yeaar: ", yer)
 
-        date_birth_1 = f"{mth}-{dys}-{yer}"
-        date_birth_2 = f"{mth}.{dys}.{yer}"
+        date_birth_1 = f"{mth1}-{dys1}-{yer}"
+        date_birth_2 = f"{mth1}.{dys1}.{yer}"
         dateexist = find_string(filter_predicted_result, date_birth_1)
         dateexist1 = find_string(filter_predicted_result, date_birth_2)
         if dateexist:
