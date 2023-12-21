@@ -497,7 +497,7 @@ def Scanpicture(athname, userid, key_type):
     datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
     df = pd.DataFrame(datax[0])
     df[0] = df[0].map(str.lower)
-    print(df[0])
+    print(df[0].o_string())
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
@@ -547,7 +547,7 @@ def Scanpicture(athname, userid, key_type):
         print("month: ", mth)
         print("day: ", dys)
         print("yeaar: ", yer)
-        print(df[0])
+
         date_birth_1 = f"{mth1}-{dys1}-{yer}"
         date_birth_2 = f"{mth1}.{dys1}.{yer}"
         dateexist = find_string(filter_predicted_result, date_birth_1)
