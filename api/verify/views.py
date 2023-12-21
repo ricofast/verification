@@ -497,7 +497,7 @@ def Scanpicture(athname, userid, key_type):
     datax = list(map(lambda x: x.split(' '), filter_predicted_result.split("\r\n")))
     df = pd.DataFrame(datax[0])
     df[0] = df[0].map(str.lower)
-    print(df[0].o_string())
+    print(df[0].to_string())
     # nameexist = wd in df['text'].values
     if nameexist:
       # status = status + wd + " Verified - "
